@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,140 +7,100 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .lang-en { display: none !important; }
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .page-section { display: none; }
-        .active-section { display: block; animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); overflow-y: auto; }
-        .modal-content { background: white; margin: 2% auto; padding: 60px; border-radius: 40px; max-width: 1000px; position: relative; }
-        .trust-badge { filter: grayscale(1); opacity: 0.5; transition: 0.3s; }
-        .trust-badge:hover { filter: grayscale(0); opacity: 1; }
+        .active-section { display: block; animation: fadeIn 0.6s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(12px); }
+        .modal-content { background: white; margin: 2% auto; padding: 60px; border-radius: 40px; max-width: 900px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .nav-link { cursor: pointer; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; font-size: 11px; transition: 0.3s; }
+        [data-i18n] { transition: opacity 0.2s; }
     </style>
 </head>
-<body class="bg-white text-slate-900 antialiased">
+<body class="bg-white text-black antialiased">
 
-    <div class="bg-black text-white py-2 text-[10px] font-black text-center tracking-[0.3em] uppercase">
-        <span class="lang-zh">全球包邮 | 匠心打造每一个灵魂设计</span>
-        <span class="lang-en">FREE WORLDWIDE SHIPPING | CRAFTING EVERY SOUL DESIGN</span>
+    <div class="bg-black text-white py-2.5 text-[9px] font-black text-center tracking-[0.3em] uppercase">
+        <span data-i18n="top_bar">Free Worldwide Shipping on Orders Over $50</span>
     </div>
 
-    <nav class="sticky top-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-100">
+    <nav class="sticky top-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-8 py-6 flex justify-between items-center">
-            <div onclick="showSection('home')" class="text-3xl font-black italic tracking-tighter cursor-pointer text-black hover:text-blue-600 transition">SOULMADE</div>
-            <div class="hidden md:flex space-x-12 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
-                <a onclick="showSection('home')" class="cursor-pointer hover:text-black transition">Home</a >
-                <a onclick="showSection('shop')" class="cursor-pointer hover:text-black transition">Shop</a >
-                <a onclick="showModal('about')" class="cursor-pointer hover:text-black transition">Our Story</a >
-                <a onclick="showModal('contact')" class="cursor-pointer hover:text-black transition">Contact</a >
+            <div onclick="navigate('home')" class="text-2xl font-black italic tracking-tighter cursor-pointer">SOULMADE</div>
+            
+            <div class="hidden md:flex space-x-10">
+                <a onclick="navigate('home')" class="nav-link text-gray-400 hover:text-black" data-i18n="nav_home">Home</a >
+                <a onclick="navigate('shop')" class="nav-link text-gray-400 hover:text-black" data-i18n="nav_shop">Shop</a >
+                <a onclick="showModal('about')" class="nav-link text-gray-400 hover:text-black" data-i18n="nav_about">Our Story</a >
+                <a onclick="showModal('contact')" class="nav-link text-gray-400 hover:text-black" data-i18n="nav_contact">Contact</a >
             </div>
-            <div class="flex items-center space-x-8">
-                <button onclick="toggleLang()" class="text-[10px] font-black border border-black px-4 py-1.5 rounded-full hover:bg-black hover:text-white transition">EN/CN</button>
-                <div class="relative cursor-pointer"><i class="fa-solid fa-bag-shopping text-xl"></i></div>
+
+            <div class="flex items-center space-x-6">
+                <button onclick="toggleLang()" id="langBtn" class="text-[10px] font-black border-2 border-black px-4 py-1.5 rounded-full hover:bg-black hover:text-white transition">中文</button>
+                <i class="fa-solid fa-bag-shopping text-xl cursor-pointer"></i>
             </div>
         </div>
     </nav>
 
-    <main id="home-section" class="page-section active-section">
-        <header class="relative h-[85vh] flex items-center bg-slate-50 px-8">
-            <div class="max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-12">
+    <main id="home-page" class="page-section active-section">
+        <section class="h-[85vh] flex items-center bg-gray-50 px-8 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center z-10">
                 <div>
-                    <h1 class="text-7xl md:text-[8rem] font-black tracking-tighter leading-[0.85] mb-8">
-                        <span class="lang-zh">灵魂<br>铸造艺术</span>
-                        <span class="lang-en">SOUL<br>MADE ART</span>
-                    </h1>
-                    <p class="text-xl text-slate-400 mb-12 max-w-md font-medium leading-relaxed">
-                        <span class="lang-zh">立足南昌，面向全球。我们用顶尖 UV 技术，让原创设计拥有触手可及的温度。</span>
-                        <span class="lang-en">Based in Nanchang, shipping worldwide. We bring original designs to life with premium UV technology.</span>
-                    </p >
-                    <button onclick="showSection('shop')" class="bg-black text-white px-12 py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl hover:bg-blue-600 transition-all">Explore Collection</button>
+                    <h1 class="text-7xl md:text-[9rem] font-black leading-[0.8] tracking-tighter mb-10" data-i18n="hero_title">CRAFTING<br>SOULS.</h1>
+                    <p class="text-lg text-gray-400 mb-12 max-w-sm font-medium leading-relaxed" data-i18n="hero_desc">Premium UV stickers for those who dare to design. Born in Nanchang, made for the world.</p >
+                    <button onclick="navigate('shop')" class="bg-black text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl hover:scale-105 transition" data-i18n="hero_btn">Shop Collection</button>
                 </div>
-                <div class="hidden md:block relative">
-                    < img src="https://images.unsplash.com/photo-1621600411688-4be93cd68504?auto=format&fit=crop&q=80&w=1000" class="rounded-[40px] shadow-2xl" alt="Studio Image">
+                <div class="hidden md:block">
+                    < img src="https://images.unsplash.com/photo-1621600411688-4be93cd68504?auto=format&fit=crop&q=80&w=1000" class="rounded-[40px] shadow-2xl">
                 </div>
             </div>
-        </header>
+        </section>
     </main>
 
-    <section id="shop-section" class="page-section py-32 px-8 bg-white">
+    <section id="shop-page" class="page-section py-32 px-8">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-24">
-                <h2 class="text-5xl font-black tracking-tighter italic uppercase mb-4">The Collection</h2>
-                <div class="h-1 w-20 bg-blue-600 mx-auto"></div>
+            <div class="mb-20">
+                <h2 class="text-5xl font-black tracking-tighter uppercase italic" data-i18n="shop_title">The Collection</h2>
+                <p class="text-gray-400 font-bold text-xs tracking-widest mt-4 uppercase" data-i18n="shop_subtitle">Artist Series / Global Shipping</p >
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div class="group">
-                    <div class="aspect-[4/5] rounded-[30px] overflow-hidden bg-slate-100 mb-8 relative">
+                    <div class="aspect-[4/5] bg-gray-100 rounded-[30px] mb-8 overflow-hidden">
                         < img src="https://images.unsplash.com/photo-1576158113928-4c240eaaf360?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                     </div>
-                    <div class="flex justify-between items-start px-2">
-                        <div>
-                            <h3 class="font-black text-xl italic uppercase">Signature UV 01</h3>
-                            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1 text-blue-600">Limited Edition</p >
-                        </div>
-                        <span class="font-black text-xl">$19.90</span>
+                    <div class="flex justify-between items-start mb-6 px-2">
+                        <h3 class="font-black text-xl uppercase tracking-tight">Signature-01</h3>
+                        <span class="font-black text-xl text-blue-600">$19.90</span>
                     </div>
-                    <div class="mt-8" id="paypal-p1"></div>
+                    <div id="paypal-p1"></div>
                 </div>
-
-                <div class="group">
-                    <div class="aspect-[4/5] rounded-[30px] overflow-hidden bg-slate-100 mb-8 relative">
-                        < img src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    </div>
-                    <div class="flex justify-between items-start px-2">
-                        <div>
-                            <h3 class="font-black text-xl italic uppercase">Cyber Gloss</h3>
-                            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1 text-blue-600">Premium Series</p >
-                        </div>
-                        <span class="font-black text-xl">$24.90</span>
-                    </div>
-                    <div class="mt-8" id="paypal-p2"></div>
                 </div>
-
-                <div class="group">
-                    <div class="aspect-[4/5] rounded-[30px] overflow-hidden bg-slate-100 mb-8 relative">
-                        < img src="https://images.unsplash.com/photo-1534452203294-49c8913721b2?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    </div>
-                    <div class="flex justify-between items-start px-2">
-                        <div>
-                            <h3 class="font-black text-xl italic uppercase">Matte Soul</h3>
-                            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1 text-blue-600">Artisan Choice</p >
-                        </div>
-                        <span class="font-black text-xl">$22.00</span>
-                    </div>
-                    <div class="mt-8" id="paypal-p3"></div>
-                </div>
-            </div>
         </div>
     </section>
 
-    <footer class="bg-slate-50 py-32 border-t border-slate-100">
-        <div class="max-w-7xl mx-auto px-8 grid md:grid-cols-4 gap-16">
+    <footer class="bg-gray-50 py-32 border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-8 grid md:grid-cols-4 gap-20">
             <div class="col-span-2">
-                <div class="text-3xl font-black italic mb-8">SOULMADE</div>
-                <p class="text-slate-400 text-xs font-bold leading-loose uppercase tracking-[0.2em] max-w-sm mb-12">
-                    Handcrafted in Nanchang. Designed for the world.
-                </p >
-                <div class="flex space-x-8">
-                    <i class="fab fa-cc-paypal fa-2x trust-badge"></i>
-                    <i class="fab fa-cc-visa fa-2x trust-badge"></i>
-                    <i class="fab fa-cc-mastercard fa-2x trust-badge"></i>
+                <div class="text-2xl font-black italic mb-8">SOULMADE</div>
+                <p class="text-gray-400 text-[10px] font-black leading-loose uppercase tracking-[0.2em] max-w-xs" data-i18n="footer_desc">Handcrafted with passion in Nanchang. We deliver high-end design to your doorstep.</p >
+                <div class="flex space-x-8 mt-12 text-gray-300">
+                    <i class="fab fa-cc-paypal fa-2x"></i>
+                    <i class="fab fa-cc-visa fa-2x"></i>
                 </div>
             </div>
             <div>
-                <h4 class="font-black text-[10px] uppercase tracking-[0.3em] mb-10 text-slate-300">Quick Links</h4>
+                <h4 class="font-black text-[10px] uppercase tracking-[0.3em] mb-10 text-gray-300">Support</h4>
                 <ul class="space-y-4 text-[10px] font-black uppercase tracking-widest">
-                    <li><button onclick="showSection('home')" class="hover:text-blue-600">Home</button></li>
-                    <li><button onclick="showSection('shop')" class="hover:text-blue-600">Shop All</button></li>
-                    <li><button onclick="showModal('contact')" class="hover:text-blue-600 text-blue-600 underline">Support</button></li>
+                    <li><button onclick="showModal('contact')" data-i18n="nav_contact">Contact</button></li>
+                    <li><button onclick="showModal('shipping')" data-i18n="nav_shipping">Shipping</button></li>
+                    <li><button onclick="showModal('refund')" data-i18n="nav_refund">Returns</button></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-black text-[10px] uppercase tracking-[0.3em] mb-10 text-slate-300">Information</h4>
+                <h4 class="font-black text-[10px] uppercase tracking-[0.3em] mb-10 text-gray-300">Legal</h4>
                 <ul class="space-y-4 text-[10px] font-black uppercase tracking-widest">
-                    <li><button onclick="showModal('privacy')" class="hover:text-blue-600">Privacy Policy</button></li>
-                    <li><button onclick="showModal('refund')" class="hover:text-blue-600 text-blue-600 underline">Refund Policy</button></li>
-                    <li><button onclick="showModal('terms')" class="hover:text-blue-600">Terms of Service</button></li>
+                    <li><button onclick="showModal('privacy')" data-i18n="nav_privacy">Privacy Policy</button></li>
+                    <li><button onclick="showModal('terms')" data-i18n="nav_terms">Terms</button></li>
                 </ul>
             </div>
         </div>
@@ -148,59 +108,74 @@
 
     <div id="modalOverlay" class="modal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <button onclick="closeModal()" class="absolute top-8 right-8 text-3xl hover:rotate-90 transition">&times;</button>
+            <button onclick="closeModal()" class="absolute top-10 right-10 text-3xl">&times;</button>
             <div id="modalBody"></div>
         </div>
     </div>
 
     <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
     <script>
-        function showSection(id) {
-            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active-section'));
-            document.getElementById(id + '-section').classList.add('active-section');
-            window.scrollTo(0,0);
+        // 核心：全量语言包 (i18n)
+        const translations = {
+            en: {
+                top_bar: "Free Worldwide Shipping on Orders Over $50",
+                nav_home: "Home", nav_shop: "Shop", nav_about: "Our Story", nav_contact: "Contact",
+                nav_shipping: "Shipping", nav_refund: "Returns", nav_privacy: "Privacy", nav_terms: "Terms",
+                hero_title: "CRAFTING<br>SOULS.",
+                hero_desc: "Premium UV stickers for those who dare to design. Born in Nanchang, made for the world.",
+                hero_btn: "Shop Collection",
+                shop_title: "The Collection", shop_subtitle: "Artist Series / Global Shipping",
+                footer_desc: "Handcrafted with passion in Nanchang. We deliver high-end design to your doorstep.",
+                lang_toggle: "中文",
+                about_title: "Our Story", about_content: "SOULMADE originated from Nanchang. We bridge the gap between student creativity and global art collectors.",
+                contact_title: "Get in Touch", contact_content: "Email: business@521danyoo.dpdns.org"
+            },
+            zh: {
+                top_bar: "全场订单满 $50 全球免邮",
+                nav_home: "首页", nav_shop: "商店", nav_about: "品牌故事", nav_contact: "联系我们",
+                nav_shipping: "物流政策", nav_refund: "退换政策", nav_privacy: "隐私政策", nav_terms: "服务条款",
+                hero_title: "灵魂<br>铸造.",
+                hero_desc: "高端 UV 定制贴纸，为创意而生。始于南昌，走向世界。",
+                hero_btn: "立即选购",
+                shop_title: "产品系列", shop_subtitle: "艺术家系列 / 全球配送",
+                footer_desc: "在南昌匠心打造。我们将高端设计直接送到您的门前。",
+                lang_toggle: "English",
+                about_title: "品牌故事", about_content: "SOULMADE 诞生于南昌，致力于将校园原创设计带给全球艺术爱好者。",
+                contact_title: "联系我们", contact_content: "电子邮箱：business@521danyoo.dpdns.org"
+            }
+        };
+
+        let currentLang = 'en';
+
+        // 更新全站文字的核心逻辑
+        function updateLanguage() {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.innerHTML = translations[currentLang][key];
+                }
+            });
+            document.getElementById('langBtn').innerText = translations[currentLang].lang_toggle;
         }
 
         function toggleLang() {
-            const zh = document.querySelectorAll('.lang-zh');
-            const en = document.querySelectorAll('.lang-en');
-            let isZh = (zh[0].style.display !== 'none');
-            zh.forEach(el => el.style.setProperty('display', isZh ? 'none' : 'inline', 'important'));
-            en.forEach(el => el.style.setProperty('display', isZh ? 'inline' : 'none', 'important'));
+            currentLang = currentLang === 'en' ? 'zh' : 'en';
+            updateLanguage();
         }
 
-        const modalData = {
-            contact: `<div class="grid md:grid-cols-2 gap-16">
-                        <div><h2 class="text-5xl font-black mb-8 italic">Contact</h2><p class="text-slate-400 font-bold uppercase tracking-widest mb-12">Support & Business</p >
-                        <div class="space-y-8 font-black uppercase tracking-widest text-sm">
-                            <div><p class="text-blue-600 mb-2">Email</p ><p>business@521danyoo.dpdns.org</p ></div>
-                            <div><p class="text-blue-600 mb-2">Location</p ><p>Nanchang, Jiangxi, China</p ></div>
-                        </div></div>
-                        <div class="bg-slate-50 p-10 rounded-3xl">
-                            <h3 class="font-black mb-6 italic uppercase">Send Inquiry</h3>
-                            <input placeholder="Your Name" class="w-full mb-4 p-4 rounded-xl border-none focus:ring-2 focus:ring-blue-600">
-                            <input placeholder="Your Email" class="w-full mb-4 p-4 rounded-xl border-none focus:ring-2 focus:ring-blue-600">
-                            <textarea placeholder="How can we help?" class="w-full p-4 h-32 rounded-xl border-none focus:ring-2 focus:ring-blue-600"></textarea>
-                            <button class="w-full mt-6 bg-black text-white p-4 rounded-xl font-black uppercase">Submit Message</button>
-                        </div>
-                      </div>`,
-            privacy: `<h2 class="text-5xl font-black mb-8 italic">Privacy Policy</h2>
-                      <div class="prose prose-slate space-y-6 text-slate-500 font-medium">
-                        <p>At SOULMADE, your privacy is our priority. We only collect essential data (shipping address, email) required to fulfill your orders.</p >
-                        <p>We use PayPal to handle all transactions securely. We never store or even see your credit card details.</p >
-                      </div>`,
-            refund: `<h2 class="text-5xl font-black mb-8 italic">Return Policy</h2>
-                     <div class="prose prose-slate space-y-6 text-slate-500 font-medium">
-                        <p>If you're not 100% satisfied with your purchase, we offer a 30-day return policy.</p >
-                        <p>Items must be in original condition. Return shipping is the responsibility of the customer unless the product is defective.</p >
-                     </div>`,
-            about: `<h2 class="text-5xl font-black mb-12 italic">Our Story</h2>
-                    <p class="text-2xl font-light leading-loose text-slate-500 italic">"Design with soul, crafted for reality." <br><br> SOULMADE was born in Nanchang, China, from a vision to bring student-led design to the international stage. By utilizing industrial-grade UV technology, we transform digital art into durable, physical experiences.</p >`,
-            terms: `<h2 class="text-5xl font-black mb-8 italic">Terms of Service</h2><p class="text-slate-500 leading-loose">By using this site, you agree to our terms regarding intellectual property and international shipping regulations...</p >`
-        };
+        // 页面切换
+        function navigate(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-section'));
+            document.getElementById(pageId + '-page').classList.add('active-section');
+            window.scrollTo(0, 0);
+        }
 
+        // 弹窗逻辑
         function showModal(type) {
-            document.getElementById('modalBody').innerHTML = modalData[type];
+            const title = translations[currentLang][type + '_title'] || "SOULMADE";
+            const content = translations[currentLang][type + '_content'] || "Coming Soon...";
+            document.getElementById('modalBody').innerHTML = `<h2 class="text-5xl font-black mb-10 italic tracking-tighter uppercase">${title}</h2><p class="text-xl text-gray-400 leading-loose">${content}</p >`;
             document.getElementById('modalOverlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
@@ -210,20 +185,17 @@
             document.body.style.overflow = 'auto';
         }
 
-        const products = [
-            {id: '#paypal-p1', price: '19.90'},
-            {id: '#paypal-p2', price: '24.90'},
-            {id: '#paypal-p3', price: '22.00'}
-        ];
+        // PayPal
+        if (window.paypal) {
+            paypal.Buttons({
+                style: { layout: 'vertical', color: 'black', shape: 'pill' },
+                createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: '19.90' } }] })
+            }).render('#paypal-p1');
+        }
 
-        products.forEach(p => {
-            if (window.paypal) {
-                paypal.Buttons({
-                    style: { layout: 'vertical', color: 'black', shape: 'pill', label: 'checkout' },
-                    createOrder: (d, a) => a.order.create({ purchase_units: [{ amount: { value: p.price } }] })
-                }).render(p.id);
-            }
-        });
+        // 初始化
+        updateLanguage();
     </script>
 </body>
 </html>
+
