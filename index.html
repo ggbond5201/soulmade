@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOULMADE | 灵魂铸造</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-black tracking-widest text-black">SOULMADE</div>
+            <div class="space-x-6 text-sm font-bold uppercase">
+                <a href=" " class="hover:text-blue-600">商店</a >
+            </div>
+        </div>
+    </nav>
+    <header class="py-24 bg-white text-center">
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-6">灵魂铸造<br><span class="text-blue-600">SOULMADE</span></h1>
+        <p class="text-xl text-gray-500 mb-10 max-w-2xl mx-auto">从校园原创到全球定制。每一份设计都值得被复活。</p >
+        <a href="#shop" class="bg-black text-white px-10 py-4 rounded-full font-bold">查看产品</a >
+    </header>
+    <section id="shop" class="max-w-6xl mx-auto py-20 px-6 text-center">
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 inline-block">
+            <h3 class="text-xl font-bold mb-4">原创 UV 定制贴纸</h3>
+            <p class="text-3xl font-black mb-6">$19.90</p >
+            <div id="paypal-button-container"></div>
+        </div>
+    </section>
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+    <script>
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{ amount: { value: '19.90' } }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('支付成功！');
+                });
+            }
+        }).render('#paypal-button-container');
+    </script>
+</body>
+</html>
