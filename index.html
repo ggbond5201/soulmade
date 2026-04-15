@@ -1,46 +1,98 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SOULMADE | 灵魂铸造</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .lang-en { display: none; }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans">
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
+<body class="bg-slate-50 text-slate-900 font-sans leading-relaxed">
+
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-black tracking-widest text-black">SOULMADE</div>
-            <div class="space-x-6 text-sm font-bold uppercase">
-                <a href=" " class="hover:text-blue-600">商店</a >
+            <div class="text-2xl font-black tracking-tighter italic">SOULMADE</div>
+            <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
+                <a href=" " class="hover:text-blue-600 transition tracking-widest"><span class="lang-zh">品牌故事</span><span class="lang-en">STORY</span></a >
+                <a href="#shop" class="hover:text-blue-600 transition tracking-widest"><span class="lang-zh">选购</span><span class="lang-en">SHOP</span></a >
             </div>
+            <button onclick="toggleLang()" class="border border-slate-900 px-4 py-1 rounded-full text-xs font-bold hover:bg-slate-900 hover:text-white transition">
+                中文 / EN
+            </button>
         </div>
     </nav>
-    <header class="py-24 bg-white text-center">
-        <h1 class="text-5xl md:text-7xl font-extrabold mb-6">灵魂铸造<br><span class="text-blue-600">SOULMADE</span></h1>
-        <p class="text-xl text-gray-500 mb-10 max-w-2xl mx-auto">从校园原创到全球定制。每一份设计都值得被复活。</p >
-        <a href="#shop" class="bg-black text-white px-10 py-4 rounded-full font-bold">查看产品</a >
+
+    <header class="pt-20 pb-32 bg-white px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-6xl md:text-8xl font-black mb-8 tracking-tighter">
+                <span class="lang-zh">灵魂铸造</span><span class="lang-en">SOULMADE</span>
+            </h1>
+            <p class="text-xl text-slate-500 mb-12 font-light tracking-wide">
+                <span class="lang-zh">从校园原创到全球定制。让每一份设计在现实中复活。</span>
+                <span class="lang-en">From campus originals to global customization. Bringing every design to life.</span>
+            </p >
+            <a href="#shop" class="bg-blue-600 text-white px-12 py-5 rounded-full font-bold shadow-xl shadow-blue-200 hover:bg-blue-700 transition inline-block">
+                <span class="lang-zh">立即选购</span><span class="lang-en">SHOP NOW</span>
+            </a >
+        </div>
     </header>
-    <section id="shop" class="max-w-6xl mx-auto py-20 px-6 text-center">
-        <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 inline-block">
-            <h3 class="text-xl font-bold mb-4">原创 UV 定制贴纸</h3>
-            <p class="text-3xl font-black mb-6">$19.90</p >
-            <div id="paypal-button-container"></div>
+
+    <section id="shop" class="max-w-6xl mx-auto py-24 px-6">
+        <h2 class="text-3xl font-bold mb-16 text-center tracking-widest uppercase">Featured Collection</h2>
+        <div class="grid md:grid-cols-2 gap-12">
+            <div class="bg-white rounded-3xl p-10 shadow-sm border border-slate-100 hover:shadow-2xl transition duration-500">
+                <div class="aspect-square bg-slate-100 rounded-2xl mb-8 flex items-center justify-center text-slate-400">
+                    [Product Image]
+                </div>
+                <h3 class="text-2xl font-bold mb-2">
+                    <span class="lang-zh">原创 UV 定制贴纸</span><span class="lang-en">Original UV Stickers</span>
+                </h3>
+                <p class="text-slate-500 mb-6 font-light">
+                    <span class="lang-zh">高品质耐磨材质，专为个性化设计打造。</span>
+                    <span class="lang-en">High-quality, durable materials for personalized designs.</span>
+                </p >
+                <div class="flex items-center justify-between">
+                    <span class="text-3xl font-black text-blue-600">$19.90</span>
+                    <div id="paypal-button-container"></div>
+                </div>
+            </div>
         </div>
     </section>
+
+    <footer class="bg-slate-900 text-slate-400 py-20 px-6 mt-20">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-12">
+            <div>
+                <div class="text-white text-xl font-black mb-6">SOULMADE</div>
+                <p class="text-sm font-light leading-relaxed">
+                    <span class="lang-zh">我们在南昌，通过创意连接世界。</span>
+                    <span class="lang-en">Based in Nanchang, connecting the world through creativity.</span>
+                </p >
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6 italic tracking-widest">LINKS</h4>
+                <ul class="text-sm space-y-4 font-light">
+                    <li>TikTok: @soulmade_official</li>
+                    <li>Instagram: @soulmade_design</li>
+                </ul>
+            </div>
+            <div class="text-sm text-slate-500 border-t border-slate-800 pt-8 md:border-none">
+                © 2026 SOULMADE Studio. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
     <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
     <script>
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{ amount: { value: '19.90' } }]
-                });
-            },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    alert('支付成功！');
-                });
-            }
-        }).render('#paypal-button-container');
-    </script>
-</body>
-</html>
+        // 语言切换逻辑
+        let currentLang = 'zh';
+        function toggleLang() {
+            const zhElements = document.querySelectorAll('.lang-zh');
+            const enElements = document.querySelectorAll('.lang-en');
+            
+            if (currentLang === 'zh') {
+                zhElements.forEach(el => el.style.display = 'none');
+                enElements.forEach(el => el.style.display = 'inline');
+                currentLang = 'en';
+            } else {
