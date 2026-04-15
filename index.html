@@ -10,9 +10,6 @@
         html { scroll-behavior: smooth; }
         .page-section { display: none; opacity: 0; transition: opacity 0.5s ease-in-out; }
         .page-section.active { display: block; opacity: 1; }
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 100; }
-        .modal-overlay.active { display: block; }
-        .modal-content { background: white; margin: 10vh auto; padding: 2.5rem; border-radius: 1.5rem; max-width: 600px; position: relative; max-height: 80vh; overflow-y: auto; }
         .product-card img { transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
         .product-card:hover img { transform: scale(1.05); }
     </style>
@@ -22,9 +19,9 @@
     <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100 px-6 py-5 flex justify-between items-center">
         <div onclick="navigate('home')" class="text-3xl font-black italic cursor-pointer tracking-tighter">SOULMADE</div>
         <div class="hidden md:flex items-center space-x-12 text-[11px] font-bold uppercase tracking-widest text-gray-500">
-            <a onclick="navigate('home')" class="cursor-pointer hover:text-black transition">Home</a >
-            <a onclick="navigate('shop')" class="cursor-pointer hover:text-black transition">Shop</a >
-            <a onclick="navigate('story')" class="cursor-pointer hover:text-black transition">Story</a >
+            <a onclick="navigate('home')" class="cursor-pointer hover:text-black">Home</a >
+            <a onclick="navigate('shop')" class="cursor-pointer hover:text-black">Shop</a >
+            <a onclick="navigate('story')" class="cursor-pointer hover:text-black">Story</a >
             <select onchange="changeLang(this.value)" class="bg-gray-50 px-3 py-1 rounded-full text-black outline-none cursor-pointer">
                 <option value="en">ENGLISH</option>
                 <option value="zh">简体中文</option>
@@ -35,7 +32,6 @@
     <main id="home-sec" class="page-section active">
         <section class="h-[70vh] flex flex-col items-center justify-center text-center px-4">
             <h1 class="text-7xl md:text-9xl font-black mb-10 italic tracking-tighter" data-i18n="hero_t">Soul Made.</h1>
-            <p class="text-gray-500 max-w-sm mb-12 font-medium" data-i18n="hero_d">Premium UV DTF wraps & stickers. Connecting local artistry to the global canvas.</p >
             <button onclick="navigate('shop')" class="bg-black text-white px-12 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-gray-800 transition shadow-xl" data-i18n="hero_b">Explore Drops</button>
         </section>
     </main>
@@ -48,116 +44,27 @@
                     <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8">
                         < img src="p1.png" class="w-full h-full object-cover">
                     </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 01 Premium</span><span class="text-blue-600">$19.90</span>
+                    <div class="flex justify-between font-black italic uppercase text-lg mb-8">
+                        <span>Series 01</span><span class="text-blue-600">$19.90</span>
                     </div>
-                    <div id="paypal-btn-1" class="paypal-container"></div>
+                    <div id="paypal-btn-1"></div>
                 </div>
                 <div class="product-card bg-white p-6 rounded-3xl shadow-sm border border-gray-50">
                     <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8">
                         < img src="p2.png" class="w-full h-full object-cover">
                     </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 02 Gloss</span><span class="text-blue-600">$24.90</span>
+                    <div class="flex justify-between font-black italic uppercase text-lg mb-8">
+                        <span>Series 02</span><span class="text-blue-600">$24.90</span>
                     </div>
-                    <div id="paypal-btn-2" class="paypal-container"></div>
+                    <div id="paypal-btn-2"></div>
                 </div>
-                <div class="product-card bg-white p-6 rounded-3xl shadow-sm border border-gray-50">
-                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8">
-                        < img src="p3.png" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 03 Matte</span><span class="text-blue-600">$22.00</span>
-                    </div>
-                    <div id="paypal-btn-3" class="paypal-container"></div>
                 </div>
-                <div class="product-card bg-white p-6 rounded-3xl shadow-sm border border-gray-50">
-                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8">
-                        < img src="p4.png" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 04 Neon</span><span class="text-blue-600">$18.00</span>
-                    </div>
-                    <div id="paypal-btn-4" class="paypal-container"></div>
-                </div>
-                <div class="product-card bg-white p-6 rounded-3xl shadow-sm border border-gray-50">
-                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8">
-                        < img src="p5.png" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 05 Custom</span><span class="text-blue-600">$30.00</span>
-                    </div>
-                    <div id="paypal-btn-5" class="paypal-container"></div>
-                </div>
-                <div class="product-card bg-white p-6 rounded-3xl shadow-sm border border-gray-50">
-                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8">
-                        < img src="p6.png" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 06 Limited</span><span class="text-blue-600">$25.00</span>
-                    </div>
-                    <div id="paypal-btn-6" class="paypal-container"></div>
-                </div>
-            </div>
         </div>
     </section>
-
-    <section id="story-sec" class="page-section py-24 px-8">
-        <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-4xl font-black italic uppercase mb-10" data-i18n="story_t">Our Origins</h2>
-            <div class="text-gray-600 space-y-6 leading-loose font-medium text-lg" data-i18n="story_c">
-                <p>SOULMADE was born in Nanchang, China. We recycle and refine brilliant student designs into premium UV stickers.</p >
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-black text-white py-20 px-10 mt-32">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 text-[10px] font-bold uppercase tracking-widest text-gray-500">
-            <div class="space-y-4">
-                <div class="text-2xl font-black italic text-white">SOULMADE</div>
-                <p class="normal-case tracking-normal" data-i18n="foot_d">Handcrafted in Nanchang, shipped worldwide.</p >
-            </div>
-            <div class="flex flex-col space-y-3">
-                <h4 class="text-white mb-2">Policies</h4>
-                <a onclick="openModal('shipping')" class="cursor-pointer hover:text-white" data-i18n="nav_shipping">Shipping Info</a >
-                <a onclick="openModal('refund')" class="cursor-pointer hover:text-white" data-i18n="nav_refund">Return Policy</a >
-            </div>
-            <div>
-                <h4 class="text-white mb-2">Contact</h4>
-                <p class="normal-case tracking-normal">business@521danyoo.dpdns.org</p >
-                <p class="mt-4">Nanchang, CN</p >
-            </div>
-        </div>
-    </footer>
-
-    <div id="policyModal" class="modal-overlay" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <h3 id="modalTitle" class="text-2xl font-black italic mb-6 border-b pb-4"></h3>
-            <div id="modalBody" class="text-gray-600 space-y-4 text-sm font-medium"></div>
-        </div>
-    </div>
 
     <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
     <script>
-        const dictionary = {
-            en: {
-                hero_t: "Soul Made.", hero_d: "Premium UV DTF wraps & stickers from Nanchang.", hero_b: "Explore Drops", shop_t: "The Drops",
-                story_t: "Our Origins", story_c: "SOULMADE transforms campus creativity into premium UV art.", foot_d: "Handcrafted in Nanchang.",
-                nav_shipping: "Shipping Info", nav_refund: "Return Policy",
-                mod_ship_t: "Shipping Info", mod_ship_c: "Shipped via tracked International E-packet from Nanchang. 7-15 days delivery.",
-                mod_ref_t: "Return Policy", mod_ref_c: "30-day returns for unused items. Damaged goods will be replaced free."
-            },
-            zh: {
-                hero_t: "灵魂制造.", hero_d: "来自南昌的高端 UV 转印贴。", hero_b: "立即探索", shop_t: "最新系列",
-                story_t: "品牌起源", story_c: "SOULMADE 将校园创意转化为高品质 UV 艺术品。", foot_d: "南昌手工制造。",
-                nav_shipping: "物流信息", nav_refund: "退换政策",
-                mod_ship_t: "全球物流", mod_ship_c: "从南昌发货，采用国际有追踪快邮。预计 7-15 天送达。",
-                mod_ref_t: "售后保障", mod_ref_c: "未使用商品支持 30 天退货。损坏商品免费重发。"
-            }
-        };
-
-        const prices = { "1": "19.90", "2": "24.90", "3": "22.00", "4": "18.00", "5": "30.00", "6": "25.00" };
-        let curLang = 'en';
+        const prices = { "1": "19.90", "2": "24.90" }; // 根据需要增加 ID 和价格
 
         function navigate(id) {
             document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
@@ -165,35 +72,14 @@
             window.scrollTo(0,0);
         }
 
-        function changeLang(val) {
-            curLang = val;
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                el.innerHTML = dictionary[curLang][key];
-            });
-        }
-
-        function openModal(type) {
-            const prefix = type === 'shipping' ? 'mod_ship' : 'mod_ref';
-            document.getElementById('modalTitle').innerText = dictionary[curLang][prefix + '_t'];
-            document.getElementById('modalBody').innerHTML = dictionary[curLang][prefix + '_c'];
-            document.getElementById('policyModal').classList.add('active');
-        }
-
-        function closeModal() { document.getElementById('policyModal').classList.remove('active'); }
-
-        // PayPal 初始化（增强稳定性版）
+        // 核心：确保图片和按钮同时加载
         window.onload = function() {
             if(window.paypal) {
                 Object.keys(prices).forEach(id => {
-                    const containerId = '#paypal-btn-' + id;
-                    if(document.querySelector(containerId)) {
-                        paypal.Buttons({
-                            style: { layout: 'vertical', color: 'black', shape: 'rect', height: 40 },
-                            createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: prices[id] } }] }),
-                            onApprove: (data, actions) => actions.order.capture().then(() => alert('Thank you!'))
-                        }).render(containerId);
-                    }
+                    paypal.Buttons({
+                        style: { layout: 'vertical', color: 'black', shape: 'rect', height: 40 },
+                        createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: prices[id] } }] })
+                    }).render('#paypal-btn-' + id);
                 });
             }
         };
