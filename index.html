@@ -3,95 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOULMADE | 灵魂铸造</title>
+    <title>SOULMADE | Global Creative Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .lang-en { display: none !important; }
-        html { scroll-behavior: smooth; }
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); overflow-y: auto; }
-        .modal-content { background-color: white; margin: 5% auto; padding: 40px; border-radius: 20px; max-width: 800px; line-height: 1.8; }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); }
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); overflow-y: auto; }
+        .modal-content { background: white; margin: 3% auto; padding: 50px; border-radius: 30px; max-width: 900px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        .product-gradient { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans">
+<body class="bg-white text-slate-900 font-sans tracking-tight">
 
-    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-black italic tracking-tighter text-blue-600">SOULMADE</div>
-            <div class="flex items-center space-x-6">
-                <button onclick="toggleLang()" class="bg-slate-100 px-3 py-1 rounded text-[10px] font-bold hover:bg-slate-200 transition">EN / 中文</button>
-                <a href=" " class="text-sm font-bold"><span class="lang-zh">商店</span><span class="lang-en">SHOP</span></a >
-                <button onclick="showModal('contact')" class="text-sm font-bold"><span class="lang-zh">联系</span><span class="lang-en">CONTACT</span></button>
+    <div class="bg-blue-600 text-white text-[10px] font-bold py-2 text-center uppercase tracking-[0.2em]">
+        <span class="lang-zh">✨ 全球包邮 | 限时 8 折优惠 ✨</span>
+        <span class="lang-en">✨ FREE GLOBAL SHIPPING | LIMITED 20% OFF ✨</span>
+    </div>
+
+    <nav class="glass-nav sticky top-0 z-50 border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
+            <div class="text-3xl font-black italic tracking-tighter hover:scale-105 transition cursor-pointer">SOULMADE</div>
+            <div class="flex items-center space-x-10">
+                <div class="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest">
+                    <a href=" " class="hover:text-blue-600 transition text-slate-500">Shop</a >
+                    <button onclick="showModal('about')" class="hover:text-blue-600 transition text-slate-500">About</button>
+                    <button onclick="showModal('faq')" class="hover:text-blue-600 transition text-slate-500">FAQ</button>
+                </div>
+                <button onclick="toggleLang()" class="border-2 border-slate-900 px-4 py-1.5 rounded-full text-[10px] font-black hover:bg-slate-900 hover:text-white transition">EN / 中文</button>
             </div>
         </div>
     </nav>
 
-    <header class="py-24 bg-white text-center px-6">
-        <h1 class="text-6xl md:text-8xl font-black mb-6 tracking-tighter">
-            <span class="lang-zh">灵魂铸造</span><span class="lang-en">SOULMADE</span>
-        </h1>
-        <p class="text-xl text-slate-500 mb-10 max-w-2xl mx-auto font-light">
-            <span class="lang-zh">高端 UV 定制，让校园创意走向全球。</span>
-            <span class="lang-en">Premium UV customization, bringing campus creativity to the world.</span>
-        </p >
-        <div class="flex justify-center space-x-4">
-            <a href="#shop" class="bg-blue-600 text-white px-8 py-4 rounded-full font-bold shadow-lg hover:scale-105 transition">Shop Now</a >
+    <header class="relative py-32 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-8 relative z-10 text-center">
+            <h1 class="text-7xl md:text-[10rem] font-black mb-8 leading-[0.9] tracking-tighter">
+                <span class="lang-zh">灵魂<br>铸造</span><span class="lang-en">SOUL<br>MADE</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-400 mb-12 max-w-2xl mx-auto font-medium">
+                <span class="lang-zh">连接中国原创设计与全球个性需求。每一份灵感，都值得被触碰。</span>
+                <span class="lang-en">Connecting original Chinese design with global personalized needs.</span>
+            </p >
+            <a href="#shop" class="bg-blue-600 text-white px-12 py-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl shadow-blue-300 hover:bg-blue-700 transition-all">Shop Collection</a >
         </div>
     </header>
 
-    <section id="shop" class="max-w-6xl mx-auto py-20 px-6">
-        <div class="bg-white rounded-[3rem] p-8 md:p-16 shadow-2xl shadow-slate-200 flex flex-col md:flex-row items-center gap-12">
-            <div class="w-full md:w-1/2 aspect-square bg-slate-100 rounded-2xl flex items-center justify-center text-slate-300 font-bold">IMAGE HERE</div>
-            <div class="w-full md:w-1/2">
-                <h2 class="text-4xl font-bold mb-4">SOULMADE UV Sticker</h2>
-                <div class="flex items-center space-x-4 mb-6">
-                    <span class="text-3xl font-black text-blue-600">$19.90</span>
-                    <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold">In Stock</span>
+    <section id="shop" class="max-w-7xl mx-auto px-8 py-24">
+        <div class="grid md:grid-cols-2 gap-20 items-center">
+            <div class="product-gradient aspect-[4/5] rounded-[40px] flex items-center justify-center border border-slate-100 shadow-inner group overflow-hidden">
+                <span class="text-slate-300 font-black text-4xl group-hover:scale-110 transition duration-700 tracking-tighter">PREMIUM UV</span>
+            </div>
+            <div>
+                <div class="inline-block bg-blue-50 text-blue-600 text-[10px] font-black px-4 py-1 rounded-full mb-6 uppercase tracking-widest">Featured Product</div>
+                <h2 class="text-5xl font-black mb-6 tracking-tighter leading-tight">
+                    <span class="lang-zh">原创 UV 艺术定制贴纸</span><span class="lang-en">Original UV Art Stickers</span>
+                </h2>
+                <p class="text-slate-500 text-lg mb-10 leading-relaxed font-light">
+                    <span class="lang-zh">不仅是贴纸，更是你的艺术标签。采用顶级 UV 冷印技术，在任何表面都能呈现惊人的 3D 质感与色彩。</span>
+                    <span class="lang-en">Not just a sticker, but your artistic label. Stunning 3D texture on any surface.</span>
+                </p >
+                <div class="flex items-baseline space-x-4 mb-10">
+                    <span class="text-5xl font-black text-blue-600">$19.90</span>
+                    <span class="text-slate-300 line-through text-xl">$29.90</span>
                 </div>
-                <div id="paypal-button-container"></div>
+                
+                <div id="paypal-button-container" class="mb-8"></div>
+                <div class="flex items-center space-x-6 text-slate-400">
+                    <i class="fab fa-cc-paypal fa-2x"></i>
+                    <i class="fab fa-cc-visa fa-2x"></i>
+                    <i class="fab fa-cc-mastercard fa-2x"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Secure Checkout</span>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-slate-900 text-slate-400 py-20 px-6">
-        <div class="max-w-6xl mx-auto grid md:grid-cols-4 gap-12">
-            <div class="col-span-1 md:col-span-2">
-                <div class="text-white text-2xl font-black mb-6 italic">SOULMADE</div>
-                <p class="text-sm leading-loose mb-6">
-                    <span class="lang-zh">我们致力于将南昌大学生的原创设计推向国际市场。每一件产品都承载着创作者的灵魂。</span>
-                    <span class="lang-en">We are dedicated to bringing original designs from Nanchang students to the global market.</span>
+    <footer class="bg-slate-50 py-32 border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-8 grid md:grid-cols-4 gap-16">
+            <div class="col-span-2">
+                <div class="text-2xl font-black italic mb-8">SOULMADE</div>
+                <p class="text-slate-400 text-sm max-w-sm leading-loose">
+                    <span class="lang-zh">SOULMADE 致力于挖掘校园中的顶尖设计。我们相信，每一个灵魂深处的创意都应该被世界看到。</span>
+                    <span class="lang-en">Uncovering top designs from students. We believe every creative soul deserves to be seen by the world.</span>
                 </p >
             </div>
             <div>
-                <h4 class="text-white font-bold mb-6 italic tracking-widest text-sm">SUPPORT</h4>
-                <ul class="text-sm space-y-3 font-light">
-                    <li><button onclick="showModal('contact')">Contact Us</button></li>
-                    <li><button onclick="showModal('shipping')">Shipping Policy</button></li>
-                    <li><button onclick="showModal('refund')">Refund Policy</button></li>
+                <h4 class="font-black text-[10px] uppercase tracking-[0.3em] mb-10">Customer Care</h4>
+                <ul class="space-y-4 text-xs font-bold text-slate-500">
+                    <li><button onclick="showModal('contact')" class="hover:text-blue-600">Contact Us</button></li>
+                    <li><button onclick="showModal('shipping')" class="hover:text-blue-600">Shipping Policy</button></li>
+                    <li><button onclick="showModal('refund')" class="hover:text-blue-600">Return & Refund</button></li>
+                    <li><button onclick="showModal('faq')" class="hover:text-blue-600">FAQ</button></li>
                 </ul>
             </div>
             <div>
-                <h4 class="text-white font-bold mb-6 italic tracking-widest text-sm">LEGAL</h4>
-                <ul class="text-sm space-y-3 font-light">
-                    <li><button onclick="showModal('privacy')">Privacy Policy</button></li>
-                    <li><button onclick="showModal('terms')">Terms of Service</button></li>
+                <h4 class="font-black text-[10px] uppercase tracking-[0.3em] mb-10">Policies</h4>
+                <ul class="space-y-4 text-xs font-bold text-slate-500">
+                    <li><button onclick="showModal('privacy')" class="hover:text-blue-600">Privacy Policy</button></li>
+                    <li><button onclick="showModal('terms')" class="hover:text-blue-600">Terms of Service</button></li>
                 </ul>
             </div>
         </div>
-        <div class="max-w-6xl mx-auto border-t border-slate-800 mt-16 pt-8 text-xs text-center">
-            © 2026 SOULMADE Studio. All rights reserved.
+        <div class="max-w-7xl mx-auto px-8 mt-24 pt-12 border-t border-slate-100 flex flex-col md:row justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <div>© 2026 SOULMADE Studio. Designed in Nanchang.</div>
         </div>
     </footer>
 
     <div id="modalOverlay" class="modal" onclick="closeModal()">
-        <div class="modal-content text-slate-800" onclick="event.stopPropagation()">
-            <button onclick="closeModal()" class="float-right font-bold text-xl">&times;</button>
-            <div id="modalBody"></div>
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div id="modalBody" class="prose prose-slate max-w-none"></div>
+            <button onclick="closeModal()" class="mt-12 bg-slate-900 text-white px-8 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-600 transition">Close</button>
         </div>
     </div>
 
     <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
     <script>
-        // 语言切换
         let currentLang = 'zh';
         function toggleLang() {
             const zh = document.querySelectorAll('.lang-zh');
@@ -101,29 +127,26 @@
             en.forEach(el => el.style.setProperty('display', currentLang === 'en' ? 'inline' : 'none', 'important'));
         }
 
-        // 弹窗逻辑
         const modalData = {
-            contact: `<h2>Contact Us</h2><p>Email: business@521danyoo.dpdns.org</p ><p>Location: Nanchang, Jiangxi, China</p >`,
-            privacy: `<h2>Privacy Policy</h2><p>We respect your privacy. We only collect information necessary to process your order...</p >`,
-            shipping: `<h2>Shipping Policy</h2><p>Standard Global Shipping: 7-15 business days. Tracking number provided via email.</p >`,
-            refund: `<h2>Refund Policy</h2><p>If you're not satisfied, return within 30 days for a full refund...</p >`,
-            terms: `<h2>Terms of Service</h2><p>By using our website, you agree to our terms and conditions...</p >`
+            about: `<h2 class="text-4xl font-black mb-8 italic">About SOULMADE</h2><p>Born in Nanchang, China, SOULMADE is more than a brand. It's a bridge between passionate student designers and the global creative community. We specialize in high-end UV printing and custom design solutions.</p >`,
+            faq: `<h2 class="text-4xl font-black mb-8 italic">FAQ</h2><p><b>Q: Do you ship worldwide?</b><br>A: Yes, we provide tracked shipping to over 50 countries.</p ><p><b>Q: How long does shipping take?</b><br>A: Typically 7-12 business days.</p >`,
+            contact: `<h2 class="text-4xl font-black mb-8 italic">Contact</h2><p>General Inquiry: <b>business@521danyoo.dpdns.org</b></p ><p>Instagram: @soulmade_studio</p >`,
+            shipping: `<h2 class="text-4xl font-black mb-8 italic">Shipping</h2><p>We use international air express. Every order comes with a tracking number sent to your email.</p >`,
+            refund: `<h2 class="text-4xl font-black mb-8 italic">Return</h2><p>100% Satisfaction Guarantee. Returns accepted within 30 days of delivery.</p >`,
+            privacy: `<h2 class="text-4xl font-black mb-8 italic">Privacy</h2><p>Your data is encrypted. We never share your payment information with third parties.</p >`,
+            terms: `<h2 class="text-4xl font-black mb-8 italic">Terms</h2><p>By purchasing, you agree to our handcrafted production standards...</p >`
         };
 
-        function showModal(type) {
-            document.getElementById('modalBody').innerHTML = modalData[type];
-            document.getElementById('modalOverlay').style.display = 'block';
-        }
-
+        function showModal(t) { document.getElementById('modalBody').innerHTML = modalData[t]; document.getElementById('modalOverlay').style.display = 'block'; }
         function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
 
-        // PayPal
         if (window.paypal) {
             paypal.Buttons({
                 style: { layout: 'vertical', color: 'blue', shape: 'rect' },
-                createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: '19.90' } }] })
+                createOrder: (d, a) => a.order.create({ purchase_units: [{ amount: { value: '19.90' } }] })
             }).render('#paypal-button-container');
         }
     </script>
 </body>
 </html>
+
