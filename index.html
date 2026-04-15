@@ -3,203 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOULMADE | Premium UV Studio</title>
+    <title>SOULMADE | Premium UV Art Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         html { scroll-behavior: smooth; }
-        .page-section { display: none; opacity: 0; transition: opacity 0.4s ease-in-out; }
+        .page-section { display: none; opacity: 0; transition: opacity 0.5s ease-in-out; }
         .page-section.active { display: block; opacity: 1; }
-        
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 100; }
-        .modal-content { background: white; margin: 10vh auto; padding: 2.5rem; border-radius: 1.5rem; max-width: 600px; position: relative; }
-        
-        .product-img-wrapper { background: #f3f4f6; position: relative; padding-top: 125%; border-radius: 1rem; overflow: hidden; }
-        .product-img-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-        .product-img-wrapper:hover img { transform: scale(1.05); }
+        .modal-content { background: white; margin: 10vh auto; padding: 2.5rem; border-radius: 1.5rem; max-width: 600px; position: relative; max-height: 80vh; overflow-y: auto; }
+        .product-card img { transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        .product-card:hover img { transform: scale(1.05); }
     </style>
 </head>
-<body class="bg-white text-gray-900 antialiased font-sans">
+<body class="bg-[#fafafa] text-gray-900 antialiased font-sans">
 
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100 px-6 py-5">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div onclick="switchPage('home')" class="text-3xl font-black italic tracking-tighter cursor-pointer hover:opacity-70 transition">SOULMADE</div>
-            <div class="flex items-center space-x-6 md:space-x-10 text-xs font-bold uppercase tracking-widest text-gray-500">
-                <a onclick="switchPage('home')" class="cursor-pointer hover:text-black transition" data-i18n="nav_home">Home</a >
-                <a onclick="switchPage('shop')" class="cursor-pointer hover:text-black transition" data-i18n="nav_shop">Shop</a >
-                <a onclick="switchPage('story')" class="cursor-pointer hover:text-black transition hidden md:block" data-i18n="nav_story">Story</a >
-                <div class="pl-4 border-l border-gray-200">
-                    <select onchange="changeLang(this.value)" class="bg-transparent text-black font-bold outline-none cursor-pointer">
-                        <option value="en">EN</option>
-                        <option value="zh">中</option>
-                    </select>
-                </div>
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100 px-6 py-5 flex justify-between items-center transition-all">
+        <div onclick="navigate('home')" class="text-3xl font-black italic cursor-pointer tracking-tighter">SOULMADE</div>
+        <div class="hidden md:flex items-center space-x-12 text-[11px] font-bold uppercase tracking-widest text-gray-500">
+            <a onclick="navigate('home')" class="cursor-pointer hover:text-black transition">Home</a >
+            <a onclick="navigate('shop')" class="cursor-pointer hover:text-black transition">Shop</a >
+            <a onclick="navigate('story')" class="cursor-pointer hover:text-black transition">Story</a >
+            <div class="border-l border-gray-200 pl-8 flex items-center">
+                <i class="fas fa-globe mr-2 text-gray-300"></i>
+                <select id="lang-select" onchange="changeLang(this.value)" class="bg-gray-50 px-3 py-1 rounded-full text-black outline-none cursor-pointer">
+                    <option value="en">ENGLISH</option>
+                    <option value="zh">简体中文</option>
+                </select>
             </div>
         </div>
     </nav>
 
     <main id="home-sec" class="page-section active">
-        <section class="h-[75vh] flex flex-col justify-center items-center text-center px-4">
-            <h1 class="text-6xl md:text-8xl font-black italic tracking-tighter mb-6 uppercase text-black" data-i18n="hero_title">Create Your Soul.</h1>
-            <p class="text-gray-500 font-medium mb-10 max-w-md mx-auto text-sm leading-relaxed" data-i18n="hero_desc">Premium UV DTF wraps & stickers. Connecting local artistry to the global canvas.</p >
-            <button onclick="switchPage('shop')" class="bg-black text-white px-10 py-4 rounded-full font-black uppercase text-xs tracking-[0.2em] hover:bg-gray-800 transition transform hover:-translate-y-1" data-i18n="hero_btn">Explore Drops</button>
+        <section class="h-[80vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden bg-gray-50">
+            <div class="absolute inset-0 bg-gradient-to-b from-gray-100 to-transparent -z-10"></div>
+            <h1 class="text-7xl md:text-9xl font-black mb-10 italic leading-[0.8] tracking-tighter" data-i18n="hero_t">Soul Made.</h1>
+            <p class="text-lg text-gray-500 max-w-sm mb-12 font-medium leading-relaxed" data-i18n="hero_d">Premium UV DTF wraps & stickers. Connecting local artistry to the global canvas.</p >
+            <button onclick="navigate('shop')" class="bg-black text-white px-12 py-5 rounded-full font-black uppercase text-xs tracking-[0.2em] hover:bg-gray-800 transition shadow-xl transform hover:-translate-y-1" data-i18n="hero_b">Explore Drops</button>
         </section>
     </main>
 
-    <section id="shop-sec" class="page-section py-20 px-6 bg-gray-50">
+    <section id="shop-sec" class="page-section py-32 px-8">
         <div class="max-w-7xl mx-auto">
-            <div class="mb-16 text-center">
-                <h2 class="text-4xl font-black italic tracking-tighter uppercase mb-2" data-i18n="shop_title">The Drops</h2>
-                <p class="text-gray-400 font-bold text-xs tracking-widest uppercase" data-i18n="shop_sub">Premium Goods / Limited Supply</p >
+            <div class="mb-24 flex justify-between items-end border-b-2 border-black pb-4">
+                <h2 class="text-5xl font-black italic tracking-tighter uppercase" data-i18n="shop_t">The Drops</h2>
+                <p class="text-gray-400 font-bold text-xs tracking-widest uppercase mt-4">Nanchang CN / Worldwide Shipping</p >
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12" id="product-grid">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
+                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
+                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
+                        < img src="p1.png" alt="Series 01 Premium" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 01</div>
+                    </div>
+                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
+                        <span>Series 01 Premium</span><span class="text-blue-600">$19.90</span>
+                    </div>
+                    <div id="paypal-btn-1"></div>
                 </div>
+                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
+                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
+                        < img src="p2.png" alt="Series 02 Gloss" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 02</div>
+                    </div>
+                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
+                        <span>Series 02 Gloss</span><span class="text-blue-600">$24.90</span>
+                    </div>
+                    <div id="paypal-btn-2"></div>
+                </div>
+                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
+                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
+                        < img src="p3.png" alt="Series 03 Matte" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 03</div>
+                    </div>
+                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
+                        <span>Series 03 Matte</span><span class="text-blue-600">$22.00</span>
+                    </div>
+                    <div id="paypal-btn-3"></div>
+                </div>
+                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
+                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
+                        < img src="p4.png" alt="Series 04 Neon" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 04</div>
+                    </div>
+                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
+                        <span>Series 04 Neon</span><span class="text-blue-600">$18.00</span>
+                    </div>
+                    <div id="paypal-btn-4"></div>
+                </div>
+                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
+                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
+                        < img src="p5.png" alt="Series 05 Custom" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 05</div>
+                    </div>
+                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
+                        <span>Series 05 Custom</span><span class="text-blue-600">$30.00</span>
+                    </div>
+                    <div id="paypal-btn-5"></div>
+                </div>
+                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
+                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
+                        < img src="p6.png" alt="Series 06 Limited" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 06</div>
+                    </div>
+                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
+                        <span>Series 06 Limited</span><span class="text-blue-600">$25.00</span>
+                    </div>
+                    <div id="paypal-btn-6"></div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section id="story-sec" class="page-section py-24 px-6">
+    <section id="story-sec" class="page-section py-24 px-8 bg-white">
         <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-4xl font-black italic tracking-tighter uppercase mb-10" data-i18n="story_title">Our Origins</h2>
-            <div class="text-gray-600 space-y-6 leading-loose font-medium text-lg text-justify md:text-center" data-i18n="story_content">
-                <p>SOULMADE was born in Nanchang with a singular vision: to empower creators. We recycle and refine brilliant student designs, transforming them into premium UV DTF stickers that meet international standards.</p >
-                <p>By handling our own manufacturing and quality control locally, we ensure that every piece of art that leaves our studio is crafted with soul. We are bridging the gap between local artistry and the global market.</p >
+            <h2 class="text-4xl font-black italic uppercase tracking-tighter mb-10" data-i18n="story_t">Our Origins</h2>
+            <div id="story-content" class="text-gray-600 space-y-6 leading-loose font-medium text-lg text-justify md:text-center" data-i18n="story_c">
+                <p>SOULMADE was born in Nanchang with a singular vision: to empower creators. We recycle and refine brilliant student designs, transforming them into premium UV transfer stickers that meet international standards.</p >
+                <p>By handling our own manufacturing and quality control locally, we ensure that every piece of art that leaves our studio is crafted with soul. We are bridging the gap between local campus artistry and the global market.</p >
             </div>
         </div>
     </section>
 
-    <footer class="bg-black text-white py-20 px-6 mt-10">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-xs font-bold uppercase tracking-widest text-gray-400">
-            <div class="space-y-4">
+    <footer class="bg-black text-white py-24 px-10 mt-32 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+            <div class="col-span-1 md:col-span-2 space-y-4">
                 <div class="text-3xl font-black italic text-white tracking-tighter">SOULMADE</div>
-                <p class="leading-relaxed normal-case tracking-normal text-gray-500 max-w-xs" data-i18n="footer_desc">Independent studio based in Nanchang. Designing premium UV wraps for the world.</p >
+                <p class="leading-relaxed normal-case tracking-normal max-w-sm" data-i18n="foot_d">Handcrafted excellence. Born in Nanchang, China, shipped worldwide.</p >
+                <div class="pt-4 flex space-x-6">
+                    <i class="fab fa-cc-paypal fa-2x text-gray-800"></i>
+                    <i class="fab fa-cc-visa fa-2x text-gray-800"></i>
+                </div>
             </div>
-            <div class="space-y-4 flex flex-col items-start">
+            <div class="flex flex-col space-y-4 items-start PolicyList">
                 <h4 class="text-white mb-2 tracking-[0.3em]">Support</h4>
-                <button onclick="openModal('shipping')" class="hover:text-white transition" data-i18n="nav_shipping">Shipping Info</button>
-                <button onclick="openModal('refund')" class="hover:text-white transition" data-i18n="nav_refund">Returns Policy</button>
-                <button onclick="openModal('privacy')" class="hover:text-white transition" data-i18n="nav_privacy">Privacy Policy</button>
+                <button onclick="openModal('shipping')" class="text-left hover:text-white transition" data-i18n="nav_shipping">Shipping Policy</button>
+                <button onclick="openModal('refund')" class="text-left hover:text-white transition" data-i18n="nav_refund">Return & Refund</button>
+                <button onclick="openModal('privacy')" class="text-left hover:text-white transition" data-i18n="nav_privacy">Privacy Policy</button>
             </div>
             <div class="space-y-4">
                 <h4 class="text-white mb-2 tracking-[0.3em]">Contact</h4>
-                <p class="normal-case tracking-normal">business@521danyoo.dpdns.org</p >
-                <p class="mt-4">Nanchang, China</p >
-                <div class="pt-4 flex space-x-3 text-2xl text-gray-600">
-                    <i class="fab fa-cc-paypal"></i>
-                    <i class="fab fa-cc-visa"></i>
-                </div>
+                <p class="normal-case tracking-normal hover:text-white cursor-pointer">business@521danyoo.dpdns.org</p >
+                <p class="mt-4">Nanchang, CN</p >
             </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-16 pt-8 border-t border-gray-800 text-center text-[10px] text-gray-700">
+            &copy; 2026 SOULMADE Studio. All rights reserved. Direct from South China.
         </div>
     </footer>
 
     <div id="policyModal" class="modal-overlay" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <button onclick="closeModal()" class="absolute top-6 right-6 text-2xl text-gray-400 hover:text-black"><i class="fas fa-times"></i></button>
-            <h3 id="modalTitle" class="text-2xl font-black italic mb-6 uppercase tracking-tighter text-black border-b pb-4"></h3>
-            <div id="modalBody" class="text-gray-600 font-medium leading-relaxed text-sm"></div>
+            <button onclick="closeModal()" class="absolute top-6 right-8 text-2xl text-gray-400 hover:text-black transition"><i class="fas fa-times"></i></button>
+            <h3 id="modalTitle" class="text-3xl font-black italic mb-8 uppercase tracking-tighter text-black border-b pb-4"></h3>
+            <div id="modalBody" class="space-y-6 text-gray-600 font-medium leading-relaxed text-sm"></div>
         </div>
     </div>
 
     <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
     <script>
-        // --- 1. 精准匹配你 GitHub 里的图片格式 ---
-        const products = [
-            { id: 1, name: "Series 01 Premium", price: "19.90", file: "p1.jpg" },
-            { id: 2, name: "Series 02 Gloss", price: "24.90", file: "p2.png" },
-            { id: 3, name: "Series 03 Matte", price: "22.00", file: "p3.png" },
-            { id: 4, name: "Series 04 Neon", price: "18.00", file: "p4.png" },
-            { id: 5, name: "Series 05 Custom", price: "30.00", file: "p5.jpg" },
-            { id: 6, name: "Series 06 Limited", price: "25.00", file: "p6.jpg" }
-        ];
-
-        const dict = {
+        const dictionary = {
             en: {
-                nav_home: "Home", nav_shop: "Shop", nav_story: "Story",
-                hero_title: "Create Your Soul.", hero_desc: "Premium UV DTF wraps & stickers. Connecting local artistry to the global canvas.", hero_btn: "Explore Drops",
-                shop_title: "The Drops", shop_sub: "Premium Goods / Limited Supply",
-                story_title: "Our Origins", 
-                story_content: "<p>SOULMADE was born in Nanchang with a singular vision: to empower creators. We recycle and refine brilliant student designs, transforming them into premium UV DTF stickers.</p ><p>We are bridging the gap between local artistry and the global market, ensuring every piece is crafted with soul.</p >",
-                footer_desc: "Independent studio based in Nanchang. Designing premium UV wraps for the world.",
-                nav_shipping: "Shipping Info", nav_refund: "Returns Policy", nav_privacy: "Privacy Policy",
-                modal_ship_t: "Logistics", modal_ship_c: "All orders are processed in Nanchang within 1-3 days.<br><br>• NA/EU: 7-12 days<br>• Global: 12-20 days<br><br>Shipped via International E-packet with tracking.",
-                modal_ref_t: "Returns", modal_ref_c: "If wraps arrive damaged, contact us within 48 hours for a free replacement.<br><br>Unused items can be returned within 30 days.",
-                modal_priv_t: "Privacy & Pay", modal_priv_c: "We process payments via PayPal's secure gateway. Your financial data is never stored locally on our servers."
+                hero_t: "Soul Made.", hero_d: "Premium UV DTF wraps & stickers. Connecting local artistry to the global canvas.", hero_b: "Explore Drops", shop_t: "The Drops",
+                story_t: "Our Origins", story_c: "<p>SOULMADE was born in Nanchang with a singular vision: to empower creators. We refine brilliant student designs, transforming them into premium UV transfer stickers.</p ><p>We are bridging the gap between local campus artistry and the global market, ensuring every piece of art that leaves our studio is crafted with soul. Passionate, independent, and direct from Nanchang.</p >",
+                foot_d: "Handcrafted excellence. Born in Nanchang, China, shipped worldwide.",
+                nav_shipping: "Shipping Info", nav_refund: "Return & Refund", nav_privacy: "Privacy Policy",
+                mod_ship_t: "Logistics Overview", 
+                mod_ship_c: "All orders are processed and shipped directly from our Nanchang studio via tracked International E-packet service.<br><br><b>Estimated Delivery Times:</b><br>• North America & Europe: 7-12 business days<br>• Worldwide: 12-20 days<br><br>Tracking information will be provided via email upon dispatch.",
+                mod_ref_t: "售后政策说明",
+                mod_ref_c: "保持原样未使用的商品，支持 30 天无理由退货。<br><br>如遇运输损坏，请在签收后 48 小时内提供照片联系我们进行免费补发。",
+                mod_priv_t: "Data Privacy", mod_priv_c: "We utilize PayPal's encrypted gateway for all transaction processing. We do not store, handle, or have access to your credit card information. Your personal details are strictly used for order fulfillment."
             },
             zh: {
-                nav_home: "首页", nav_shop: "商店", nav_story: "品牌故事",
-                hero_title: "灵魂制造.", hero_desc: "高品质 UV 转印贴与定制膜。让南昌本土设计走向全球画布。", hero_btn: "探索系列",
-                shop_title: "最新系列", shop_sub: "高端质感 / 限量发售",
-                story_title: "品牌起源",
-                story_content: "<p>SOULMADE 诞生于南昌，我们的愿景纯粹而坚定：为创作者赋能。我们回收并优化优秀的校园设计，将其转化为符合国际标准的高品质 UV 转印贴。</p ><p>我们致力于打破界限，让本土艺术与全球市场紧密连接，确保发出的每一件艺术品都注入了灵魂。</p >",
-                footer_desc: "位于中国南昌的独立工作室。为全球创作者设计和制造高端 UV 转印产品。",
-                nav_shipping: "物流说明", nav_refund: "退换货政策", nav_privacy: "隐私政策",
-                modal_ship_t: "全球物流说明", modal_ship_c: "订单将在 1-3 个工作日内从南昌工作室发出。<br><br>• 欧美地区：7-12 天<br>• 其他地区：12-20 天<br><br>通过国际快邮发送，提供全程追踪。",
-                modal_ref_t: "退换货与售后", modal_ref_c: "如遇运输损坏，请在 48 小时内联系我们免费补发。<br><br>未使用商品支持 30 天无理由退换。",
-                modal_priv_t: "隐私与支付安全", modal_priv_c: "我们通过 PayPal 加密处理付款。我们绝不会在本地存储您的信用卡等财务信息。"
+                hero_t: "灵魂制造.", hero_d: "来自南昌校园创作者的高端 UV 转印贴与定制膜。连接本土艺术与全球画布。", hero_btn: "探索系列", shop_t: "最新系列",
+                story_t: "品牌起源", story_c: "<p>SOULMADE 诞生于南昌，我们的愿景纯粹而坚定：为创作者赋能。我们回收并优化优秀的校园设计，将其转化为符合国际标准的高品质 UV 转印贴。</p ><p>我们致力于打破界限，让本土艺术与全球市场紧密连接，确保发出的每一件艺术品都注入了灵魂。独立、热忱，产自南昌。</p >",
+                foot_d: "精工细作。始于南昌，发往全球。",
+                nav_shipping: "物流说明", nav_refund: "退换货说明", nav_privacy: "隐私政策",
+                mod_ship_t: "全球物流说明", 
+                mod_ship_c: "所有订单从南昌工作室直接处理并发出，采用带追踪单号的国际快邮服务。<br><br><b>预计送达时间：</b><br>• 欧美地区：7-12 个工作日<br>• 全球其他地区：12-20 天<br><br>发货后将通过邮件提供物流单号。",
+                mod_ref_t: "退换货保障",
+                mod_ref_c: "保持原样未使用的商品，支持 30 天无理由退货。<br><br>如遇运输损坏，请拍照联系 business@521danyoo.dpdns.org 进行免费补发。",
+                mod_priv_t: "隐私与支付安全", mod_priv_c: "所有支付均通过 PayPal 加密网关安全处理。我们不会收集或存储您的任何信用卡财务信息。您的个人信息仅用于订单配送。"
             }
         };
 
-        let currentLang = 'en';
+        const prices = { "1": "19.90", "2": "24.90", "3": "22.00", "4": "18.00", "5": "30.00", "6": "25.00" };
+        let curLang = 'en';
 
-        function initStore() {
-            const grid = document.getElementById('product-grid');
-            let content = '';
-            
-            products.forEach(p => {
-                content += `
-                <div class="bg-white p-4 rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300">
-                    <div class="product-img-wrapper mb-6">
-                        < img src="${p.file}" alt="${p.name}">
-                    </div>
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-black italic uppercase tracking-tighter text-lg">${p.name}</h3>
-                        <span class="font-black text-xl text-blue-600">$${p.price}</span>
-                    </div>
-                    <div id="paypal-container-${p.id}"></div>
-                </div>`;
-            });
-            grid.innerHTML = content;
-
-            setTimeout(() => {
-                products.forEach(p => {
-                    if(window.paypal) {
-                        paypal.Buttons({
-                            style: { layout: 'vertical', color: 'black', shape: 'rect', height: 40 },
-                            createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: p.price } }] })
-                        }).render(`#paypal-container-${p.id}`);
-                    }
-                });
-            }, 300);
+        // 核心防翻译破坏逻辑 (纯硬编码替换)
+        function changeLang(val) {
+            curLang = val;
+            document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = dictionary[curLang][el.getAttribute('data-i18n')]; });
+            showToast(curLang === 'en' ? 'Switched to English' : '已切换至简体中文');
         }
 
-        function switchPage(page) {
-            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(page + '-sec').classList.add('active');
-            window.scrollTo(0, 0);
+        function navigate(id) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id + '-sec').classList.add('active');
+            window.scrollTo(0,0);
         }
 
-        function changeLang(lang) {
-            currentLang = lang;
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                el.innerHTML = dict[lang][el.getAttribute('data-i18n')];
-            });
-        }
-
+        // 弹窗与政策政策引用
         function openModal(type) {
-            const prefix = type === 'shipping' ? 'modal_ship' : (type === 'refund' ? 'modal_ref' : 'modal_priv');
-            document.getElementById('modalTitle').innerHTML = dict[currentLang][prefix + '_t'];
-            document.getElementById('modalBody').innerHTML = dict[currentLang][prefix + '_c'];
+            const prefix = type === 'shipping' ? 'mod_ship' : (type === 'refund' ? 'mod_ref' : 'mod_priv');
+            document.getElementById('modalTitle').innerHTML = dictionary[curLang][prefix + '_t'];
+            document.getElementById('modalBody').innerHTML = dictionary[curLang][prefix + '_c'];
             document.getElementById('policyModal').style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
 
-        function closeModal() {
-            document.getElementById('policyModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+        function closeModal() { document.getElementById('policyModal').style.display = 'none'; document.body.style.overflow = 'auto'; }
 
+        function showToast(msg) { console.log(msg); } // placeholder function
+
+        // PayPal 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            initStore();
-            changeLang('en');
+            Object.keys(prices).forEach(id => {
+                if(window.paypal) {
+                    paypal.Buttons({
+                        style: { layout: 'vertical', color: 'black', shape: 'rect', height: 40 },
+                        createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: prices[id] } }] })
+                    }).render('#paypal-btn-' + id);
+                }
+            });
+            changeLang('en'); // 初始化为英文
         });
     </script>
 </body>
