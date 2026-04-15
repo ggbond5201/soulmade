@@ -177,7 +177,7 @@
                 <!-- Product 1 -->
                 <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
                     <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="p1.png" alt="Series 01 Premium" class="w-full h-full object-cover" loading="lazy">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p1.png" alt="Series 01 Premium" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 01</div>
                     </div>
                     <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
@@ -189,7 +189,7 @@
                 <!-- Product 2 -->
                 <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
                     <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="p2.png" alt="Series 02 Gloss" class="w-full h-full object-cover" loading="lazy">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p2.png" alt="Series 02 Gloss" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 02</div>
                     </div>
                     <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
@@ -201,7 +201,7 @@
                 <!-- Product 3 -->
                 <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
                     <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="p3.png" alt="Series 03 Matte" class="w-full h-full object-cover" loading="lazy">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p3.png" alt="Series 03 Matte" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 03</div>
                     </div>
                     <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
@@ -213,7 +213,7 @@
                 <!-- Product 4 -->
                 <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
                     <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="p4.png" alt="Series 04 Neon" class="w-full h-full object-cover" loading="lazy">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p4.png" alt="Series 04 Neon" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 04</div>
                     </div>
                     <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
@@ -225,7 +225,7 @@
                 <!-- Product 5 -->
                 <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
                     <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="p5.png" alt="Series 05 Custom" class="w-full h-full object-cover" loading="lazy">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p5.png" alt="Series 05 Custom" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 05</div>
                     </div>
                     <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
@@ -237,7 +237,7 @@
                 <!-- Product 6 -->
                 <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
                     <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="p6.png" alt="Series 06 Limited" class="w-full h-full object-cover" loading="lazy">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p6.png" alt="Series 06 Limited" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 06</div>
                     </div>
                     <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
@@ -512,9 +512,6 @@
 
         // ===== UTILITY FUNCTIONS =====
 
-        /**
-         * Show toast notification
-         */
         function showToast(message, duration = 3000) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -528,9 +525,6 @@
             }, duration);
         }
 
-        /**
-         * Copy text to clipboard
-         */
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 showToast(currentLang === 'en' ? 'Copied to clipboard!' : '已复制到剪贴板！');
@@ -539,17 +533,11 @@
             });
         }
 
-        /**
-         * Toggle mobile menu
-         */
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('active');
         }
 
-        /**
-         * Change language
-         */
         function changeLang(lang) {
             currentLang = lang;
             document.documentElement.lang = lang;
@@ -562,9 +550,6 @@
             showToast(lang === 'en' ? 'Switched to English' : '已切换至简体中文');
         }
 
-        /**
-         * Navigate between pages
-         */
         function navigate(pageId) {
             document.querySelectorAll('.page-section').forEach(section => {
                 section.classList.remove('active');
@@ -576,9 +561,6 @@
             }
         }
 
-        /**
-         * Open policy modal
-         */
         function openModal(type) {
             const prefix = {
                 'shipping': 'mod_ship',
@@ -595,17 +577,11 @@
             document.body.style.overflow = 'hidden';
         }
 
-        /**
-         * Close policy modal
-         */
         function closeModal() {
             document.getElementById('policyModal').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
 
-        /**
-         * Close modal when clicking outside
-         */
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeModal();
@@ -615,9 +591,6 @@
 
         // ===== PAYPAL INTEGRATION =====
 
-        /**
-         * Load PayPal SDK dynamically
-         */
         function loadPayPalSDK() {
             return new Promise((resolve, reject) => {
                 if (PAYPAL_CLIENT_ID === 'YOUR_PAYPAL_CLIENT_ID') {
@@ -634,9 +607,6 @@
             });
         }
 
-        /**
-         * Setup PayPal buttons for all products
-         */
         function setupPayPalButtons() {
             if (!window.paypal) {
                 console.error('PayPal SDK not loaded');
@@ -697,10 +667,8 @@
         // ===== INITIALIZATION =====
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Set initial language
             changeLang('en');
 
-            // Load PayPal SDK
             loadPayPalSDK()
                 .then(() => {
                     setupPayPalButtons();
@@ -711,7 +679,6 @@
                 });
         });
 
-        // Close mobile menu when clicking outside
         document.addEventListener('click', (e) => {
             const mobileMenu = document.getElementById('mobile-menu');
             const menuBtn = document.getElementById('mobile-menu-btn');
