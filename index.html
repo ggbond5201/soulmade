@@ -8,11 +8,25 @@
     <meta property="og:description" content="Premium UV DTF wraps & stickers from Nanchang, China">
     <meta property="og:type" content="website">
     <title>SOULMADE | Premium UV Art Studio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        html { scroll-behavior: smooth; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html { 
+            scroll-behavior: smooth; 
+        }
+
+        body {
+            background: #fafafa;
+            color: #111827;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+        }
+
         .page-section { 
             display: none; 
             opacity: 0; 
@@ -22,40 +36,502 @@
             display: block; 
             opacity: 1; 
         }
-        
-        .modal-overlay { 
-            display: none; 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.8); 
-            backdrop-filter: blur(8px); 
-            z-index: 100; 
-        }
-        
-        .modal-content { 
-            background: white; 
-            margin: 10vh auto; 
-            padding: 2.5rem; 
-            border-radius: 1.5rem; 
-            max-width: 600px; 
-            position: relative; 
-            max-height: 80vh; 
-            overflow-y: auto; 
-        }
-        
-        .product-card img { 
-            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); 
-        }
-        
-        .product-card:hover img { 
-            transform: scale(1.05); 
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid #f3f4f6;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Toast Notification Styles */
+        .logo {
+            font-size: 1.875rem;
+            font-weight: 900;
+            font-style: italic;
+            cursor: pointer;
+            letter-spacing: -0.05em;
+            transition: opacity 0.3s;
+        }
+
+        .logo:hover {
+            opacity: 0.7;
+        }
+
+        .nav-desktop {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #9ca3af;
+        }
+
+        .nav-desktop a {
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-desktop a:hover {
+            color: #000;
+        }
+
+        .lang-selector {
+            border-left: 1px solid #e5e7eb;
+            padding-left: 2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .lang-selector select {
+            background: #f9fafb;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            color: #000;
+            outline: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        #mobile-menu {
+            display: none;
+        }
+
+        #mobile-menu.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .nav-desktop {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            #mobile-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border-bottom: 1px solid #f3f4f6;
+                padding: 1.5rem;
+                display: none;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            #mobile-menu.active {
+                display: flex;
+            }
+        }
+
+        .hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            background: #f9fafb;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            font-style: italic;
+            margin-bottom: 2.5rem;
+            line-height: 0.8;
+            letter-spacing: -0.02em;
+        }
+
+        @media (min-width: 768px) {
+            .hero h1 {
+                font-size: 5.625rem;
+            }
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: #9ca3af;
+            max-width: 28rem;
+            margin-bottom: 3rem;
+            font-weight: 500;
+        }
+
+        .hero button {
+            background: #000;
+            color: white;
+            padding: 1.25rem 3rem;
+            border-radius: 9999px;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .hero button:hover {
+            background: #1f2937;
+            transform: scale(1.05);
+        }
+
+        .shop-section {
+            padding: 8rem 2rem;
+        }
+
+        .shop-container {
+            max-width: 80rem;
+            margin: 0 auto;
+        }
+
+        .shop-header {
+            margin-bottom: 6rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .shop-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-end;
+            }
+        }
+
+        .shop-header h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        .shop-header p {
+            color: #9ca3af;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 3rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .product-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 1.875rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image-container {
+            aspect-ratio: 4 / 5;
+            background: #f9fafb;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            position: relative;
+            border: 1px solid #f3f4f6;
+        }
+
+        .product-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .drop-label {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.625rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .product-info {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+            padding: 0 0.25rem;
+        }
+
+        .product-price {
+            color: #2563eb;
+        }
+
+        .paypal-btn {
+            min-height: 50px;
+        }
+
+        .story-section {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .story-container {
+            max-width: 48rem;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .story-section h2 {
+            font-size: 2.25rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            margin-bottom: 2.5rem;
+        }
+
+        .story-content {
+            color: #4b5563;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            font-weight: 500;
+            font-size: 1.125rem;
+            line-height: 1.75;
+        }
+
+        footer {
+            background: #000;
+            color: white;
+            padding: 6rem 2.5rem;
+            margin-top: 8rem;
+            border-top: 1px solid #1f2937;
+        }
+
+        .footer-container {
+            max-width: 80rem;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .footer-section {
+            font-size: 0.625rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #9ca3af;
+        }
+
+        .footer-brand {
+            grid-column: span 1;
+        }
+
+        @media (min-width: 768px) {
+            .footer-brand {
+                grid-column: span 2;
+            }
+        }
+
+        .footer-brand h3 {
+            font-size: 1.875rem;
+            font-weight: 900;
+            font-style: italic;
+            color: white;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            text-transform: none;
+            letter-spacing: normal;
+            font-size: 1rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+
+        .payment-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.5rem;
+            color: #374151;
+        }
+
+        .footer-section h4 {
+            color: white;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.3em;
+        }
+
+        .footer-section button,
+        .footer-section p {
+            display: block;
+            text-align: left;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            font-size: 0.75rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section button:hover,
+        .footer-section p:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 2rem;
+            text-align: center;
+            color: #4b5563;
+            font-size: 0.625rem;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            max-width: 600px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+            width: 90%;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            font-size: 1.5rem;
+            color: #9ca3af;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #000;
+        }
+
+        .modal-title {
+            font-size: 1.875rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1rem;
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            color: #4b5563;
+            font-weight: 500;
+            line-height: 1.625;
+            font-size: 0.875rem;
+        }
+
+        .modal-body strong {
+            color: #000;
+        }
+
+        .modal-body ul {
+            margin-left: 1.25rem;
+            margin-top: 0.625rem;
+        }
+
+        .modal-body li {
+            list-style-type: disc;
+            margin-bottom: 0.5rem;
+        }
+
         .toast-container {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 1.875rem;
+            right: 1.875rem;
             z-index: 200;
         }
 
@@ -64,7 +540,7 @@
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 0.5rem;
-            margin-bottom: 10px;
+            margin-bottom: 0.625rem;
             animation: slideIn 0.3s ease-in-out;
             max-width: 300px;
         }
@@ -94,58 +570,39 @@
         .toast.hide {
             animation: slideOut 0.3s ease-in-out forwards;
         }
-
-        /* Mobile Menu */
-        .mobile-menu {
-            display: none;
-        }
-
-        .mobile-menu.active {
-            display: block;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu-toggle {
-                display: block;
-            }
-        }
     </style>
 </head>
-<body class="bg-[#fafafa] text-gray-900 antialiased font-sans">
+<body>
 
-    <!-- Navigation Bar -->
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100 px-6 py-5 flex justify-between items-center transition-all">
-        <div onclick="navigate('home')" class="text-3xl font-black italic cursor-pointer tracking-tighter hover:opacity-70 transition">SOULMADE</div>
+    <nav>
+        <div class="logo" onclick="navigate('home')">SOULMADE</div>
         
-        <!-- Desktop Navigation -->
-        <div class="hidden md:flex items-center space-x-12 text-[11px] font-bold uppercase tracking-widest text-gray-500">
-            <a onclick="navigate('home')" class="cursor-pointer hover:text-black transition">Home</a>
-            <a onclick="navigate('shop')" class="cursor-pointer hover:text-black transition">Shop</a>
-            <a onclick="navigate('story')" class="cursor-pointer hover:text-black transition">Story</a>
-            <div class="border-l border-gray-200 pl-8 flex items-center">
-                <i class="fas fa-globe mr-2 text-gray-300"></i>
-                <select id="lang-select" onchange="changeLang(this.value)" class="bg-gray-50 px-3 py-1 rounded-full text-black outline-none cursor-pointer text-xs">
+        <div class="nav-desktop">
+            <a onclick="navigate('home')">Home</a>
+            <a onclick="navigate('shop')">Shop</a>
+            <a onclick="navigate('story')">Story</a>
+            <div class="lang-selector">
+                <i class="fas fa-globe" style="margin-right: 0.5rem; color: #d1d5db;"></i>
+                <select id="lang-select" onchange="changeLang(this.value)">
                     <option value="en">ENGLISH</option>
                     <option value="zh">简体中文</option>
                 </select>
             </div>
         </div>
 
-        <!-- Mobile Menu Toggle -->
-        <button id="mobile-menu-btn" class="md:hidden text-2xl" onclick="toggleMobileMenu()">
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
             <i class="fas fa-bars"></i>
         </button>
     </nav>
 
-    <!-- Mobile Navigation Menu -->
-    <div id="mobile-menu" class="mobile-menu md:hidden bg-white border-b border-gray-100 px-6 py-4 space-y-4">
-        <a onclick="navigate('home'); toggleMobileMenu();" class="block py-2 cursor-pointer hover:text-gray-500 transition">Home</a>
-        <a onclick="navigate('shop'); toggleMobileMenu();" class="block py-2 cursor-pointer hover:text-gray-500 transition">Shop</a>
-        <a onclick="navigate('story'); toggleMobileMenu();" class="block py-2 cursor-pointer hover:text-gray-500 transition">Story</a>
-        <div class="pt-4 border-t border-gray-200">
-            <label class="flex items-center space-x-2">
-                <i class="fas fa-globe text-gray-400"></i>
-                <select onchange="changeLang(this.value)" class="bg-gray-50 px-3 py-1 rounded-full text-black outline-none cursor-pointer text-xs">
+    <div id="mobile-menu">
+        <a onclick="navigate('home'); toggleMobileMenu();">Home</a>
+        <a onclick="navigate('shop'); toggleMobileMenu();">Shop</a>
+        <a onclick="navigate('story'); toggleMobileMenu();">Story</a>
+        <div style="border-top: 1px solid #e5e7eb; padding-top: 1rem; margin-top: 1rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-globe" style="color: #9ca3af;"></i>
+                <select onchange="changeLang(this.value)">
                     <option value="en">ENGLISH</option>
                     <option value="zh">简体中文</option>
                 </select>
@@ -153,107 +610,95 @@
         </div>
     </div>
 
-    <!-- Hero Section -->
     <main id="home-sec" class="page-section active">
-        <section class="h-[80vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden bg-gray-50">
-            <div class="absolute inset-0 bg-gradient-to-b from-gray-100 to-transparent -z-10"></div>
-            <h1 class="text-7xl md:text-9xl font-black mb-10 italic leading-[0.8] tracking-tighter" data-i18n="hero_t">Soul Made.</h1>
-            <p class="text-lg text-gray-500 max-w-sm mb-12 font-medium leading-relaxed" data-i18n="hero_d">Premium UV DTF wraps & stickers. Connecting local artistry to the global canvas.</p>
-            <button onclick="navigate('shop')" class="bg-black text-white px-12 py-5 rounded-full font-black uppercase text-xs tracking-[0.2em] hover:bg-gray-800 transition shadow-xl transform hover:scale-105">
-                <span data-i18n="hero_b">Explore Drops</span>
-            </button>
+        <section class="hero">
+            <h1 data-i18n="hero_t">Soul Made.</h1>
+            <p data-i18n="hero_d">Premium UV DTF wraps & stickers. Connecting local artistry to the global canvas.</p>
+            <button onclick="navigate('shop')" data-i18n="hero_b">Explore Drops</button>
         </section>
     </main>
 
-    <!-- Shop Section -->
-    <section id="shop-sec" class="page-section py-32 px-8">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-24 flex flex-col md:flex-row justify-between md:items-end border-b-2 border-black pb-4">
-                <h2 class="text-5xl font-black italic tracking-tighter uppercase" data-i18n="shop_t">The Drops</h2>
-                <p class="text-gray-400 font-bold text-xs tracking-widest uppercase mt-4 md:mt-0">Nanchang CN / Worldwide Shipping</p>
+    <section id="shop-sec" class="page-section shop-section">
+        <div class="shop-container">
+            <div class="shop-header">
+                <h2 data-i18n="shop_t">The Drops</h2>
+                <p>Nanchang CN / Worldwide Shipping</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
-                <!-- Product 1 -->
-                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
-                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p1.png" alt="Series 01 Premium" class="w-full h-full object-cover" loading="lazy">
-                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 01</div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p1.png" alt="Series 01 Premium" loading="lazy">
+                        <div class="drop-label">DROP 01</div>
                     </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 01 Premium</span><span class="text-blue-600">$19.90</span>
+                    <div class="product-info">
+                        <span>Series 01 Premium</span><span class="product-price">$19.90</span>
                     </div>
-                    <div id="paypal-btn-1" class="min-h-[50px]"></div>
+                    <div id="paypal-btn-1" class="paypal-btn"></div>
                 </div>
 
-                <!-- Product 2 -->
-                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
-                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p2.png" alt="Series 02 Gloss" class="w-full h-full object-cover" loading="lazy">
-                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 02</div>
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p2.png" alt="Series 02 Gloss" loading="lazy">
+                        <div class="drop-label">DROP 02</div>
                     </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 02 Gloss</span><span class="text-blue-600">$24.90</span>
+                    <div class="product-info">
+                        <span>Series 02 Gloss</span><span class="product-price">$24.90</span>
                     </div>
-                    <div id="paypal-btn-2" class="min-h-[50px]"></div>
+                    <div id="paypal-btn-2" class="paypal-btn"></div>
                 </div>
 
-                <!-- Product 3 -->
-                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
-                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p3.png" alt="Series 03 Matte" class="w-full h-full object-cover" loading="lazy">
-                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 03</div>
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p3.png" alt="Series 03 Matte" loading="lazy">
+                        <div class="drop-label">DROP 03</div>
                     </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 03 Matte</span><span class="text-blue-600">$22.00</span>
+                    <div class="product-info">
+                        <span>Series 03 Matte</span><span class="product-price">$22.00</span>
                     </div>
-                    <div id="paypal-btn-3" class="min-h-[50px]"></div>
+                    <div id="paypal-btn-3" class="paypal-btn"></div>
                 </div>
 
-                <!-- Product 4 -->
-                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
-                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p4.png" alt="Series 04 Neon" class="w-full h-full object-cover" loading="lazy">
-                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 04</div>
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p4.png" alt="Series 04 Neon" loading="lazy">
+                        <div class="drop-label">DROP 04</div>
                     </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 04 Neon</span><span class="text-blue-600">$18.00</span>
+                    <div class="product-info">
+                        <span>Series 04 Neon</span><span class="product-price">$18.00</span>
                     </div>
-                    <div id="paypal-btn-4" class="min-h-[50px]"></div>
+                    <div id="paypal-btn-4" class="paypal-btn"></div>
                 </div>
 
-                <!-- Product 5 -->
-                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
-                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p5.png" alt="Series 05 Custom" class="w-full h-full object-cover" loading="lazy">
-                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 05</div>
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p5.png" alt="Series 05 Custom" loading="lazy">
+                        <div class="drop-label">DROP 05</div>
                     </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 05 Custom</span><span class="text-blue-600">$30.00</span>
+                    <div class="product-info">
+                        <span>Series 05 Custom</span><span class="product-price">$30.00</span>
                     </div>
-                    <div id="paypal-btn-5" class="min-h-[50px]"></div>
+                    <div id="paypal-btn-5" class="paypal-btn"></div>
                 </div>
 
-                <!-- Product 6 -->
-                <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300">
-                    <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8 relative border border-gray-100">
-                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p6.png" alt="Series 06 Limited" class="w-full h-full object-cover" loading="lazy">
-                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase">DROP 06</div>
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="https://raw.githubusercontent.com/ggbond5201/soulmade/main/p6.png" alt="Series 06 Limited" loading="lazy">
+                        <div class="drop-label">DROP 06</div>
                     </div>
-                    <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                        <span>Series 06 Limited</span><span class="text-blue-600">$25.00</span>
+                    <div class="product-info">
+                        <span>Series 06 Limited</span><span class="product-price">$25.00</span>
                     </div>
-                    <div id="paypal-btn-6" class="min-h-[50px]"></div>
+                    <div id="paypal-btn-6" class="paypal-btn"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Story Section -->
-    <section id="story-sec" class="page-section py-24 px-8 bg-white">
-        <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-4xl font-black italic uppercase tracking-tighter mb-10" data-i18n="story_t">Our Origins</h2>
-            <div class="text-gray-600 space-y-6 leading-loose font-medium text-lg text-justify md:text-center">
+    <section id="story-sec" class="page-section story-section">
+        <div class="story-container">
+            <h2 data-i18n="story_t">Our Origins</h2>
+            <div class="story-content">
                 <p data-i18n="story_c1">SOULMADE was born in Nanchang with a singular vision: to empower creators. We refine brilliant student designs from local art communities, transforming them into premium UV transfer stickers that blend affordability with artistic excellence. Every design tells a story—a piece of soul captured in premium material.</p>
                 <p data-i18n="story_c2">By handling our own manufacturing and quality control locally, we ensure that every piece of art that leaves our studio is crafted with soul. We are bridging the gap between local creatives and the global marketplace, proving that great art doesn't need corporate middlemen. Your purchase directly supports emerging student artists in South China.</p>
                 <p data-i18n="story_c3">From university studios to your collection—this is what SOULMADE stands for: authenticity, quality, and the belief that art has power when it connects directly with those who appreciate it.</p>
@@ -261,60 +706,52 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-black text-white py-24 px-10 mt-32 border-t border-gray-800">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
-            <!-- Brand Section -->
-            <div class="col-span-1 md:col-span-2 space-y-4">
-                <div class="text-3xl font-black italic text-white tracking-tighter">SOULMADE</div>
-                <p class="leading-relaxed normal-case tracking-normal max-w-sm text-gray-400" data-i18n="foot_d">Handcrafted excellence. Born in Nanchang, China, shipped worldwide.</p>
-                <div class="pt-4 flex space-x-6">
-                    <i class="fab fa-cc-paypal fa-2x text-gray-700"></i>
-                    <i class="fab fa-cc-visa fa-2x text-gray-700"></i>
-                    <i class="fab fa-cc-mastercard fa-2x text-gray-700"></i>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section footer-brand">
+                    <h3>SOULMADE</h3>
+                    <p data-i18n="foot_d">Handcrafted excellence. Born in Nanchang, China, shipped worldwide.</p>
+                    <div class="payment-icons">
+                        <i class="fab fa-cc-paypal"></i>
+                        <i class="fab fa-cc-visa"></i>
+                        <i class="fab fa-cc-mastercard"></i>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4 data-i18n="support_heading">Support</h4>
+                    <button onclick="openModal('shipping')" data-i18n="nav_shipping">Shipping Policy</button>
+                    <button onclick="openModal('refund')" data-i18n="nav_refund">Return & Refund</button>
+                    <button onclick="openModal('privacy')" data-i18n="nav_privacy">Privacy Policy</button>
+                </div>
+
+                <div class="footer-section">
+                    <h4 data-i18n="contact_heading">Contact</h4>
+                    <p onclick="copyToClipboard('business@521danyoo.dpdns.org')" style="cursor: pointer;">business@521danyoo.dpdns.org</p>
+                    <p style="margin-top: 1rem;">Nanchang, China</p>
                 </div>
             </div>
 
-            <!-- Support Links -->
-            <div class="flex flex-col space-y-4 items-start">
-                <h4 class="text-white mb-2 tracking-[0.3em]" data-i18n="support_heading">Support</h4>
-                <button onclick="openModal('shipping')" class="text-left hover:text-white transition text-gray-400" data-i18n="nav_shipping">Shipping Policy</button>
-                <button onclick="openModal('refund')" class="text-left hover:text-white transition text-gray-400" data-i18n="nav_refund">Return & Refund</button>
-                <button onclick="openModal('privacy')" class="text-left hover:text-white transition text-gray-400" data-i18n="nav_privacy">Privacy Policy</button>
+            <div class="footer-bottom">
+                &copy; 2026 SOULMADE Studio. All rights reserved. Direct from South China.
             </div>
-
-            <!-- Contact Section -->
-            <div class="space-y-4">
-                <h4 class="text-white mb-2 tracking-[0.3em]" data-i18n="contact_heading">Contact</h4>
-                <p class="normal-case tracking-normal text-gray-400 hover:text-white cursor-pointer transition" onclick="copyToClipboard('business@521danyoo.dpdns.org')">
-                    business@521danyoo.dpdns.org
-                </p>
-                <p class="mt-4 text-gray-400">Nanchang, China</p>
-            </div>
-        </div>
-
-        <!-- Copyright -->
-        <div class="max-w-7xl mx-auto mt-16 pt-8 border-t border-gray-800 text-center text-[10px] text-gray-700">
-            &copy; 2026 SOULMADE Studio. All rights reserved. Direct from South China.
         </div>
     </footer>
 
-    <!-- Policy Modal -->
-    <div id="policyModal" class="modal-overlay" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button onclick="closeModal()" class="absolute top-6 right-8 text-2xl text-gray-400 hover:text-black transition">
+    <div id="policyModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
                 <i class="fas fa-times"></i>
             </button>
-            <h3 id="modalTitle" class="text-3xl font-black italic mb-8 uppercase tracking-tighter text-black border-b pb-4"></h3>
-            <div id="modalBody" class="space-y-6 text-gray-600 font-medium leading-relaxed text-sm prose prose-sm max-w-none"></div>
+            <h3 id="modalTitle" class="modal-title"></h3>
+            <div id="modalBody" class="modal-body"></div>
         </div>
     </div>
 
-    <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- PayPal SDK -->
-    <script src="https://www.paypal.com/sdk/js?client-id=ARuKS8w7mZe9emwJXCBYL_0FqRGEuXcNZX2XyiVkKzLAHdCwLMJR7Z9lK5WqZ9YJZy1yLqqDV0NxZfxQ"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AbuMjYH7JiVQw_fH7bPqGbV5LYJaH0L4MLnP_QzaX4e0iHh4wODvWz6U2p4Dx_Y4BkiNTJ8WzZkZAH-D"></script>
 
     <script>
         const prices = { 
@@ -328,185 +765,52 @@
 
         let currentLang = 'en';
 
-        // ===== MULTILINGUAL DICTIONARY =====
         const dictionary = {
             en: {
-                // Hero Section
                 hero_t: "Soul Made.",
                 hero_d: "Premium UV DTF wraps & stickers. Connecting local artistry to the global canvas.",
                 hero_b: "Explore Drops",
-                
-                // Shop Section
                 shop_t: "The Drops",
-                
-                // Story Section
                 story_t: "Our Origins",
                 story_c1: "SOULMADE was born in Nanchang with a singular vision: to empower creators. We refine brilliant student designs from local art communities, transforming them into premium UV transfer stickers that blend affordability with artistic excellence. Every design tells a story—a piece of soul captured in premium material.",
                 story_c2: "By handling our own manufacturing and quality control locally, we ensure that every piece of art that leaves our studio is crafted with soul. We are bridging the gap between local creatives and the global marketplace, proving that great art doesn't need corporate middlemen. Your purchase directly supports emerging student artists in South China.",
                 story_c3: "From university studios to your collection—this is what SOULMADE stands for: authenticity, quality, and the belief that art has power when it connects directly with those who appreciate it.",
-                
-                // Footer
                 foot_d: "Handcrafted excellence. Born in Nanchang, China, shipped worldwide.",
                 support_heading: "Support",
                 contact_heading: "Contact",
                 nav_shipping: "Shipping Policy",
                 nav_refund: "Return & Refund",
                 nav_privacy: "Privacy Policy",
-                
-                // Modal Titles
                 mod_ship_t: "Shipping Policy",
                 mod_ref_t: "Return & Refund Policy",
                 mod_priv_t: "Privacy Policy",
-                
-                // Modal Contents
-                mod_ship_c: `
-                    <p><strong>Global Shipping from Nanchang Studio</strong></p>
-                    <p>All orders are processed and shipped directly from our Nanchang studio via tracked International E-packet or DHL Express service.</p>
-                    
-                    <p><strong>Estimated Delivery Times:</strong></p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li>North America: 7-14 business days</li>
-                        <li>Europe: 8-15 business days</li>
-                        <li>Asia-Pacific: 5-12 business days</li>
-                        <li>Other regions: 10-20 business days</li>
-                    </ul>
-                    
-                    <p style="margin-top: 15px;"><strong>Shipping Costs:</strong></p>
-                    <p>Calculated at checkout based on location and weight. Free shipping available on orders over $50 to select regions.</p>
-                    
-                    <p style="margin-top: 15px;"><strong>Tracking Information:</strong></p>
-                    <p>All shipments include tracking numbers. You'll receive tracking details via email upon dispatch.</p>
-                `,
-                
-                mod_ref_c: `
-                    <p><strong>30-Day Money-Back Guarantee</strong></p>
-                    <p>We stand behind our products. If you're not completely satisfied, we offer a hassle-free return within 30 days of purchase.</p>
-                    
-                    <p style="margin-top: 15px;"><strong>Return Conditions:</strong></p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li>Items must be unopened and in original packaging</li>
-                        <li>Return shipping cost is covered by customer (unless our error)</li>
-                        <li>Full refund issued within 5 business days of return receipt</li>
-                    </ul>
-                    
-                    <p style="margin-top: 15px;"><strong>Damaged Items in Transit:</strong></p>
-                    <p>If your item arrives damaged, contact us within 48 hours with photos. We'll send a replacement free of charge or provide a full refund.</p>
-                    
-                    <p style="margin-top: 15px;"><strong>Contact for Returns:</strong></p>
-                    <p>Email: business@521danyoo.dpdns.org</p>
-                `,
-                
-                mod_priv_c: `
-                    <p><strong>Your Privacy Matters</strong></p>
-                    <p>SOULMADE is committed to protecting your personal data and privacy.</p>
-                    
-                    <p style="margin-top: 15px;"><strong>Data We Collect:</strong></p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li>Shipping address (for delivery)</li>
-                        <li>Email address (for order updates)</li>
-                        <li>Payment information (processed by PayPal only)</li>
-                    </ul>
-                    
-                    <p style="margin-top: 15px;"><strong>Data Security:</strong></p>
-                    <p>All payments are processed through PayPal's encrypted gateway. We do NOT store, handle, or have access to your credit card information. Your financial data is 100% secure.</p>
-                    
-                    <p style="margin-top: 15px;"><strong>Data Usage:</strong></p>
-                    <p>We only use your information for order fulfillment and customer service. We never sell or share your data with third parties.</p>
-                    
-                    <p style="margin-top: 15px;"><strong>Contact:</strong></p>
-                    <p>For privacy concerns, contact: business@521danyoo.dpdns.org</p>
-                `
+                mod_ship_c: `<p><strong>Global Shipping from Nanchang Studio</strong></p><p>All orders are processed and shipped directly from our Nanchang studio via tracked International E-packet or DHL Express service.</p><p><strong>Estimated Delivery Times:</strong></p><ul style="margin-left: 20px; margin-top: 10px;"><li>North America: 7-14 business days</li><li>Europe: 8-15 business days</li><li>Asia-Pacific: 5-12 business days</li><li>Other regions: 10-20 business days</li></ul><p style="margin-top: 15px;"><strong>Shipping Costs:</strong></p><p>Calculated at checkout based on location and weight. Free shipping available on orders over $50 to select regions.</p><p style="margin-top: 15px;"><strong>Tracking Information:</strong></p><p>All shipments include tracking numbers. You'll receive tracking details via email upon dispatch.</p>`,
+                mod_ref_c: `<p><strong>30-Day Money-Back Guarantee</strong></p><p>We stand behind our products. If you're not completely satisfied, we offer a hassle-free return within 30 days of purchase.</p><p style="margin-top: 15px;"><strong>Return Conditions:</strong></p><ul style="margin-left: 20px; margin-top: 10px;"><li>Items must be unopened and in original packaging</li><li>Return shipping cost is covered by customer (unless our error)</li><li>Full refund issued within 5 business days of return receipt</li></ul><p style="margin-top: 15px;"><strong>Damaged Items in Transit:</strong></p><p>If your item arrives damaged, contact us within 48 hours with photos. We'll send a replacement free of charge or provide a full refund.</p><p style="margin-top: 15px;"><strong>Contact for Returns:</strong></p><p>Email: business@521danyoo.dpdns.org</p>`,
+                mod_priv_c: `<p><strong>Your Privacy Matters</strong></p><p>SOULMADE is committed to protecting your personal data and privacy.</p><p style="margin-top: 15px;"><strong>Data We Collect:</strong></p><ul style="margin-left: 20px; margin-top: 10px;"><li>Shipping address (for delivery)</li><li>Email address (for order updates)</li><li>Payment information (processed by PayPal only)</li></ul><p style="margin-top: 15px;"><strong>Data Security:</strong></p><p>All payments are processed through PayPal's encrypted gateway. We do NOT store, handle, or have access to your credit card information. Your financial data is 100% secure.</p><p style="margin-top: 15px;"><strong>Data Usage:</strong></p><p>We only use your information for order fulfillment and customer service. We never sell or share your data with third parties.</p><p style="margin-top: 15px;"><strong>Contact:</strong></p><p>For privacy concerns, contact: business@521danyoo.dpdns.org</p>`
             },
             zh: {
-                // 英雄部分
                 hero_t: "灵魂制造.",
                 hero_d: "来自南昌的高端UV转印贴与定制膜。连接本土艺术与全球画布。",
                 hero_b: "探索系列",
-                
-                // 商店部分
                 shop_t: "最新系列",
-                
-                // 故事部分
                 story_t: "品牌起源",
                 story_c1: "SOULMADE诞生于南昌，我们的愿景纯粹而坚定：为创作者赋能。我们精心打磨来自本地高校艺术社团的优秀设计，将其转化为兼具可承受价格和艺术卓越的高端UV转印贴。每个设计都讲述一个故事——一片灵魂在高端材料中的凝结。",
-                story_c2: "通过自主处理制造和质量控制，我们确保每一件离开工作���的艺术品都凝聚着灵魂。我们正在弥合本地创意工作者与全球市场之间的鸿沟，证明伟大的艺术不需要企业中介。您的每次购买都直接支持华南地区新兴的学生艺术家。",
+                story_c2: "通过自主处理制造和质量控制，我们确保每一件离开工作室的艺术品都凝聚着灵魂。我们正在弥合本地创意工作者与全球市场之间的鸿沟，证明伟大的艺术不需要企业中介。您的每次购买都直接支持华南地区新兴的学生艺术家。",
                 story_c3: "从大学工作室到您的收藏——这就是SOULMADE的追求：真诚、品质，以及对艺术力量的信念——当艺术与欣赏者直接相连时，它才真正绽放光彩。",
-                
-                // 页脚
                 foot_d: "精工细作。始于南昌，发往全球。",
                 support_heading: "支持",
                 contact_heading: "联系我们",
                 nav_shipping: "物流说明",
                 nav_refund: "退换货政策",
                 nav_privacy: "隐私政策",
-                
-                // 模态标题
                 mod_ship_t: "物流配送说明",
                 mod_ref_t: "退换货保障政策",
                 mod_priv_t: "隐私保护政策",
-                
-                // 模态内容
-                mod_ship_c: `
-                    <p><strong>全球配送服务</strong></p>
-                    <p>所有订单均从南昌工作室直接处理和发送，使用带追踪号码的国际快邮或DHL快递服务。</p>
-                    
-                    <p style="margin-top: 15px;"><strong>预计送达时间：</strong></p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li>北美地区：7-14个工作日</li>
-                        <li>欧洲地区：8-15个工作日</li>
-                        <li>亚太地区：5-12个工作日</li>
-                        <li>其他地区：10-20个工作日</li>
-                    </ul>
-                    
-                    <p style="margin-top: 15px;"><strong>运费说明：</strong></p>
-                    <p>根据收货地点和重量在结账时计算。订单超过50美元可获得部分地区免邮特权。</p>
-                    
-                    <p style="margin-top: 15px;"><strong>追踪信息：</strong></p>
-                    <p>所有邮件都包含追踪号码。发货后您将通过电子邮件收到追踪详情。</p>
-                `,
-                
-                mod_ref_c: `
-                    <p><strong>30天无忧退货保证</strong></p>
-                    <p>我们对产品质量有信心。如果您不完全满意，我们提供从购买之日起30天内无忧退货服务。</p>
-                    
-                    <p style="margin-top: 15px;"><strong>退货条件：</strong></p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li>商品保持未使用状态，原包装完好</li>
-                        <li>退货运费由用户承担（我们的错误除外）</li>
-                        <li>收到退货后5个工作日内全额退款</li>
-                    </ul>
-                    
-                    <p style="margin-top: 15px;"><strong>运输途中受损：</strong></p>
-                    <p>如收到的商品有运输损坏，请在48小时内联系我们并提供照片。我们将免费补发或提供全额退款。</p>
-                    
-                    <p style="margin-top: 15px;"><strong>退货联系方式：</strong></p>
-                    <p>邮箱：business@521danyoo.dpdns.org</p>
-                `,
-                
-                mod_priv_c: `
-                    <p><strong>隐私保护承诺</strong></p>
-                    <p>SOULMADE致力于保护您的个人数据和隐私。</p>
-                    
-                    <p style="margin-top: 15px;"><strong>我们收集的数据：</strong></p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li>收货地址（用于配送）</li>
-                        <li>电子邮件地址（用于订单更新）</li>
-                        <li>支付信息（仅由PayPal处理）</li>
-                    </ul>
-                    
-                    <p style="margin-top: 15px;"><strong>数据安全：</strong></p>
-                    <p>所有支付均通过PayPal加密网关安全处理。我们不会收集、处理或访问您的信用卡信息。您的财务数据100%安全。</p>
-                    
-                    <p style="margin-top: 15px;"><strong>数据使用：</strong></p>
-                    <p>我们仅将您的信息用于订单履行和客户服务。我们绝不会出售或与第三方分享您的数据。</p>
-                    
-                    <p style="margin-top: 15px;"><strong>联系我们：</strong></p>
-                    <p>隐私问题请联系：business@521danyoo.dpdns.org</p>
-                `
+                mod_ship_c: `<p><strong>全球配送服务</strong></p><p>所有订单均从南昌工作室直接处理和发送，使用带追踪号码的国际快邮或DHL快递服务。</p><p><strong>预计送达时间：</strong></p><ul style="margin-left: 20px; margin-top: 10px;"><li>北美地区：7-14个工作日</li><li>欧洲地区：8-15个工作日</li><li>亚太地区：5-12个工作日</li><li>其他地区：10-20个工作日</li></ul><p style="margin-top: 15px;"><strong>运费说明：</strong></p><p>根据收货地点和重量在结账时计算。订单超过50美元可获得部分地区免邮特权。</p><p style="margin-top: 15px;"><strong>追踪信息：</strong></p><p>所有邮件都包含追踪号码。发货后您将通过电子邮件收到追踪详情。</p>`,
+                mod_ref_c: `<p><strong>30天无忧退货保证</strong></p><p>我们对产品质量有信心。如果您不完全满意，我们提供从购买之日起30天内无忧退货服务。</p><p style="margin-top: 15px;"><strong>退货条件：</strong></p><ul style="margin-left: 20px; margin-top: 10px;"><li>商品保持未使用状态，原包装完好</li><li>退货运费由用户承担（我们的错误除外）</li><li>收到退货后5个工作日内全额退款</li></ul><p style="margin-top: 15px;"><strong>运输途中受损：</strong></p><p>如收到的商品有运输损坏，请在48小时内联系我们并提供照片。我们将免费补发或提供全额退款。</p><p style="margin-top: 15px;"><strong>退货联系方式：</strong></p><p>邮箱：business@521danyoo.dpdns.org</p>`,
+                mod_priv_c: `<p><strong>隐私保护承诺</strong></p><p>SOULMADE致力于保护您的个人数据和隐私。</p><p style="margin-top: 15px;"><strong>我们收集的数据：</strong></p><ul style="margin-left: 20px; margin-top: 10px;"><li>收货地址（用于配送）</li><li>电子邮件地址（用于订单更新）</li><li>支付信息（仅由PayPal处理）</li></ul><p style="margin-top: 15px;"><strong>数据安全：</strong></p><p>所有支付均通过PayPal加密网关安全处理。我们不会收集、处理或访问您的信用卡信息。您的财务数据100%安全。</p><p style="margin-top: 15px;"><strong>数据使用：</strong></p><p>我们仅将您的信息用于订单履行和客户服务。我们绝不会出售或与第三方分享您的数据。</p><p style="margin-top: 15px;"><strong>联系我们：</strong></p><p>隐私问题请联系：business@521danyoo.dpdns.org</p>`
             }
         };
-
-        // ===== UTILITY FUNCTIONS =====
 
         function showToast(message, duration = 3000) {
             const container = document.getElementById('toast-container');
@@ -514,7 +818,6 @@
             toast.className = 'toast';
             toast.textContent = message;
             container.appendChild(toast);
-
             setTimeout(() => {
                 toast.classList.add('hide');
                 setTimeout(() => toast.remove(), 300);
@@ -524,14 +827,11 @@
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 showToast(currentLang === 'en' ? 'Copied to clipboard!' : '已复制到剪贴板！');
-            }).catch(() => {
-                showToast(currentLang === 'en' ? 'Failed to copy' : '复制失败');
             });
         }
 
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('active');
+            document.getElementById('mobile-menu').classList.toggle('active');
         }
 
         function changeLang(lang) {
@@ -540,122 +840,69 @@
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (dictionary[lang][key]) {
-                    el.innerHTML = dictionary[lang][key];
+                    el.textContent = dictionary[lang][key];
                 }
             });
             showToast(lang === 'en' ? 'Switched to English' : '已切换至简体中文');
         }
 
         function navigate(pageId) {
-            document.querySelectorAll('.page-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            const targetSection = document.getElementById(pageId + '-sec');
-            if (targetSection) {
-                targetSection.classList.add('active');
-                window.scrollTo(0, 0);
-            }
+            document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
+            document.getElementById(pageId + '-sec').classList.add('active');
+            window.scrollTo(0, 0);
         }
 
         function openModal(type) {
-            const prefix = {
-                'shipping': 'mod_ship',
-                'refund': 'mod_ref',
-                'privacy': 'mod_priv'
-            }[type] || 'mod_ship';
-
-            const title = dictionary[currentLang][prefix + '_t'];
-            const content = dictionary[currentLang][prefix + '_c'];
-
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalBody').innerHTML = content;
-            document.getElementById('policyModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
+            const prefix = {'shipping': 'mod_ship', 'refund': 'mod_ref', 'privacy': 'mod_priv'}[type] || 'mod_ship';
+            document.getElementById('modalTitle').textContent = dictionary[currentLang][prefix + '_t'];
+            document.getElementById('modalBody').innerHTML = dictionary[currentLang][prefix + '_c'];
+            document.getElementById('policyModal').classList.add('active');
         }
 
         function closeModal() {
-            document.getElementById('policyModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
+            document.getElementById('policyModal').classList.remove('active');
         }
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-                toggleMobileMenu();
-            }
+            if (e.key === 'Escape') closeModal();
         });
-
-        // ===== PAYPAL INTEGRATION =====
-
-        function setupPayPalButtons() {
-            if (!window.paypal) {
-                console.error('PayPal SDK not loaded');
-                return;
-            }
-
-            Object.keys(prices).forEach(productId => {
-                const buttonContainer = document.getElementById(`paypal-btn-${productId}`);
-                if (!buttonContainer) return;
-
-                paypal.Buttons({
-                    style: {
-                        layout: 'vertical',
-                        color: 'black',
-                        shape: 'rect',
-                        height: 40
-                    },
-                    createOrder: (data, actions) => {
-                        return actions.order.create({
-                            purchase_units: [{
-                                amount: {
-                                    value: prices[productId],
-                                    breakdown: {
-                                        item_total: {
-                                            currency_code: 'USD',
-                                            value: prices[productId]
-                                        }
-                                    }
-                                },
-                                items: [{
-                                    name: `Series ${String(productId).padStart(2, '0')}`,
-                                    quantity: '1',
-                                    unit_amount: {
-                                        currency_code: 'USD',
-                                        value: prices[productId]
-                                    }
-                                }]
-                            }]
-                        });
-                    },
-                    onApprove: (data, actions) => {
-                        return actions.order.capture().then(orderData => {
-                            showToast(currentLang === 'en' ? '✓ Thank you for your purchase!' : '✓ 感谢您的购买！');
-                            console.log('Order details:', orderData);
-                        });
-                    },
-                    onError: (err) => {
-                        console.error('Payment error:', err);
-                        showToast(currentLang === 'en' ? 'Payment failed. Please try again.' : '支付失败，请重试。');
-                    }
-                }).render(buttonContainer).catch(err => {
-                    console.error('Button render error:', err);
-                    buttonContainer.innerHTML = '<p class="text-red-500 text-sm">Payment button unavailable</p>';
-                });
-            });
-        }
-
-        // ===== INITIALIZATION =====
 
         document.addEventListener('DOMContentLoaded', () => {
             changeLang('en');
-            setupPayPalButtons();
+            
+            setTimeout(() => {
+                if (window.paypal) {
+                    Object.keys(prices).forEach(productId => {
+                        const container = document.getElementById(`paypal-btn-${productId}`);
+                        if (!container) return;
+                        
+                        paypal.Buttons({
+                            style: { layout: 'vertical', color: 'black', shape: 'rect', height: 40 },
+                            createOrder: (data, actions) => {
+                                return actions.order.create({
+                                    purchase_units: [{
+                                        amount: { value: prices[productId] }
+                                    }]
+                                });
+                            },
+                            onApprove: (data, actions) => {
+                                return actions.order.capture().then(() => {
+                                    showToast('✓ Thank you for your purchase!');
+                                });
+                            },
+                            onError: () => {
+                                showToast('Payment failed. Please try again.');
+                            }
+                        }).render(container);
+                    });
+                }
+            }, 1000);
         });
 
         document.addEventListener('click', (e) => {
-            const mobileMenu = document.getElementById('mobile-menu');
-            const menuBtn = document.getElementById('mobile-menu-btn');
-            if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
-                mobileMenu.classList.remove('active');
+            const menu = document.getElementById('mobile-menu');
+            if (!menu.contains(e.target) && !e.target.classList.contains('mobile-menu-btn')) {
+                menu.classList.remove('active');
             }
         });
     </script>
