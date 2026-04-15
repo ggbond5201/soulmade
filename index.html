@@ -313,14 +313,10 @@
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- PayPal SDK - Will be loaded dynamically -->
-    <script id="paypal-sdk"></script>
+    <!-- PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=ARuKS8w7mZe9emwJXCBYL_0FqRGEuXcNZX2XyiVkKzLAHdCwLMJR7Z9lK5WqZ9YJZy1yLqqDV0NxZfxQ"></script>
 
     <script>
-        // ===== CONFIGURATION =====
-        // ⚠️ IMPORTANT: Replace 'YOUR_PAYPAL_CLIENT_ID' with your actual PayPal Client ID from https://developer.paypal.com
-        const PAYPAL_CLIENT_ID = 'YOUR_PAYPAL_CLIENT_ID';
-
         const prices = { 
             "1": "19.90", 
             "2": "24.90", 
@@ -433,7 +429,7 @@
                 // 故事部分
                 story_t: "品牌起源",
                 story_c1: "SOULMADE诞生于南昌，我们的愿景纯粹而坚定：为创作者赋能。我们精心打磨来自本地高校艺术社团的优秀设计，将其转化为兼具可承受价格和艺术卓越的高端UV转印贴。每个设计都讲述一个故事——一片灵魂在高端材料中的凝结。",
-                story_c2: "通过自主处理制造和质量控制，我们确保每一件离开工作室的艺术品都凝聚着灵魂。我们正在弥合本地创意工作者与全球市场之间的鸿沟，证明伟大的艺术不需要企业中介。您的每次购买都直接支持华南地区新兴的学生艺术家。",
+                story_c2: "通过自主处理制造和质量控制，我们确保每一件离开工作���的艺术品都凝聚着灵魂。我们正在弥合本地创意工作者与全球市场之间的鸿沟，证明伟大的艺术不需要企业中介。您的每次购买都直接支持华南地区新兴的学生艺术家。",
                 story_c3: "从大学工作室到您的收藏——这就是SOULMADE的追求：真诚、品质，以及对艺术力量的信念——当艺术与欣赏者直接相连时，它才真正绽放光彩。",
                 
                 // 页脚
@@ -591,22 +587,6 @@
 
         // ===== PAYPAL INTEGRATION =====
 
-        function loadPayPalSDK() {
-            return new Promise((resolve, reject) => {
-                if (PAYPAL_CLIENT_ID === 'YOUR_PAYPAL_CLIENT_ID') {
-                    showToast('⚠️ Please configure PayPal Client ID in the script');
-                    reject('PayPal Client ID not configured');
-                    return;
-                }
-
-                const script = document.createElement('script');
-                script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`;
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
-        }
-
         function setupPayPalButtons() {
             if (!window.paypal) {
                 console.error('PayPal SDK not loaded');
@@ -668,15 +648,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             changeLang('en');
-
-            loadPayPalSDK()
-                .then(() => {
-                    setupPayPalButtons();
-                })
-                .catch(err => {
-                    console.error('Failed to load PayPal:', err);
-                    showToast('⚠️ Payment buttons unavailable');
-                });
+            setupPayPalButtons();
         });
 
         document.addEventListener('click', (e) => {
