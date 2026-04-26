@@ -1,169 +1,1180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOULMADE | Premium UV Art Studio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        html { scroll-behavior: smooth; }
-        .page-section { display: none; opacity: 0; transition: opacity 0.5s ease; }
-        .page-section.active { display: block; opacity: 1; }
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 100; }
-        .modal-overlay.active { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 2.5rem; border-radius: 1.5rem; max-width: 600px; width: 90%; position: relative; max-height: 85vh; overflow-y: auto; }
-        .product-card img { transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
-        .product-card:hover img { transform: scale(1.05); }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOULMADE | Frozen in Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream: #f5f0e8;
+      --ink: #1a1612;
+      --amber: #c8a96e;
+      --rust: #8b4513;
+      --mist: #e8e2d8;
+      --deep: #0d0b09;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--amber);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--amber);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.15s ease;
+      opacity: 0.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 24px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      mix-blend-mode: multiply;
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 4px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    .lang-toggle {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      background: none;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      padding: 6px 14px;
+      cursor: none;
+      opacity: 0.6;
+      transition: all 0.3s;
+    }
+
+    .lang-toggle:hover { opacity: 1; background: var(--ink); color: var(--cream); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 120px 48px 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+
+    .hero-title {
+      font-size: clamp(56px, 8vw, 110px);
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -2px;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.5s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--amber);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 360px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.7s forwards;
+      color: #5a5048;
+    }
+
+    .hero-right {
+      position: relative;
+      background: var(--ink);
+      overflow: hidden;
+    }
+
+    .hero-right::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(200,169,110,0.3) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(139,69,19,0.2) 0%, transparent 50%);
+    }
+
+    .hero-visual {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .resin-orb {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%,
+        rgba(255,240,200,0.9) 0%,
+        rgba(200,169,110,0.7) 30%,
+        rgba(139,100,40,0.5) 60%,
+        rgba(50,30,10,0.8) 100%);
+      box-shadow:
+        inset -20px -20px 60px rgba(0,0,0,0.5),
+        inset 10px 10px 30px rgba(255,220,150,0.3),
+        0 0 80px rgba(200,169,110,0.2),
+        0 0 160px rgba(200,169,110,0.1);
+      animation: float 6s ease-in-out infinite;
+      position: relative;
+    }
+
+    .resin-orb::after {
+      content: '';
+      position: absolute;
+      top: 15%;
+      left: 20%;
+      width: 40%;
+      height: 25%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: rotate(-20deg);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 48px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.2s forwards;
+    }
+
+    .hero-scroll span {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+
+    .scroll-line {
+      width: 60px;
+      height: 1px;
+      background: var(--ink);
+      opacity: 0.3;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--amber);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+
+    /* MARQUEE */
+    .marquee-section {
+      background: var(--ink);
+      padding: 20px 0;
+      overflow: hidden;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 60px;
+      animation: marquee 20s linear infinite;
+      white-space: nowrap;
+    }
+
+    .marquee-track span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      letter-spacing: 4px;
+      color: var(--amber);
+      opacity: 0.7;
+    }
+
+    .marquee-track .dot {
+      color: var(--rust);
+      opacity: 1;
+    }
+
+    /* ABOUT */
+    .about {
+      padding: 160px 48px;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .about-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--amber);
+      padding-top: 8px;
+    }
+
+    .about-content h2 {
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 40px;
+      letter-spacing: -1px;
+    }
+
+    .about-content h2 em {
+      font-style: italic;
+      color: var(--amber);
+    }
+
+    .about-body {
+      font-size: 18px;
+      line-height: 1.9;
+      color: #5a5048;
+      font-weight: 300;
+      max-width: 600px;
+    }
+
+    .about-body p + p { margin-top: 24px; }
+
+    .about-quote {
+      margin-top: 60px;
+      padding: 40px;
+      border-left: 2px solid var(--amber);
+      background: rgba(200,169,110,0.05);
+    }
+
+    .about-quote p {
+      font-size: 22px;
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .about-quote cite {
+      display: block;
+      margin-top: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--amber);
+      font-style: normal;
+    }
+
+    /* PROCESS */
+    .process {
+      padding: 120px 48px;
+      background: var(--ink);
+      color: var(--cream);
+    }
+
+    .process-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 80px;
+    }
+
+    .process-header h2 {
+      font-size: clamp(40px, 6vw, 80px);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+
+    .process-header h2 em { font-style: italic; color: var(--amber); }
+
+    .process-header p {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      opacity: 0.4;
+      max-width: 200px;
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    .process-step {
+      padding: 48px 40px;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      transition: background 0.4s;
+    }
+
+    .process-step:hover { background: rgba(200,169,110,0.08); }
+
+    .step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 80px;
+      color: rgba(200,169,110,0.15);
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+
+    .step-title {
+      font-size: 20px;
+      font-weight: 300;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .step-body {
+      font-size: 14px;
+      line-height: 1.8;
+      opacity: 0.5;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* SHOP */
+    .shop {
+      padding: 160px 48px;
+    }
+
+    .shop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 80px;
+    }
+
+    .shop-header h2 {
+      font-size: clamp(40px, 6vw, 80px);
+      font-weight: 300;
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+
+    .shop-header h2 em { font-style: italic; color: var(--amber); }
+
+    .shop-coming {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .product-card {
+      position: relative;
+      aspect-ratio: 3/4;
+      background: var(--mist);
+      overflow: hidden;
+      cursor: none;
+    }
+
+    .product-card:hover .product-overlay { opacity: 1; }
+    .product-card:hover .product-img-placeholder { transform: scale(1.05); }
+
+    .product-img-placeholder {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .placeholder-orb {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%,
+        rgba(255,240,200,0.9) 0%,
+        rgba(200,169,110,0.6) 40%,
+        rgba(100,60,20,0.4) 100%);
+      box-shadow: inset -8px -8px 20px rgba(0,0,0,0.3),
+                  inset 4px 4px 12px rgba(255,220,150,0.4);
+    }
+
+    .product-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(26,22,18,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.4s;
+      gap: 16px;
+    }
+
+    .product-overlay span {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+
+    .product-info {
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .product-name {
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: -0.3px;
+    }
+
+    .product-id {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--amber);
+      opacity: 0.7;
+    }
+
+    /* IDENTITY SYSTEM */
+    .identity {
+      padding: 160px 48px;
+      background: var(--deep);
+      color: var(--cream);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .identity::before {
+      content: 'SOULMADE';
+      position: absolute;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 300px;
+      color: rgba(255,255,255,0.02);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .identity-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .identity-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 40px;
+    }
+
+    .identity h2 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 40px;
+    }
+
+    .identity h2 em { font-style: italic; color: var(--amber); }
+
+    .identity-body {
+      font-size: 18px;
+      line-height: 1.9;
+      opacity: 0.6;
+      font-weight: 300;
+      margin-bottom: 60px;
+    }
+
+    .identity-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 80px;
+    }
+
+    .identity-card {
+      padding: 48px 32px;
+      border: 1px solid rgba(255,255,255,0.06);
+      text-align: left;
+    }
+
+    .identity-card-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--amber);
+      margin-bottom: 24px;
+    }
+
+    .identity-card h3 {
+      font-size: 22px;
+      font-weight: 300;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .identity-card p {
+      font-size: 13px;
+      line-height: 1.8;
+      opacity: 0.5;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* NOTIFY */
+    .notify {
+      padding: 160px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .notify h2 {
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -2px;
+    }
+
+    .notify h2 em { font-style: italic; color: var(--amber); }
+
+    .notify-body {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #5a5048;
+      margin-top: 24px;
+    }
+
+    .notify-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .notify-input {
+      background: none;
+      border: none;
+      border-bottom: 1px solid rgba(26,22,18,0.3);
+      padding: 16px 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .notify-input::placeholder { color: rgba(26,22,18,0.3); }
+    .notify-input:focus { border-color: var(--amber); }
+
+    .notify-btn {
+      margin-top: 16px;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      padding: 20px 48px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: none;
+      align-self: flex-start;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .notify-btn:hover { background: var(--amber); }
+
+    .notify-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.1);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+
+    .notify-btn:hover::after { transform: translateX(100%); }
+
+    /* FOOTER */
+    footer {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 80px 48px 40px;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 80px;
+      padding-bottom: 60px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .footer-brand-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+    }
+
+    .footer-tagline {
+      font-size: 16px;
+      font-style: italic;
+      opacity: 0.4;
+      line-height: 1.7;
+    }
+
+    .footer-col h4 {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 24px;
+    }
+
+    .footer-col ul { list-style: none; }
+
+    .footer-col ul li {
+      margin-bottom: 12px;
+    }
+
+    .footer-col ul li a {
+      font-size: 15px;
+      color: var(--cream);
+      text-decoration: none;
+      opacity: 0.4;
+      transition: opacity 0.3s;
+    }
+
+    .footer-col ul li a:hover { opacity: 1; }
+
+    .footer-bottom {
+      padding-top: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-bottom p {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      opacity: 0.3;
+    }
+
+    /* MOBILE NAV */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: none;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--ink);
+      transition: all 0.3s;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 4px;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.3;
+      transition: opacity 0.3s;
+    }
+
+    .mobile-menu a:hover { opacity: 1; }
+
+    .mobile-close {
+      position: absolute;
+      top: 24px;
+      right: 48px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      background: none;
+      border: none;
+      cursor: none;
+      opacity: 0.4;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(2deg); }
+      66% { transform: translateY(-10px) rotate(-1deg); }
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes scrollLine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* SCROLL REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      .nav-links, .lang-toggle { display: none; }
+      .hamburger { display: flex; }
+
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 120px 24px 80px; }
+
+      .about { grid-template-columns: 1fr; padding: 80px 24px; gap: 32px; }
+
+      .process { padding: 80px 24px; }
+      .process-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .process-steps { grid-template-columns: 1fr 1fr; }
+
+      .shop { padding: 80px 24px; }
+      .shop-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .shop-grid { grid-template-columns: 1fr 1fr; }
+
+      .identity { padding: 80px 24px; }
+      .identity-cards { grid-template-columns: 1fr; }
+
+      .notify { grid-template-columns: 1fr; padding: 80px 24px; gap: 48px; }
+
+      footer { padding: 60px 24px 32px; }
+      .footer-top { grid-template-columns: 1fr; gap: 40px; }
+      .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+    }
+  </style>
 </head>
-<body class="bg-[#fafafa] text-gray-900 antialiased font-sans">
+<body>
 
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100 px-6 py-5 flex justify-between items-center">
-        <div onclick="navigate('home')" class="text-3xl font-black italic cursor-pointer tracking-tighter">SOULMADE</div>
-        <div class="hidden md:flex items-center space-x-12 text-[11px] font-bold uppercase tracking-widest text-gray-400">
-            <a onclick="navigate('home')" class="cursor-pointer hover:text-black transition">Home</a >
-            <a onclick="navigate('shop')" class="cursor-pointer hover:text-black transition">Shop</a >
-            <a onclick="navigate('story')" class="cursor-pointer hover:text-black transition">Story</a >
-            <select onchange="changeLang(this.value)" class="bg-gray-50 px-3 py-1 rounded-full text-black outline-none cursor-pointer border border-gray-200">
-                <option value="en">ENGLISH</option>
-                <option value="zh">简体中文</option>
-            </select>
-        </div>
-    </nav>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
 
-    <main id="home-sec" class="page-section active">
-        <section class="h-[80vh] flex flex-col items-center justify-center text-center px-4">
-            <h1 class="text-7xl md:text-9xl font-black mb-10 italic tracking-tighter" data-i18n="hero_t">Soul Made.</h1>
-            <p class="text-lg text-gray-500 max-w-sm mb-12 font-medium" data-i18n="hero_d">Premium UV DTF wraps & stickers. Connecting local artistry to the global canvas.</p >
-            <button onclick="navigate('shop')" class="bg-black text-white px-12 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-gray-800 transition shadow-xl transform hover:-translate-y-1" data-i18n="hero_b">Explore Drops</button>
-        </section>
-    </main>
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">SOULMADE</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about" data-en="Story" data-zh="品牌故事">Story</a></li>
+      <li><a href="#shop" data-en="Shop" data-zh="商店">Shop</a></li>
+      <li><a href="#identity" data-en="Each Piece" data-zh="每件作品">Each Piece</a></li>
+      <li><a href="#notify" data-en="Stay Close" data-zh="订阅">Stay Close</a></li>
+    </ul>
+    <button class="lang-toggle" id="langToggle">中文</button>
+    <button class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
-    <section id="shop-sec" class="page-section py-24 px-8">
-        <div class="max-w-77xl mx-auto">
-            <h2 class="text-5xl font-black italic border-b-2 border-black pb-4 mb-20 uppercase tracking-tighter" data-i18n="shop_t">The Drops</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
-                <script>
-                    const productNames = ["Series 01 Premium", "Series 02 Gloss", "Series 03 Matte", "Series 04 Neon", "Series 05 Custom", "Series 06 Limited"];
-                    const prodPrices = ["19.90", "24.90", "22.00", "18.00", "30.00", "25.00"];
-                    for(let i=1; i<=6; i++) {
-                        document.write(`
-                        <div class="product-card bg-white p-5 rounded-3xl shadow-sm hover:shadow-xl transition-shadow border border-gray-50">
-                            <div class="aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden mb-8">
-                                < img src="p${i}.png" alt="${productNames[i-1]}" class="w-full h-full object-cover">
-                            </div>
-                            <div class="flex justify-between font-black italic uppercase text-lg mb-8 px-1">
-                                <span>${productNames[i-1]}</span><span class="text-blue-600">$${prodPrices[i-1]}</span>
-                            </div>
-                            <div id="paypal-btn-${i}"></div>
-                        </div>
-                        `);
-                    }
-                </script>
-            </div>
-        </div>
-    </section>
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose">CLOSE ✕</button>
+    <a href="#about" onclick="closeMobile()" data-en="Story" data-zh="品牌故事">Story</a>
+    <a href="#shop" onclick="closeMobile()" data-en="Shop" data-zh="商店">Shop</a>
+    <a href="#identity" onclick="closeMobile()" data-en="Each Piece" data-zh="每件作品">Each Piece</a>
+    <a href="#notify" onclick="closeMobile()" data-en="Stay Close" data-zh="订阅">Stay Close</a>
+  </div>
 
-    <section id="story-sec" class="page-section py-24 px-8">
-        <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-4xl font-black italic uppercase mb-10" data-i18n="story_t">Our Origins</h2>
-            <div class="text-gray-600 space-y-6 leading-loose font-medium text-lg text-justify" data-i18n="story_c">
-                <p>SOULMADE was born in Nanchang, China. We recycle and refine brilliant student designs, transforming them into premium UV transfer stickers that meet international standards.</p >
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-black text-white py-24 px-10 mt-32">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 text-[10px] font-bold uppercase tracking-widest text-gray-500">
-            <div class="space-y-4">
-                <div class="text-3xl font-black italic text-white tracking-tighter">SOULMADE</div>
-                <p class="normal-case tracking-normal max-w-sm" data-i18n="foot_d">Handcrafted excellence. Born in Nanchang, China, shipped worldwide.</p >
-            </div>
-            <div class="flex flex-col space-y-4 items-start">
-                <h4 class="text-white mb-2 tracking-[0.2em]">Customer Support</h4>
-                <a onclick="openModal('shipping')" class="hover:text-white cursor-pointer transition" data-i18n="nav_shipping">Shipping Policy</a >
-                <a onclick="openModal('refund')" class="hover:text-white cursor-pointer transition" data-i18n="nav_refund">Return & Refund</a >
-                <a onclick="openModal('privacy')" class="hover:text-white cursor-pointer transition" data-i18n="nav_privacy">Privacy Policy</a >
-            </div>
-            <div class="space-y-4">
-                <h4 class="text-white mb-2 tracking-[0.2em]">Contact</h4>
-                <p class="normal-case tracking-normal">business@521danyoo.dpdns.org</p >
-                <p class="mt-4">NANCHANG, CN</p >
-            </div>
-        </div>
-    </footer>
-
-    <div id="policyModal" class="modal-overlay" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button onclick="closeModal()" class="absolute top-6 right-8 text-2xl text-gray-300 hover:text-black">&times;</button>
-            <h3 id="modalTitle" class="text-3xl font-black italic mb-8 border-b pb-4 uppercase tracking-tighter"></h3>
-            <div id="modalBody" class="text-gray-600 space-y-4 text-sm font-medium leading-relaxed"></div>
-        </div>
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-left">
+      <p class="hero-eyebrow" data-en="Handcrafted UV Resin · Nanchang, China" data-zh="手工UV滴胶 · 中国南昌">Handcrafted UV Resin · Nanchang, China</p>
+      <h1 class="hero-title">
+        Time<br>
+        <em>Stops.</em><br>
+        Beauty<br>
+        Stays.
+      </h1>
+      <p class="hero-sub" data-en="Each SOULMADE piece is a moment sealed forever in resin — poured by hand, finished with intention, made for the right person." data-zh="每一件SOULMADE作品，都是被永久封存在树脂中的瞬间——手工注胶，用心打磨，为对的人而作。">Each SOULMADE piece is a moment sealed forever in resin — poured by hand, finished with intention, made for the right person.</p>
     </div>
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="resin-orb"></div>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span data-en="Scroll" data-zh="滚动">Scroll</span>
+    </div>
+  </section>
 
-    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
-    <script>
-        const dictionary = {
-            en: {
-                hero_t: "Soul Made.", hero_d: "Premium UV DTF wraps & stickers. Connecting local artistry to the global canvas.", hero_b: "Explore Drops", shop_t: "The Drops",
-                story_t: "Our Origins", story_c: "<p>SOULMADE was born in Nanchang with a singular vision: to empower creators. We recycle and refine brilliant student designs, transforming them into premium UV transfer stickers.</p >",
-                foot_d: "Handcrafted excellence. Born in Nanchang, China, shipped worldwide.",
-                nav_shipping: "Shipping Info", nav_refund: "Return & Refund", nav_privacy: "Privacy Policy",
-                mod_ship_t: "Logistics Info", mod_ship_c: "All orders are shipped via tracked International E-packet from Nanchang. Estimated delivery: 7-15 business days.",
-                mod_ref_t: "Return Policy", mod_ref_c: "We support 30-day returns for unused items. Damaged goods will be replaced free of charge.",
-                mod_priv_t: "Privacy", mod_priv_c: "All payments are processed via PayPal's secure gateway. We do not store financial data."
-            },
-            zh: {
-                hero_t: "灵魂制造.", hero_d: "来自南昌本土艺术的高端 UV 转印贴。", hero_b: "探索系列", shop_t: "最新系列",
-                story_t: "品牌起源", story_c: "<p>SOULMADE 诞生于南昌，旨在为创作者赋能。我们回收并优化校园设计，制作高品质 UV 转印贴。</p >",
-                foot_d: "精工细作。始于南昌，全球送达。",
-                nav_shipping: "物流信息", nav_refund: "退换货说明", nav_privacy: "隐私政策",
-                mod_ship_t: "物流政策", mod_ship_c: "从南昌工作室发出，采用国际有追踪快邮。预计 7-15 天送达。",
-                mod_ref_t: "退换货政策", mod_ref_c: "未使用商品支持 30 天退货。损坏商品免费补发。",
-                mod_priv_t: "隐私安全", mod_priv_c: "所有支付通过 PayPal 加密网关处理，我们不收集个人财务信息。"
-            }
-        };
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <span>HANDCRAFTED</span><span class="dot">◆</span>
+      <span>UV RESIN</span><span class="dot">◆</span>
+      <span>LIMITED PIECES</span><span class="dot">◆</span>
+      <span>NANCHANG MADE</span><span class="dot">◆</span>
+      <span>FROZEN TIME</span><span class="dot">◆</span>
+      <span>SOULMADE</span><span class="dot">◆</span>
+      <span>HANDCRAFTED</span><span class="dot">◆</span>
+      <span>UV RESIN</span><span class="dot">◆</span>
+      <span>LIMITED PIECES</span><span class="dot">◆</span>
+      <span>NANCHANG MADE</span><span class="dot">◆</span>
+      <span>FROZEN TIME</span><span class="dot">◆</span>
+      <span>SOULMADE</span><span class="dot">◆</span>
+    </div>
+  </div>
 
-        const prices = { "1": "19.90", "2": "24.90", "3": "22.00", "4": "18.00", "5": "30.00", "6": "25.00" };
-        let currentLang = 'en';
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about-label reveal" data-en="Our Story" data-zh="我们的故事">Our Story</div>
+    <div class="about-content">
+      <h2 class="reveal">
+        Some moments are too<br>
+        <em>beautiful</em> to let go.
+      </h2>
+      <div class="about-body reveal">
+        <p data-en="SOULMADE was born in Nanchang, China, where a young creator decided that art should mean something. Not mass-produced. Not algorithm-generated. But made by hand, with intention, and with soul." data-zh="SOULMADE 诞生于南昌，一个年轻的创作者决定：艺术应该有意义。不是批量复制，不是算法生成，而是用双手，用心，认真做出来的东西。">SOULMADE was born in Nanchang, China, where a young creator decided that art should mean something. Not mass-produced. Not algorithm-generated. But made by hand, with intention, and with soul.</p>
+        <p data-en="Each piece is poured, cured, and finished by one pair of hands. No factory. No duplicates. Just a single frozen moment, sealed in resin, waiting for the right person to carry it." data-zh="每一件作品都在南昌手工制作——注胶、固化、打磨，全程一双手完成。没有工厂，没有复刻，只有一个被封存的瞬间，等待对的人来珍藏。">Each piece is poured, cured, and finished by one pair of hands. No factory. No duplicates. Just a single frozen moment, sealed in resin, waiting for the right person to carry it.</p>
+      </div>
+      <div class="about-quote reveal">
+        <p data-en='"When you own a SOULMADE piece, you own a moment someone poured themselves into."' data-zh='"拥有一件SOULMADE，就是拥有某人全力以赴的那一刻。"'>"When you own a SOULMADE piece, you own a moment someone poured themselves into."</p>
+        <cite data-en="— The Maker" data-zh="— 创作者">— The Maker</cite>
+      </div>
+    </div>
+  </section>
 
-        function navigate(id) {
-            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id + '-sec').classList.add('active');
-            window.scrollTo(0,0);
-        }
+  <!-- PROCESS -->
+  <section class="process" id="process">
+    <div class="process-header reveal">
+      <h2>How it's<br><em>made</em></h2>
+      <p data-en="Every step by hand. Every piece, one of a kind." data-zh="每一步亲手完成，每一件独一无二。">Every step by hand.<br>Every piece, one of a kind.</p>
+    </div>
+    <div class="process-steps">
+      <div class="process-step reveal">
+        <div class="step-num">01</div>
+        <div class="step-title" data-en="Collect" data-zh="采集">Collect</div>
+        <div class="step-body" data-en="Natural materials gathered with intention. Each element chosen for its story." data-zh="用心采集天然材料，每一个元素都因故事而被选择。">Natural materials gathered with intention. Each element chosen for its story.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">02</div>
+        <div class="step-title" data-en="Pour" data-zh="注胶">Pour</div>
+        <div class="step-body" data-en="UV resin mixed and poured by hand into custom molds. No shortcuts." data-zh="UV树脂手工调配，注入模具。没有捷径。">UV resin mixed and poured by hand into custom molds. No shortcuts.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">03</div>
+        <div class="step-title" data-en="Cure" data-zh="固化">Cure</div>
+        <div class="step-body" data-en="Set under UV light until crystal clear. The moment is sealed forever." data-zh="UV灯照射固化，直至晶莹剔透。瞬间永久封存。">Set under UV light until crystal clear. The moment is sealed forever.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">04</div>
+        <div class="step-title" data-en="Number" data-zh="编号">Number</div>
+        <div class="step-body" data-en="Each piece receives its unique SOULMADE ID. Your piece. Your moment." data-zh="每件作品获得独有的SOULMADE编号。你的作品，你的瞬间。">Each piece receives its unique SOULMADE ID. Your piece. Your moment.</div>
+      </div>
+    </div>
+  </section>
 
-        function changeLang(val) {
-            currentLang = val;
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                el.innerHTML = dictionary[currentLang][key];
-            });
-        }
+  <!-- SHOP -->
+  <section class="shop" id="shop">
+    <div class="shop-header">
+      <h2 class="reveal">The <em>Collection</em></h2>
+      <span class="shop-coming reveal" data-en="First drop coming soon" data-zh="首批即将上线">First drop coming soon</span>
+    </div>
+    <div class="shop-grid">
+      <div class="product-card reveal">
+        <div class="product-img-placeholder">
+          <div class="placeholder-orb"></div>
+        </div>
+        <div class="product-overlay">
+          <span data-en="Coming Soon" data-zh="即将上线">Coming Soon</span>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-img-placeholder" style="background: #e0d8cc;">
+          <div class="placeholder-orb" style="background: radial-gradient(circle at 35% 35%, rgba(200,255,220,0.9) 0%, rgba(100,180,120,0.6) 40%, rgba(30,80,40,0.4) 100%);"></div>
+        </div>
+        <div class="product-overlay">
+          <span data-en="Coming Soon" data-zh="即将上线">Coming Soon</span>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-img-placeholder" style="background: #ddd5e8;">
+          <div class="placeholder-orb" style="background: radial-gradient(circle at 35% 35%, rgba(240,220,255,0.9) 0%, rgba(160,120,200,0.6) 40%, rgba(60,20,80,0.4) 100%);"></div>
+        </div>
+        <div class="product-overlay">
+          <span data-en="Coming Soon" data-zh="即将上线">Coming Soon</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        function openModal(type) {
-            const p = type === 'shipping' ? 'mod_ship' : (type === 'refund' ? 'mod_ref' : 'mod_priv');
-            document.getElementById('modalTitle').innerText = dictionary[currentLang][p + '_t'];
-            document.getElementById('modalBody').innerHTML = dictionary[currentLang][p + '_c'];
-            document.getElementById('policyModal').classList.add('active');
-        }
+  <!-- IDENTITY SYSTEM -->
+  <section class="identity" id="identity">
+    <div class="identity-inner">
+      <div class="identity-label reveal" data-en="The SOULMADE Promise" data-zh="SOULMADE的承诺">The SOULMADE Promise</div>
+      <h2 class="reveal">You are now a<br><em>keeper</em><br>of frozen time.</h2>
+      <p class="identity-body reveal" data-en="Every piece comes with a unique ID. Scan it to discover the story behind your moment — what was sealed inside, when it was made, and the hands that made it." data-zh="每件作品都附有独特编号。扫描查看你那份瞬间背后的故事——封存了什么，何时制作，以及制作它的那双手。">Every piece comes with a unique ID. Scan it to discover the story behind your moment — what was sealed inside, when it was made, and the hands that made it.</p>
+      <div class="identity-cards">
+        <div class="identity-card reveal">
+          <div class="identity-card-num">001</div>
+          <h3 data-en="Unique ID" data-zh="唯一编号">Unique ID</h3>
+          <p data-en="Every piece numbered. No two the same. Ever." data-zh="每件作品均有编号，永远独一无二。">Every piece numbered. No two the same. Ever.</p>
+        </div>
+        <div class="identity-card reveal">
+          <div class="identity-card-num">002</div>
+          <h3 data-en="Origin Story" data-zh="起源故事">Origin Story</h3>
+          <p data-en="Scan your ID to read the story of what's sealed inside your piece." data-zh="扫描编号，读取封存在你作品内的故事。">Scan your ID to read the story of what's sealed inside your piece.</p>
+        </div>
+        <div class="identity-card reveal">
+          <div class="identity-card-num">003</div>
+          <h3 data-en="Maker's Note" data-zh="创作者留言">Maker's Note</h3>
+          <p data-en="A personal message from the hands that made your piece." data-zh="来自制作你作品的那双手的私人留言。">A personal message from the hands that made your piece.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        function closeModal() { document.getElementById('policyModal').classList.remove('active'); }
+  <!-- NOTIFY -->
+  <section class="notify" id="notify">
+    <div>
+      <h2 class="reveal">Be the first to<br><em>own a moment.</em></h2>
+      <p class="notify-body reveal" data-en="First drop is coming. Leave your email and we'll reach you before anyone else." data-zh="首批即将上线。留下你的邮箱，我们会在所有人之前联系你。">First drop is coming. Leave your email and we'll reach you before anyone else.</p>
+    </div>
+    <div class="notify-form reveal">
+      <input type="text" class="notify-input" id="notifyName" placeholder="Your name" data-placeholder-en="Your name" data-placeholder-zh="你的名字" />
+      <input type="email" class="notify-input" id="notifyEmail" placeholder="Your email" data-placeholder-en="Your email" data-placeholder-zh="你的邮箱" />
+      <button class="notify-btn" onclick="handleNotify()" data-en="Notify Me" data-zh="通知我">Notify Me</button>
+      <p id="notifyMsg" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--amber);opacity:0;transition:opacity 0.3s;margin-top:8px;" data-en="You're on the list. We'll be in touch." data-zh="你已在名单上，我们会联系你。">You're on the list. We'll be in touch.</p>
+    </div>
+  </section>
 
-        // 核心渲染逻辑
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                if(window.paypal) {
-                    Object.keys(prices).forEach(id => {
-                        paypal.Buttons({
-                            style: { layout: 'vertical', color: 'black', shape: 'rect', height: 40 },
-                            createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: prices[id] } }] })
-                        }).render('#paypal-btn-' + id);
-                    });
-                }
-            }, 1000);
-        });
-    </script>
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">SOULMADE</div>
+        <p class="footer-tagline" data-en="Time stops. Beauty stays.<br>Handcrafted in Nanchang, China." data-zh="时间停止，美永远在。<br>手工制作于中国南昌。">Time stops. Beauty stays.<br>Handcrafted in Nanchang, China.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Navigate" data-zh="导航">Navigate</h4>
+        <ul>
+          <li><a href="#about" data-en="Our Story" data-zh="品牌故事">Our Story</a></li>
+          <li><a href="#shop" data-en="Shop" data-zh="商店">Shop</a></li>
+          <li><a href="#identity" data-en="Each Piece" data-zh="每件作品">Each Piece</a></li>
+          <li><a href="#notify" data-en="Stay Close" data-zh="订阅">Stay Close</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Connect" data-zh="联系">Connect</h4>
+        <ul>
+          <li><a href="mailto:hello@soulmade.shop" data-en="Email Us" data-zh="发送邮件">Email Us</a></li>
+          <li><a href="#" data-en="Instagram" data-zh="Instagram">Instagram</a></li>
+          <li><a href="#" data-en="Pinterest" data-zh="Pinterest">Pinterest</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p data-en="© 2025 SOULMADE. All pieces reserved." data-zh="© 2025 SOULMADE. 版权所有。">© 2025 SOULMADE. All pieces reserved.</p>
+      <p data-en="Made with soul in Nanchang, China." data-zh="用灵魂制造于中国南昌。">Made with soul in Nanchang, China.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    });
+
+    function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    // Language toggle
+    let isZh = false;
+    document.getElementById('langToggle').addEventListener('click', () => {
+      isZh = !isZh;
+      document.getElementById('langToggle').textContent = isZh ? 'EN' : '中文';
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.innerHTML = isZh ? el.dataset.zh : el.dataset.en;
+      });
+      document.querySelectorAll('[data-placeholder-en]').forEach(el => {
+        el.placeholder = isZh ? el.dataset.placeholderZh : el.dataset.placeholderEn;
+      });
+    });
+
+    // Mobile menu
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.add('open');
+    });
+    document.getElementById('mobileClose').addEventListener('click', closeMobile);
+    function closeMobile() {
+      document.getElementById('mobileMenu').classList.remove('open');
+    }
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => obs.observe(r));
+
+    // Notify
+    function handleNotify() {
+      const name = document.getElementById('notifyName').value.trim();
+      const email = document.getElementById('notifyEmail').value.trim();
+      const msg = document.getElementById('notifyMsg');
+      if (!email || !email.includes('@')) return;
+      msg.style.opacity = '1';
+      document.getElementById('notifyName').value = '';
+      document.getElementById('notifyEmail').value = '';
+    }
+  </script>
 </body>
 </html>
