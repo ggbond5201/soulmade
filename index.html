@@ -134,8 +134,7 @@
       text-transform: uppercase;
       color: var(--amber);
       margin-bottom: 24px;
-      opacity: 0;
-      animation: fadeUp 1s ease 0.3s forwards;
+      animation: fadeUp 1s ease 0.3s both;
     }
 
     .hero-title {
@@ -144,8 +143,7 @@
       line-height: 0.9;
       letter-spacing: -2px;
       margin-bottom: 40px;
-      opacity: 0;
-      animation: fadeUp 1s ease 0.5s forwards;
+      animation: fadeUp 1s ease 0.5s both;
     }
 
     .hero-title em {
@@ -158,8 +156,7 @@
       font-weight: 300;
       line-height: 1.7;
       max-width: 360px;
-      opacity: 0;
-      animation: fadeUp 1s ease 0.7s forwards;
+      animation: fadeUp 1s ease 0.7s both;
       color: #5a5048;
     }
 
@@ -222,8 +219,7 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      opacity: 0;
-      animation: fadeUp 1s ease 1.2s forwards;
+      animation: fadeUp 1s ease 1.2s both;
     }
 
     .hero-scroll span {
@@ -1552,6 +1548,7 @@
       };
       document.head.appendChild(script);
     }
+    function handleNotify() {
       const name = document.getElementById('notifyName').value.trim();
       const email = document.getElementById('notifyEmail').value.trim();
       const msg = document.getElementById('notifyMsg');
