@@ -763,6 +763,127 @@
       opacity: 0.3;
     }
 
+    #legalBody h4 {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin: 24px 0 10px;
+    }
+
+    #legalBody p {
+      margin-bottom: 12px;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(13,11,9,0.85);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--cream);
+      max-width: 480px;
+      width: 100%;
+      padding: 48px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      opacity: 0.4;
+      color: var(--ink);
+    }
+
+    .modal-close:hover { opacity: 1; }
+
+    .modal-product-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    .modal-product-id {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--amber);
+      margin-bottom: 24px;
+    }
+
+    .modal-product-desc {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #5a5048;
+      margin-bottom: 24px;
+      font-weight: 300;
+    }
+
+    .modal-price {
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: -1px;
+      margin-bottom: 32px;
+    }
+
+    .modal-price span {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--amber);
+      margin-left: 8px;
+    }
+
+    .modal-divider {
+      height: 1px;
+      background: rgba(26,22,18,0.1);
+      margin: 24px 0;
+    }
+
+    .modal-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 20px;
+    }
+
+    #paypal-button-container {
+      min-height: 50px;
+    }
+
+    .paypal-placeholder {
+      border: 1px dashed rgba(26,22,18,0.2);
+      padding: 20px;
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(26,22,18,0.4);
+      line-height: 1.8;
+    }
+
     /* MOBILE NAV */
     .hamburger {
       display: none;
@@ -858,7 +979,7 @@
     /* RESPONSIVE */
     @media (max-width: 768px) {
       nav { padding: 20px 24px; }
-      .nav-links, .lang-toggle { display: none; }
+      .nav-links { display: none; }
       .hamburger { display: flex; }
 
       .hero { grid-template-columns: 1fr; }
@@ -1012,35 +1133,82 @@
   <section class="shop" id="shop">
     <div class="shop-header">
       <h2 class="reveal">The <em>Collection</em></h2>
-      <span class="shop-coming reveal" data-en="First drop coming soon" data-zh="首批即将上线">First drop coming soon</span>
+      <span class="shop-coming reveal" data-en="Handcrafted · Limited Pieces" data-zh="手工限量 · 每件独一无二">Handcrafted · Limited Pieces</span>
     </div>
     <div class="shop-grid">
-      <div class="product-card reveal">
-        <div class="product-img-placeholder">
-          <div class="placeholder-orb"></div>
+
+      <!-- Product 1 -->
+      <div class="product-card reveal" onclick="openModal('amber')">
+        <div class="product-img-placeholder" style="background:#f0e8d8;">
+          <div class="placeholder-orb" style="background:radial-gradient(circle at 35% 35%, rgba(255,230,150,0.95) 0%, rgba(200,140,40,0.7) 40%, rgba(100,60,10,0.5) 100%); width:140px;height:140px;box-shadow:inset -10px -10px 30px rgba(0,0,0,0.3),inset 6px 6px 16px rgba(255,220,100,0.5),0 0 40px rgba(200,160,60,0.3);"></div>
         </div>
         <div class="product-overlay">
-          <span data-en="Coming Soon" data-zh="即将上线">Coming Soon</span>
+          <span data-en="View & Buy" data-zh="查看购买">View & Buy</span>
+        </div>
+        <div class="product-info">
+          <div>
+            <div class="product-name" data-en="Amber Drop" data-zh="琥珀吊坠">Amber Drop</div>
+            <div class="product-id">SOULMADE-001</div>
+          </div>
+          <div style="font-size:20px;font-weight:300;">$24</div>
         </div>
       </div>
-      <div class="product-card reveal">
-        <div class="product-img-placeholder" style="background: #e0d8cc;">
-          <div class="placeholder-orb" style="background: radial-gradient(circle at 35% 35%, rgba(200,255,220,0.9) 0%, rgba(100,180,120,0.6) 40%, rgba(30,80,40,0.4) 100%);"></div>
+
+      <!-- Product 2 -->
+      <div class="product-card reveal" onclick="openModal('forest')">
+        <div class="product-img-placeholder" style="background:#dde8dd;">
+          <div class="placeholder-orb" style="background:radial-gradient(circle at 35% 35%, rgba(180,240,180,0.95) 0%, rgba(60,160,80,0.7) 40%, rgba(10,60,20,0.5) 100%); width:120px;height:180px;border-radius:60px;box-shadow:inset -8px -8px 24px rgba(0,0,0,0.3),inset 4px 4px 12px rgba(180,255,180,0.4);"></div>
         </div>
         <div class="product-overlay">
-          <span data-en="Coming Soon" data-zh="即将上线">Coming Soon</span>
+          <span data-en="View & Buy" data-zh="查看购买">View & Buy</span>
+        </div>
+        <div class="product-info">
+          <div>
+            <div class="product-name" data-en="Forest Keychain" data-zh="森林钥匙扣">Forest Keychain</div>
+            <div class="product-id">SOULMADE-002</div>
+          </div>
+          <div style="font-size:20px;font-weight:300;">$18</div>
         </div>
       </div>
-      <div class="product-card reveal">
-        <div class="product-img-placeholder" style="background: #ddd5e8;">
-          <div class="placeholder-orb" style="background: radial-gradient(circle at 35% 35%, rgba(240,220,255,0.9) 0%, rgba(160,120,200,0.6) 40%, rgba(60,20,80,0.4) 100%);"></div>
+
+      <!-- Product 3 -->
+      <div class="product-card reveal" onclick="openModal('twilight')">
+        <div class="product-img-placeholder" style="background:#1a1420;">
+          <div class="placeholder-orb" style="background:radial-gradient(circle at 35% 35%, rgba(220,180,255,0.95) 0%, rgba(120,60,180,0.7) 40%, rgba(30,10,60,0.8) 100%); width:160px;height:160px;box-shadow:inset -12px -12px 40px rgba(0,0,0,0.5),inset 8px 8px 20px rgba(200,150,255,0.3),0 0 60px rgba(120,60,180,0.4);"></div>
         </div>
         <div class="product-overlay">
-          <span data-en="Coming Soon" data-zh="即将上线">Coming Soon</span>
+          <span data-en="View & Buy" data-zh="查看购买">View & Buy</span>
+        </div>
+        <div class="product-info">
+          <div>
+            <div class="product-name" data-en="Twilight Orb" data-zh="暮色摆件">Twilight Orb</div>
+            <div class="product-id">SOULMADE-003</div>
+          </div>
+          <div style="font-size:20px;font-weight:300;">$32</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PRODUCT MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModal()">CLOSE ✕</button>
+      <div class="modal-product-name" id="modalName"></div>
+      <div class="modal-product-id" id="modalId"></div>
+      <div class="modal-product-desc" id="modalDesc"></div>
+      <div class="modal-price" id="modalPrice"></div>
+      <div class="modal-divider"></div>
+      <div class="modal-label" data-en="Pay with PayPal" data-zh="PayPal付款">Pay with PayPal</div>
+      <div id="paypal-button-container">
+        <div class="paypal-placeholder" id="paypalPlaceholder">
+          PayPal checkout will appear here.<br>
+          <span style="color:var(--amber);">Client ID not yet configured.</span>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
   <!-- IDENTITY SYSTEM -->
   <section class="identity" id="identity">
@@ -1082,6 +1250,16 @@
     </div>
   </section>
 
+  <!-- LEGAL MODAL -->
+  <div class="modal-overlay" id="legalOverlay" onclick="if(event.target===this)closeLegal()">
+    <div class="modal" style="max-width:640px;">
+      <button class="modal-close" onclick="closeLegal()">CLOSE ✕</button>
+      <div class="modal-product-id" id="legalUpdated"></div>
+      <div class="modal-product-name" id="legalTitle" style="font-size:28px;margin-bottom:24px;"></div>
+      <div id="legalBody" style="font-size:15px;line-height:1.9;color:#5a5048;font-weight:300;"></div>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer>
     <div class="footer-top">
@@ -1109,7 +1287,12 @@
     </div>
     <div class="footer-bottom">
       <p data-en="© 2025 SOULMADE. All pieces reserved." data-zh="© 2025 SOULMADE. 版权所有。">© 2025 SOULMADE. All pieces reserved.</p>
-      <p data-en="Made with soul in Nanchang, China." data-zh="用灵魂制造于中国南昌。">Made with soul in Nanchang, China.</p>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;">
+        <button onclick="openLegal('privacy')" style="background:none;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cream);opacity:0.3;cursor:pointer;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3">PRIVACY POLICY</button>
+        <button onclick="openLegal('terms')" style="background:none;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cream);opacity:0.3;cursor:pointer;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3">TERMS OF SERVICE</button>
+        <button onclick="openLegal('refund')" style="background:none;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cream);opacity:0.3;cursor:pointer;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3">REFUNDS</button>
+        <button onclick="openLegal('shipping')" style="background:none;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cream);opacity:0.3;cursor:pointer;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3">SHIPPING</button>
+      </div>
     </div>
   </footer>
 
@@ -1165,8 +1348,210 @@
     }, { threshold: 0.1 });
     reveals.forEach(r => obs.observe(r));
 
-    // Notify
-    function handleNotify() {
+    // Legal pages
+    const legalContent = {
+      privacy: {
+        title: 'Privacy Policy',
+        updated: 'Last updated: January 2025',
+        body: `
+          <p>At SOULMADE ("we", "our", "us"), we respect your privacy. This policy explains how we collect and use your information when you visit soulmade.shop.</p>
+
+          <h4>Information We Collect</h4>
+          <p>We collect your name and email address when you sign up for our notification list. When you make a purchase through PayPal, PayPal processes your payment and shipping information directly — we receive only what is necessary to fulfill your order.</p>
+
+          <h4>How We Use Your Information</h4>
+          <p>We use your email to notify you about new product drops and order updates. We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
+
+          <h4>Cookies</h4>
+          <p>Our website may use basic cookies to improve your browsing experience. You can disable cookies in your browser settings at any time.</p>
+
+          <h4>Your Rights (GDPR)</h4>
+          <p>If you are located in the European Economic Area, you have the right to access, correct, or delete your personal data at any time. To exercise these rights, contact us at hello@soulmade.shop.</p>
+
+          <h4>Contact</h4>
+          <p>For any privacy-related questions, please email us at hello@soulmade.shop.</p>
+        `
+      },
+      terms: {
+        title: 'Terms of Service',
+        updated: 'Last updated: January 2025',
+        body: `
+          <p>By accessing and using SOULMADE (soulmade.shop), you agree to be bound by these Terms of Service. Please read them carefully.</p>
+
+          <h4>Products</h4>
+          <p>All SOULMADE pieces are handcrafted and one-of-a-kind. Product images are representative — due to the handmade nature of our work, slight variations in color, shape, and inclusions are normal and expected. These variations make each piece unique.</p>
+
+          <h4>Orders & Payment</h4>
+          <p>All orders are processed through PayPal. By placing an order, you confirm that you are authorized to use the payment method provided. Prices are listed in USD and are subject to change without notice.</p>
+
+          <h4>Intellectual Property</h4>
+          <p>All content on this website — including designs, photographs, text, and brand identity — is owned by SOULMADE and may not be reproduced without written permission.</p>
+
+          <h4>Limitation of Liability</h4>
+          <p>SOULMADE is not liable for any indirect or consequential damages arising from the use of our products or website. Our liability is limited to the value of the product purchased.</p>
+
+          <h4>Changes to Terms</h4>
+          <p>We reserve the right to update these terms at any time. Continued use of our website constitutes acceptance of any changes.</p>
+
+          <h4>Contact</h4>
+          <p>For questions about these terms, contact us at hello@soulmade.shop.</p>
+        `
+      },
+      refund: {
+        title: 'Refund & Return Policy',
+        updated: 'Last updated: January 2025',
+        body: `
+          <p>We want you to love your SOULMADE piece. If something isn't right, we're here to help.</p>
+
+          <h4>Returns</h4>
+          <p>We accept return requests within <strong>14 days</strong> of delivery. To be eligible, items must be unused, undamaged, and in their original packaging. Because each piece is handmade and one-of-a-kind, we cannot offer exchanges for a different design.</p>
+
+          <h4>Damaged or Defective Items</h4>
+          <p>If your item arrives damaged, please contact us within <strong>48 hours</strong> of delivery with photos of the damage at hello@soulmade.shop. We will offer a full refund or replacement at no additional cost.</p>
+
+          <h4>Refund Process</h4>
+          <p>Once we receive and inspect your return, we will process your refund within 5–7 business days. Refunds are issued to your original payment method via PayPal.</p>
+
+          <h4>Shipping Costs</h4>
+          <p>Return shipping costs are the responsibility of the buyer unless the item arrived damaged or defective. Original shipping fees are non-refundable.</p>
+
+          <h4>Non-Returnable Items</h4>
+          <p>Custom or personalized pieces cannot be returned unless they arrive damaged.</p>
+
+          <h4>Contact</h4>
+          <p>To initiate a return, email us at hello@soulmade.shop with your order number and reason for return.</p>
+        `
+      },
+      shipping: {
+        title: 'Shipping Policy',
+        updated: 'Last updated: January 2025',
+        body: `
+          <p>All SOULMADE pieces are handcrafted to order in Nanchang, China. Please read our shipping information carefully before placing your order.</p>
+
+          <h4>Processing Time</h4>
+          <p>Each piece is made by hand. Please allow <strong>3–7 business days</strong> for your order to be prepared, inspected, and carefully packaged before shipping.</p>
+
+          <h4>Shipping Times</h4>
+          <p><strong>United States:</strong> 10–20 business days<br>
+          <strong>Europe:</strong> 12–25 business days<br>
+          <strong>Australia & New Zealand:</strong> 12–20 business days<br>
+          <strong>Rest of World:</strong> 15–30 business days</p>
+          <p>These are estimates and may vary due to customs processing and local postal conditions.</p>
+
+          <h4>Tracking</h4>
+          <p>Once your order ships, you will receive a tracking number via email. Please allow 2–3 business days for tracking information to update.</p>
+
+          <h4>Customs & Duties</h4>
+          <p>International orders may be subject to customs fees, import duties, or taxes imposed by your country. These charges are the buyer's responsibility and are not included in our prices.</p>
+
+          <h4>Lost Packages</h4>
+          <p>If your package has not arrived within the estimated timeframe, please contact us at hello@soulmade.shop and we will investigate with the carrier.</p>
+        `
+      }
+    };
+
+    function openLegal(type) {
+      const content = legalContent[type];
+      document.getElementById('legalTitle').textContent = content.title;
+      document.getElementById('legalUpdated').textContent = content.updated;
+      document.getElementById('legalBody').innerHTML = content.body;
+      document.getElementById('legalOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLegal() {
+      document.getElementById('legalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Products data
+    const products = {
+      amber: {
+        name: 'Amber Drop',
+        nameZh: '琥珀吊坠',
+        id: 'SOULMADE-001',
+        price: 24,
+        desc: 'A warm golden pendant capturing the light of a late afternoon in Nanchang. Poured by hand, polished to crystal clarity. Comes with its origin story card.',
+        descZh: '一枚温暖的金色吊坠，封存了南昌某个午后的光线。手工注胶，打磨至晶莹剔透。附带起源故事卡片。'
+      },
+      forest: {
+        name: 'Forest Keychain',
+        nameZh: '森林钥匙扣',
+        id: 'SOULMADE-002',
+        price: 18,
+        desc: 'Deep green botanicals suspended in resin — a miniature forest you can carry. Each one unique. No two pieces ever the same.',
+        descZh: '深绿色植物标本悬浮于树脂中，一片可以随身携带的微型森林。每一件都独一无二，永远没有两件相同。'
+      },
+      twilight: {
+        name: 'Twilight Orb',
+        nameZh: '暮色摆件',
+        id: 'SOULMADE-003',
+        price: 32,
+        desc: 'A sphere of deep purple resin holding the last light before nightfall. A piece of the sky, frozen forever. Display it where light touches.',
+        descZh: '深紫色树脂球体，封存了夜幕降临前最后的光芒。一片被永久冻结的天空。放在光线能触碰的地方展示。'
+      }
+    };
+
+    const PAYPAL_CLIENT_ID = 'YOUR_CLIENT_ID';
+    let currentProduct = null;
+    let paypalLoaded = false;
+
+    function openModal(productKey) {
+      currentProduct = products[productKey];
+      const modal = document.getElementById('modal');
+      const overlay = document.getElementById('modalOverlay');
+
+      document.getElementById('modalName').textContent = isZh ? currentProduct.nameZh : currentProduct.name;
+      document.getElementById('modalId').textContent = currentProduct.id;
+      document.getElementById('modalDesc').textContent = isZh ? currentProduct.descZh : currentProduct.desc;
+      document.getElementById('modalPrice').innerHTML = `$${currentProduct.price} <span>USD</span>`;
+
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      if (PAYPAL_CLIENT_ID !== 'YOUR_CLIENT_ID') {
+        loadPayPal();
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+      document.getElementById('paypal-button-container').innerHTML = '<div class="paypal-placeholder" id="paypalPlaceholder">PayPal checkout will appear here.<br><span style="color:var(--amber);">Client ID not yet configured.</span></div>';
+      paypalLoaded = false;
+    }
+
+    function closeModalOutside(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    function loadPayPal() {
+      if (paypalLoaded) return;
+      paypalLoaded = true;
+      const container = document.getElementById('paypal-button-container');
+      container.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:2px;opacity:0.4;padding:16px 0;">Loading PayPal...</div>';
+
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`;
+      script.onload = () => {
+        container.innerHTML = '';
+        paypal.Buttons({
+          createOrder: (data, actions) => actions.order.create({
+            purchase_units: [{
+              description: `${currentProduct.name} (${currentProduct.id})`,
+              amount: { value: currentProduct.price.toString() }
+            }]
+          }),
+          onApprove: (data, actions) => actions.order.capture().then(() => {
+            container.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:12px;letter-spacing:2px;color:var(--amber);padding:20px 0;text-align:center;">✓ Payment successful. Thank you for owning a moment.</div>';
+          }),
+          onError: () => {
+            container.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:2px;color:#c0392b;padding:16px 0;">Payment error. Please try again.</div>';
+          }
+        }).render('#paypal-button-container');
+      };
+      document.head.appendChild(script);
+    }
       const name = document.getElementById('notifyName').value.trim();
       const email = document.getElementById('notifyEmail').value.trim();
       const msg = document.getElementById('notifyMsg');
