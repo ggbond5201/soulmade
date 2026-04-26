@@ -1548,14 +1548,25 @@
       };
       document.head.appendChild(script);
     }
-    function handleNotify() {
+    async function handleNotify() {
       const name = document.getElementById('notifyName').value.trim();
       const email = document.getElementById('notifyEmail').value.trim();
       const msg = document.getElementById('notifyMsg');
       if (!email || !email.includes('@')) return;
-      msg.style.opacity = '1';
-      document.getElementById('notifyName').value = '';
-      document.getElementById('notifyEmail').value = '';
+      try {
+        await fetch('https://formspree.io/f/mgorqjol', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email })
+        });
+        msg.textContent = "You're on the list. We'll be in touch.";
+        msg.style.opacity = '1';
+        document.getElementById('notifyName').value = '';
+        document.getElementById('notifyEmail').value = '';
+      } catch(e) {
+        msg.textContent = 'Something went wrong. Please try again.';
+        msg.style.opacity = '1';
+      }
     }
   </script>
 </body>
