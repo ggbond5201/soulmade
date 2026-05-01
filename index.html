@@ -25,251 +25,1549 @@
       background: var(--cream);
       color: var(--ink);
       font-family: 'Cormorant Garamond', serif;
-      line-height: 1.6;
       overflow-x: hidden;
+      cursor: none;
     }
 
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--amber);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--amber);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.15s ease;
+      opacity: 0.6;
+    }
+
+    /* NAV */
     nav {
       position: fixed;
       top: 0;
       width: 100%;
-      padding: 1.5rem 2rem;
+      z-index: 100;
+      padding: 24px 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      z-index: 100;
-      mix-blend-mode: difference;
+      mix-blend-mode: multiply;
     }
 
     .nav-logo {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.5rem;
-      letter-spacing: 0.2rem;
-      color: var(--cream);
+      font-size: 22px;
+      letter-spacing: 4px;
+      color: var(--ink);
       text-decoration: none;
     }
 
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    .lang-toggle {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      background: none;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      padding: 6px 14px;
+      cursor: none;
+      opacity: 0.6;
+      transition: all 0.3s;
+    }
+
+    .lang-toggle:hover { opacity: 1; background: var(--ink); color: var(--cream); }
+
+    /* HERO */
     .hero {
-      height: 100vh;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-      position: relative;
-    }
-
-    .hero-content {
+      justify-content: flex-end;
+      padding: 120px 48px 80px;
       position: relative;
       z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 24px;
+      animation: fadeUp 1s ease 0.3s both;
+    }
+
+    .hero-title {
+      font-size: clamp(56px, 8vw, 110px);
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -2px;
+      margin-bottom: 40px;
+      animation: fadeUp 1s ease 0.5s both;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--amber);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 360px;
+      animation: fadeUp 1s ease 0.7s both;
+      color: #5a5048;
+    }
+
+    .hero-right {
+      position: relative;
+      background: var(--ink);
+      overflow: hidden;
+    }
+
+    .hero-right::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(200,169,110,0.3) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(139,69,19,0.2) 0%, transparent 50%);
+    }
+
+    .hero-visual {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .resin-orb {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%,
+        rgba(255,240,200,0.9) 0%,
+        rgba(200,169,110,0.7) 30%,
+        rgba(139,100,40,0.5) 60%,
+        rgba(50,30,10,0.8) 100%);
+      box-shadow:
+        inset -20px -20px 60px rgba(0,0,0,0.5),
+        inset 10px 10px 30px rgba(255,220,150,0.3),
+        0 0 80px rgba(200,169,110,0.2),
+        0 0 160px rgba(200,169,110,0.1);
+      animation: float 6s ease-in-out infinite;
+      position: relative;
+    }
+
+    .resin-orb::after {
+      content: '';
+      position: absolute;
+      top: 15%;
+      left: 20%;
+      width: 40%;
+      height: 25%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: rotate(-20deg);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 48px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      animation: fadeUp 1s ease 1.2s both;
+    }
+
+    .hero-scroll span {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+
+    .scroll-line {
+      width: 60px;
+      height: 1px;
+      background: var(--ink);
+      opacity: 0.3;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--amber);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+
+    /* MARQUEE */
+    .marquee-section {
+      background: var(--ink);
+      padding: 20px 0;
+      overflow: hidden;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 60px;
+      animation: marquee 20s linear infinite;
+      white-space: nowrap;
+    }
+
+    .marquee-track span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      letter-spacing: 4px;
+      color: var(--amber);
+      opacity: 0.7;
+    }
+
+    .marquee-track .dot {
+      color: var(--rust);
+      opacity: 1;
+    }
+
+    /* ABOUT */
+    .about {
+      padding: 160px 48px;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .about-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--amber);
+      padding-top: 8px;
+    }
+
+    .about-content h2 {
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 40px;
+      letter-spacing: -1px;
+    }
+
+    .about-content h2 em {
+      font-style: italic;
+      color: var(--amber);
+    }
+
+    .about-body {
+      font-size: 18px;
+      line-height: 1.9;
+      color: #5a5048;
+      font-weight: 300;
+      max-width: 600px;
+    }
+
+    .about-body p + p { margin-top: 24px; }
+
+    .about-quote {
+      margin-top: 60px;
+      padding: 40px;
+      border-left: 2px solid var(--amber);
+      background: rgba(200,169,110,0.05);
+    }
+
+    .about-quote p {
+      font-size: 22px;
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .about-quote cite {
+      display: block;
+      margin-top: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--amber);
+      font-style: normal;
+    }
+
+    /* PROCESS */
+    .process {
+      padding: 120px 48px;
+      background: var(--ink);
+      color: var(--cream);
+    }
+
+    .process-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 80px;
+    }
+
+    .process-header h2 {
+      font-size: clamp(40px, 6vw, 80px);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+
+    .process-header h2 em { font-style: italic; color: var(--amber); }
+
+    .process-header p {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      opacity: 0.4;
+      max-width: 200px;
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    .process-step {
+      padding: 48px 40px;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      transition: background 0.4s;
+    }
+
+    .process-step:hover { background: rgba(200,169,110,0.08); }
+
+    .step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 80px;
+      color: rgba(200,169,110,0.15);
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+
+    .step-title {
+      font-size: 20px;
+      font-weight: 300;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .step-body {
+      font-size: 14px;
+      line-height: 1.8;
+      opacity: 0.5;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* SHOP */
+    .shop {
+      padding: 160px 48px;
+    }
+
+    .shop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 80px;
+    }
+
+    .shop-header h2 {
+      font-size: clamp(40px, 6vw, 80px);
+      font-weight: 300;
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+
+    .shop-header h2 em { font-style: italic; color: var(--amber); }
+
+    .shop-coming {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .product-card {
+      position: relative;
+      aspect-ratio: 3/4;
+      background: var(--mist);
+      overflow: hidden;
+      cursor: none;
+    }
+
+    .product-card:hover .product-overlay { opacity: 1; }
+    .product-card:hover .product-img-placeholder { transform: scale(1.05); }
+
+    .product-img-placeholder {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .placeholder-orb {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%,
+        rgba(255,240,200,0.9) 0%,
+        rgba(200,169,110,0.6) 40%,
+        rgba(100,60,20,0.4) 100%);
+      box-shadow: inset -8px -8px 20px rgba(0,0,0,0.3),
+                  inset 4px 4px 12px rgba(255,220,150,0.4);
+    }
+
+    .product-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(26,22,18,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.4s;
+      gap: 16px;
+    }
+
+    .product-overlay span {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+
+    .product-info {
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .product-name {
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: -0.3px;
+    }
+
+    .product-id {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--amber);
+      opacity: 0.7;
+    }
+
+    /* IDENTITY SYSTEM */
+    .identity {
+      padding: 160px 48px;
+      background: var(--deep);
+      color: var(--cream);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .identity::before {
+      content: 'SOULMADE';
+      position: absolute;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 300px;
+      color: rgba(255,255,255,0.02);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .identity-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
       text-align: center;
     }
 
-    .logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(3rem, 10vw, 6rem);
-      letter-spacing: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .tagline {
+    .identity-label {
       font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.3rem;
+      font-size: 10px;
+      letter-spacing: 4px;
       text-transform: uppercase;
-      opacity: 0.7;
-      max-width: 600px;
-      transition: all 0.5s ease;
+      color: var(--amber);
+      margin-bottom: 40px;
     }
 
-    /* 记忆文字的特殊样式 */
-    .memory-content {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
-      text-transform: none;
-      font-style: italic;
-      letter-spacing: 0.05rem;
-      margin-bottom: 0.5rem;
+    .identity h2 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 40px;
     }
 
-    .concept, .gallery, .cta {
-      padding: 8rem 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
+    .identity h2 em { font-style: italic; color: var(--amber); }
+
+    .identity-body {
+      font-size: 18px;
+      line-height: 1.9;
+      opacity: 0.6;
+      font-weight: 300;
+      margin-bottom: 60px;
     }
 
-    .concept-grid {
+    .identity-cards {
       display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 4rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 80px;
+    }
+
+    .identity-card {
+      padding: 48px 32px;
+      border: 1px solid rgba(255,255,255,0.06);
+      text-align: left;
+    }
+
+    .identity-card-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--amber);
+      margin-bottom: 24px;
+    }
+
+    .identity-card h3 {
+      font-size: 22px;
+      font-weight: 300;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .identity-card p {
+      font-size: 13px;
+      line-height: 1.8;
+      opacity: 0.5;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* NOTIFY */
+    .notify {
+      padding: 160px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
       align-items: center;
     }
 
-    .concept-text h2 {
-      font-size: 2.5rem;
-      font-weight: 400;
-      margin-bottom: 2rem;
-      letter-spacing: 0.2rem;
+    .notify h2 {
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -2px;
     }
 
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-top: 4rem;
+    .notify h2 em { font-style: italic; color: var(--amber); }
+
+    .notify-body {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #5a5048;
+      margin-top: 24px;
     }
 
-    .gallery-item {
-      position: relative;
-      aspect-ratio: 4/5;
-      overflow: hidden;
-      background: var(--mist);
-      border-radius: 4px;
+    .notify-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    .gallery-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: grayscale(20%);
-      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    .notify-input {
+      background: none;
+      border: none;
+      border-bottom: 1px solid rgba(26,22,18,0.3);
+      padding: 16px 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.3s;
     }
 
-    .gallery-item:hover img {
-      transform: scale(1.05);
-    }
+    .notify-input::placeholder { color: rgba(26,22,18,0.3); }
+    .notify-input:focus { border-color: var(--amber); }
 
-    .cta {
-      text-align: center;
+    .notify-btn {
+      margin-top: 16px;
       background: var(--ink);
       color: var(--cream);
-      max-width: 100%;
-      padding: 10rem 2rem;
-    }
-
-    .cta h2 {
-      font-size: 3rem;
-      margin-bottom: 2rem;
-      letter-spacing: 0.4rem;
-    }
-
-    .paypal-btn {
-      background: var(--cream);
-      color: var(--ink);
       border: none;
-      padding: 1rem 2rem;
+      padding: 20px 48px;
       font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      letter-spacing: 0.2rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border-radius: 2px;
-      margin-top: 2rem;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: none;
+      align-self: flex-start;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
     }
 
+    .notify-btn:hover { background: var(--amber); }
+
+    .notify-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.1);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+
+    .notify-btn:hover::after { transform: translateX(100%); }
+
+    /* FOOTER */
     footer {
-      padding: 4rem 2rem;
-      text-align: center;
-      border-top: 1px solid var(--mist);
+      background: var(--ink);
+      color: var(--cream);
+      padding: 80px 48px 40px;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 80px;
+      padding-bottom: 60px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .footer-brand-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+    }
+
+    .footer-tagline {
+      font-size: 16px;
+      font-style: italic;
+      opacity: 0.4;
+      line-height: 1.7;
+    }
+
+    .footer-col h4 {
       font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.1rem;
-      opacity: 0.5;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 24px;
+    }
+
+    .footer-col ul { list-style: none; }
+
+    .footer-col ul li {
+      margin-bottom: 12px;
+    }
+
+    .footer-col ul li a {
+      font-size: 15px;
+      color: var(--cream);
+      text-decoration: none;
+      opacity: 0.4;
+      transition: opacity 0.3s;
+    }
+
+    .footer-col ul li a:hover { opacity: 1; }
+
+    .footer-bottom {
+      padding-top: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-bottom p {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      opacity: 0.3;
+    }
+
+    #legalBody h4 {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin: 24px 0 10px;
+    }
+
+    #legalBody p {
+      margin-bottom: 12px;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(13,11,9,0.85);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--cream);
+      max-width: 480px;
+      width: 100%;
+      padding: 48px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      opacity: 0.4;
+      color: var(--ink);
+    }
+
+    .modal-close:hover { opacity: 1; }
+
+    .modal-product-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    .modal-product-id {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--amber);
+      margin-bottom: 24px;
+    }
+
+    .modal-product-desc {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #5a5048;
+      margin-bottom: 24px;
+      font-weight: 300;
+    }
+
+    .modal-price {
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: -1px;
+      margin-bottom: 32px;
+    }
+
+    .modal-price span {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--amber);
+      margin-left: 8px;
+    }
+
+    .modal-divider {
+      height: 1px;
+      background: rgba(26,22,18,0.1);
+      margin: 24px 0;
+    }
+
+    .modal-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 20px;
+    }
+
+    #paypal-button-container {
+      min-height: 50px;
+    }
+
+    .paypal-placeholder {
+      border: 1px dashed rgba(26,22,18,0.2);
+      padding: 20px;
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(26,22,18,0.4);
+      line-height: 1.8;
+    }
+
+    /* MOBILE NAV */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: none;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--ink);
+      transition: all 0.3s;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 4px;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.3;
+      transition: opacity 0.3s;
+    }
+
+    .mobile-menu a:hover { opacity: 1; }
+
+    .mobile-close {
+      position: absolute;
+      top: 24px;
+      right: 48px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      background: none;
+      border: none;
+      cursor: none;
+      opacity: 0.4;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(2deg); }
+      66% { transform: translateY(-10px) rotate(-1deg); }
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes scrollLine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* SCROLL REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 120px 24px 80px; }
+
+      .about { grid-template-columns: 1fr; padding: 80px 24px; gap: 32px; }
+
+      .process { padding: 80px 24px; }
+      .process-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .process-steps { grid-template-columns: 1fr 1fr; }
+
+      .shop { padding: 80px 24px; }
+      .shop-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .shop-grid { grid-template-columns: 1fr 1fr; }
+
+      .identity { padding: 80px 24px; }
+      .identity-cards { grid-template-columns: 1fr; }
+
+      .notify { grid-template-columns: 1fr; padding: 80px 24px; gap: 48px; }
+
+      footer { padding: 60px 24px 32px; }
+      .footer-top { grid-template-columns: 1fr; gap: 40px; }
+      .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
     }
   </style>
 </head>
 <body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
   <nav>
-    <a href=" " class="nav-logo">SOULMADE</a >
+    <a href="#" class="nav-logo">SOULMADE</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about" data-en="Story" data-zh="品牌故事">Story</a></li>
+      <li><a href="#shop" data-en="Shop" data-zh="商店">Shop</a></li>
+      <li><a href="#identity" data-en="Each Piece" data-zh="每件作品">Each Piece</a></li>
+      <li><a href="#notify" data-en="Stay Close" data-zh="订阅">Stay Close</a></li>
+    </ul>
+    <button class="lang-toggle" id="langToggle">中文</button>
+    <button class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
-  <section class="hero">
-    <div class="hero-content">
-      <h1 class="logo">SOULMADE</h1>
-      <p class="tagline" id="soul-display">EVERY ORDINARY PERSON IS AN ARTIST</p >
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose">CLOSE ✕</button>
+    <a href="#about" onclick="closeMobile()" data-en="Story" data-zh="品牌故事">Story</a>
+    <a href="#shop" onclick="closeMobile()" data-en="Shop" data-zh="商店">Shop</a>
+    <a href="#identity" onclick="closeMobile()" data-en="Each Piece" data-zh="每件作品">Each Piece</a>
+    <a href="#notify" onclick="closeMobile()" data-en="Stay Close" data-zh="订阅">Stay Close</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-left">
+      <p class="hero-eyebrow" data-en="Handcrafted UV Resin · Nanchang, China" data-zh="手工UV滴胶 · 中国南昌">Handcrafted UV Resin · Nanchang, China</p>
+      <h1 class="hero-title">
+        Time<br>
+        <em>Stops.</em><br>
+        Beauty<br>
+        Stays.
+      </h1>
+      <p class="hero-sub" data-en="Each SOULMADE piece is a moment sealed forever in resin — poured by hand, finished with intention, made for the right person." data-zh="每一件SOULMADE作品，都是被永久封存在树脂中的瞬间——手工注胶，用心打磨，为对的人而作。">Each SOULMADE piece is a moment sealed forever in resin — poured by hand, finished with intention, made for the right person.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="resin-orb"></div>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span data-en="Scroll" data-zh="滚动">Scroll</span>
     </div>
   </section>
 
-  <section id="concept" class="concept">
-    <div class="concept-grid">
-      <div class="concept-text">
-        <h2>Frozen in Time</h2>
-        <p>每一块滴胶都是时间的琥珀，封存着独一无二的自然灵魂。我们将传统工艺与数字情感结合，让每一个瞬间都在方寸之间获得永恒。</p >
-      </div>
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <span>HANDCRAFTED</span><span class="dot">◆</span>
+      <span>UV RESIN</span><span class="dot">◆</span>
+      <span>LIMITED PIECES</span><span class="dot">◆</span>
+      <span>NANCHANG MADE</span><span class="dot">◆</span>
+      <span>FROZEN TIME</span><span class="dot">◆</span>
+      <span>SOULMADE</span><span class="dot">◆</span>
+      <span>HANDCRAFTED</span><span class="dot">◆</span>
+      <span>UV RESIN</span><span class="dot">◆</span>
+      <span>LIMITED PIECES</span><span class="dot">◆</span>
+      <span>NANCHANG MADE</span><span class="dot">◆</span>
+      <span>FROZEN TIME</span><span class="dot">◆</span>
+      <span>SOULMADE</span><span class="dot">◆</span>
     </div>
+  </div>
 
-    <div class="gallery-grid">
-      <div class="gallery-item">
-        < img src="p1.png" alt="Soulmade Piece 1" />
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about-label reveal" data-en="Our Story" data-zh="我们的故事">Our Story</div>
+    <div class="about-content">
+      <h2 class="reveal">
+        Some moments are too<br>
+        <em>beautiful</em> to let go.
+      </h2>
+      <div class="about-body reveal">
+        <p data-en="SOULMADE was born in Nanchang, China, where a young creator decided that art should mean something. Not mass-produced. Not algorithm-generated. But made by hand, with intention, and with soul." data-zh="SOULMADE 诞生于南昌，一个年轻的创作者决定：艺术应该有意义。不是批量复制，不是算法生成，而是用双手，用心，认真做出来的东西。">SOULMADE was born in Nanchang, China, where a young creator decided that art should mean something. Not mass-produced. Not algorithm-generated. But made by hand, with intention, and with soul.</p>
+        <p data-en="Each piece is poured, cured, and finished by one pair of hands. No factory. No duplicates. Just a single frozen moment, sealed in resin, waiting for the right person to carry it." data-zh="每一件作品都在南昌手工制作——注胶、固化、打磨，全程一双手完成。没有工厂，没有复刻，只有一个被封存的瞬间，等待对的人来珍藏。">Each piece is poured, cured, and finished by one pair of hands. No factory. No duplicates. Just a single frozen moment, sealed in resin, waiting for the right person to carry it.</p>
       </div>
-      <div class="gallery-item">
-        < img src="p2.png" alt="Soulmade Piece 2" />
-      </div>
-      <div class="gallery-item">
-        < img src="p3.png" alt="Soulmade Piece 3" />
+      <div class="about-quote reveal">
+        <p data-en='"When you own a SOULMADE piece, you own a moment someone poured themselves into."' data-zh='"拥有一件SOULMADE，就是拥有某人全力以赴的那一刻。"'>"When you own a SOULMADE piece, you own a moment someone poured themselves into."</p>
+        <cite data-en="— The Maker" data-zh="— 创作者">— The Maker</cite>
       </div>
     </div>
   </section>
 
-  <section class="cta">
-    <h2>Own a Moment</h2>
-    <p style="font-family: 'DM Mono', monospace; font-size: 0.8rem; letter-spacing: 0.2rem; opacity: 0.7;">HANDMADE IN NANCHANG / LIMITED EDITION</p >
-    <div id="paypal-button-container" style="margin-top: 3rem; max-width: 300px; margin-left: auto; margin-right: auto;"></div>
+  <!-- PROCESS -->
+  <section class="process" id="process">
+    <div class="process-header reveal">
+      <h2>How it's<br><em>made</em></h2>
+      <p data-en="Every step by hand. Every piece, one of a kind." data-zh="每一步亲手完成，每一件独一无二。">Every step by hand.<br>Every piece, one of a kind.</p>
+    </div>
+    <div class="process-steps">
+      <div class="process-step reveal">
+        <div class="step-num">01</div>
+        <div class="step-title" data-en="Collect" data-zh="采集">Collect</div>
+        <div class="step-body" data-en="Natural materials gathered with intention. Each element chosen for its story." data-zh="用心采集天然材料，每一个元素都因故事而被选择。">Natural materials gathered with intention. Each element chosen for its story.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">02</div>
+        <div class="step-title" data-en="Pour" data-zh="注胶">Pour</div>
+        <div class="step-body" data-en="UV resin mixed and poured by hand into custom molds. No shortcuts." data-zh="UV树脂手工调配，注入模具。没有捷径。">UV resin mixed and poured by hand into custom molds. No shortcuts.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">03</div>
+        <div class="step-title" data-en="Cure" data-zh="固化">Cure</div>
+        <div class="step-body" data-en="Set under UV light until crystal clear. The moment is sealed forever." data-zh="UV灯照射固化，直至晶莹剔透。瞬间永久封存。">Set under UV light until crystal clear. The moment is sealed forever.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">04</div>
+        <div class="step-title" data-en="Number" data-zh="编号">Number</div>
+        <div class="step-body" data-en="Each piece receives its unique SOULMADE ID. Your piece. Your moment." data-zh="每件作品获得独有的SOULMADE编号。你的作品，你的瞬间。">Each piece receives its unique SOULMADE ID. Your piece. Your moment.</div>
+      </div>
+    </div>
   </section>
 
+  <!-- SHOP -->
+  <section class="shop" id="shop">
+    <div class="shop-header">
+      <h2 class="reveal">The <em>Collection</em></h2>
+      <span class="shop-coming reveal" data-en="Handcrafted · Limited Pieces" data-zh="手工限量 · 每件独一无二">Handcrafted · Limited Pieces</span>
+    </div>
+    <div class="shop-grid">
+
+      <!-- Product 1 -->
+      <div class="product-card reveal" onclick="openModal('amber')">
+        <div class="product-img-placeholder" style="background:#f0e8d8;">
+          <div class="placeholder-orb" style="background:radial-gradient(circle at 35% 35%, rgba(255,230,150,0.95) 0%, rgba(200,140,40,0.7) 40%, rgba(100,60,10,0.5) 100%); width:140px;height:140px;box-shadow:inset -10px -10px 30px rgba(0,0,0,0.3),inset 6px 6px 16px rgba(255,220,100,0.5),0 0 40px rgba(200,160,60,0.3);"></div>
+        </div>
+        <div class="product-overlay">
+          <span data-en="View & Buy" data-zh="查看购买">View & Buy</span>
+        </div>
+        <div class="product-info">
+          <div>
+            <div class="product-name" data-en="Amber Drop" data-zh="琥珀吊坠">Amber Drop</div>
+            <div class="product-id">SOULMADE-001</div>
+          </div>
+          <div style="font-size:20px;font-weight:300;">$24</div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product-card reveal" onclick="openModal('forest')">
+        <div class="product-img-placeholder" style="background:#dde8dd;">
+          <div class="placeholder-orb" style="background:radial-gradient(circle at 35% 35%, rgba(180,240,180,0.95) 0%, rgba(60,160,80,0.7) 40%, rgba(10,60,20,0.5) 100%); width:120px;height:180px;border-radius:60px;box-shadow:inset -8px -8px 24px rgba(0,0,0,0.3),inset 4px 4px 12px rgba(180,255,180,0.4);"></div>
+        </div>
+        <div class="product-overlay">
+          <span data-en="View & Buy" data-zh="查看购买">View & Buy</span>
+        </div>
+        <div class="product-info">
+          <div>
+            <div class="product-name" data-en="Forest Keychain" data-zh="森林钥匙扣">Forest Keychain</div>
+            <div class="product-id">SOULMADE-002</div>
+          </div>
+          <div style="font-size:20px;font-weight:300;">$18</div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="product-card reveal" onclick="openModal('twilight')">
+        <div class="product-img-placeholder" style="background:#1a1420;">
+          <div class="placeholder-orb" style="background:radial-gradient(circle at 35% 35%, rgba(220,180,255,0.95) 0%, rgba(120,60,180,0.7) 40%, rgba(30,10,60,0.8) 100%); width:160px;height:160px;box-shadow:inset -12px -12px 40px rgba(0,0,0,0.5),inset 8px 8px 20px rgba(200,150,255,0.3),0 0 60px rgba(120,60,180,0.4);"></div>
+        </div>
+        <div class="product-overlay">
+          <span data-en="View & Buy" data-zh="查看购买">View & Buy</span>
+        </div>
+        <div class="product-info">
+          <div>
+            <div class="product-name" data-en="Twilight Orb" data-zh="暮色摆件">Twilight Orb</div>
+            <div class="product-id">SOULMADE-003</div>
+          </div>
+          <div style="font-size:20px;font-weight:300;">$32</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PRODUCT MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModal()">CLOSE ✕</button>
+      <div class="modal-product-name" id="modalName"></div>
+      <div class="modal-product-id" id="modalId"></div>
+      <div class="modal-product-desc" id="modalDesc"></div>
+      <div class="modal-price" id="modalPrice"></div>
+      <div class="modal-divider"></div>
+      <div class="modal-label" data-en="Pay with PayPal" data-zh="PayPal付款">Pay with PayPal</div>
+      <div id="paypal-button-container">
+        <div class="paypal-placeholder" id="paypalPlaceholder">
+          PayPal checkout will appear here.<br>
+          <span style="color:var(--amber);">Client ID not yet configured.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IDENTITY SYSTEM -->
+  <section class="identity" id="identity">
+    <div class="identity-inner">
+      <div class="identity-label reveal" data-en="The SOULMADE Promise" data-zh="SOULMADE的承诺">The SOULMADE Promise</div>
+      <h2 class="reveal">You are now a<br><em>keeper</em><br>of frozen time.</h2>
+      <p class="identity-body reveal" data-en="Every piece comes with a unique ID. Scan it to discover the story behind your moment — what was sealed inside, when it was made, and the hands that made it." data-zh="每件作品都附有独特编号。扫描查看你那份瞬间背后的故事——封存了什么，何时制作，以及制作它的那双手。">Every piece comes with a unique ID. Scan it to discover the story behind your moment — what was sealed inside, when it was made, and the hands that made it.</p>
+      <div class="identity-cards">
+        <div class="identity-card reveal">
+          <div class="identity-card-num">001</div>
+          <h3 data-en="Unique ID" data-zh="唯一编号">Unique ID</h3>
+          <p data-en="Every piece numbered. No two the same. Ever." data-zh="每件作品均有编号，永远独一无二。">Every piece numbered. No two the same. Ever.</p>
+        </div>
+        <div class="identity-card reveal">
+          <div class="identity-card-num">002</div>
+          <h3 data-en="Origin Story" data-zh="起源故事">Origin Story</h3>
+          <p data-en="Scan your ID to read the story of what's sealed inside your piece." data-zh="扫描编号，读取封存在你作品内的故事。">Scan your ID to read the story of what's sealed inside your piece.</p>
+        </div>
+        <div class="identity-card reveal">
+          <div class="identity-card-num">003</div>
+          <h3 data-en="Maker's Note" data-zh="创作者留言">Maker's Note</h3>
+          <p data-en="A personal message from the hands that made your piece." data-zh="来自制作你作品的那双手的私人留言。">A personal message from the hands that made your piece.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTIFY -->
+  <section class="notify" id="notify">
+    <div>
+      <h2 class="reveal">Be the first to<br><em>own a moment.</em></h2>
+      <p class="notify-body reveal" data-en="First drop is coming. Leave your email and we'll reach you before anyone else." data-zh="首批即将上线。留下你的邮箱，我们会在所有人之前联系你。">First drop is coming. Leave your email and we'll reach you before anyone else.</p>
+    </div>
+    <div class="notify-form reveal">
+      <input type="text" class="notify-input" id="notifyName" placeholder="Your name" data-placeholder-en="Your name" data-placeholder-zh="你的名字" />
+      <input type="email" class="notify-input" id="notifyEmail" placeholder="Your email" data-placeholder-en="Your email" data-placeholder-zh="你的邮箱" />
+      <button class="notify-btn" onclick="handleNotify()" data-en="Notify Me" data-zh="通知我">Notify Me</button>
+      <p id="notifyMsg" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--amber);opacity:0;transition:opacity 0.3s;margin-top:8px;" data-en="You're on the list. We'll be in touch." data-zh="你已在名单上，我们会联系你。">You're on the list. We'll be in touch.</p>
+    </div>
+  </section>
+
+  <!-- LEGAL MODAL -->
+  <div class="modal-overlay" id="legalOverlay" onclick="if(event.target===this)closeLegal()">
+    <div class="modal" style="max-width:640px;">
+      <button class="modal-close" onclick="closeLegal()">CLOSE ✕</button>
+      <div class="modal-product-id" id="legalUpdated"></div>
+      <div class="modal-product-name" id="legalTitle" style="font-size:28px;margin-bottom:24px;"></div>
+      <div id="legalBody" style="font-size:15px;line-height:1.9;color:#5a5048;font-weight:300;"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
   <footer>
-    <p>© 2026 SOULMADE. ALL RIGHTS RESERVED.</p >
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">SOULMADE</div>
+        <p class="footer-tagline" data-en="Time stops. Beauty stays.<br>Handcrafted in Nanchang, China." data-zh="时间停止，美永远在。<br>手工制作于中国南昌。">Time stops. Beauty stays.<br>Handcrafted in Nanchang, China.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Navigate" data-zh="导航">Navigate</h4>
+        <ul>
+          <li><a href="#about" data-en="Our Story" data-zh="品牌故事">Our Story</a></li>
+          <li><a href="#shop" data-en="Shop" data-zh="商店">Shop</a></li>
+          <li><a href="#identity" data-en="Each Piece" data-zh="每件作品">Each Piece</a></li>
+          <li><a href="#notify" data-en="Stay Close" data-zh="订阅">Stay Close</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Connect" data-zh="联系">Connect</h4>
+        <ul>
+          <li><a href="mailto:hello@soulmade.shop" data-en="Email Us" data-zh="发送邮件">Email Us</a></li>
+          <li><a href="#" data-en="Instagram" data-zh="Instagram">Instagram</a></li>
+          <li><a href="#" data-en="Pinterest" data-zh="Pinterest">Pinterest</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p data-en="© 2025 SOULMADE. All pieces reserved." data-zh="© 2025 SOULMADE. 版权所有。">© 2025 SOULMADE. All pieces reserved.</p>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;">
+        <button onclick="openLegal('privacy')" style="background:none;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cream);opacity:0.3;cursor:pointer;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3">PRIVACY POLICY</button>
+        <button onclick="openLegal('terms')" style="background:none;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cream);opacity:0.3;cursor:pointer;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3">TERMS OF SERVICE</button>
+        <button onclick="openLegal('refund')" style="background:none;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cream);opacity:0.3;cursor:pointer;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3">REFUNDS</button>
+        <button onclick="openLegal('shipping')" style="background:none;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cream);opacity:0.3;cursor:pointer;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3">SHIPPING</button>
+      </div>
+    </div>
   </footer>
 
   <script>
-    // 1. 记忆读取逻辑 (新增)
-    (async function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const id = urlParams.get('id');
-      if (!id) return; // 如果没有 ID，保持默认显示
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
 
-      const display = document.getElementById('soul-display');
-      const API = "https://soulmade-memory.2323371806.workers.dev";
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    });
 
-      display.style.opacity = "0.3";
-      display.innerText = "RECALLING MOMENT...";
+    function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
 
-      try {
-        const res = await fetch(`${API}/memory/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          display.style.opacity = "0";
-          setTimeout(() => {
-            display.innerHTML = `
-              <div class="memory-content">“ ${data.message} ”</div>
-              <div style="font-size: 10px; opacity: 0.5; letter-spacing: 2px;">${data.place || ''} &nbsp; ${data.date || ''}</div>
-            `;
-            display.style.opacity = "1";
-          }, 500);
-        } else {
-          display.innerText = "THIS SOUL IS WAITING TO BE AWAKENED.";
-        }
-      } catch (e) {
-        console.error(e);
-        display.innerText = "CONNECTION LOST.";
-      }
-    })();
+    // Language toggle
+    let isZh = false;
+    document.getElementById('langToggle').addEventListener('click', () => {
+      isZh = !isZh;
+      document.getElementById('langToggle').textContent = isZh ? 'EN' : '中文';
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.innerHTML = isZh ? el.dataset.zh : el.dataset.en;
+      });
+      document.querySelectorAll('[data-placeholder-en]').forEach(el => {
+        el.placeholder = isZh ? el.dataset.placeholderZh : el.dataset.placeholderEn;
+      });
+    });
 
-    // 2. 你原本的 PayPal 逻辑 (保持不变)
-    const script = document.createElement('script');
-    script.src = "https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"; 
-    script.onload = () => {
-      if (window.paypal) {
-        paypal.Buttons({
-          style: { layout: 'vertical', color: 'silver', shape: 'rect', label: 'paypal' },
-          createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: '45.00' } }] }),
-          onApprove: (data, actions) => actions.order.capture().then(() => {
-            document.getElementById('paypal-button-container').innerHTML = '<div style="font-family:DM Mono,monospace;font-size:12px;letter-spacing:2px;color:var(--amber);padding:20px 0;text-align:center;">✓ Payment successful.</div>';
-          })
-        }).render('#paypal-button-container');
+    // Mobile menu
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.add('open');
+    });
+    document.getElementById('mobileClose').addEventListener('click', closeMobile);
+    function closeMobile() {
+      document.getElementById('mobileMenu').classList.remove('open');
+    }
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => obs.observe(r));
+
+    // Legal pages
+    const legalContent = {
+      privacy: {
+        title: 'Privacy Policy',
+        updated: 'Last updated: January 2025',
+        body: `
+          <p>At SOULMADE ("we", "our", "us"), we respect your privacy. This policy explains how we collect and use your information when you visit soulmade.shop.</p>
+
+          <h4>Information We Collect</h4>
+          <p>We collect your name and email address when you sign up for our notification list. When you make a purchase through PayPal, PayPal processes your payment and shipping information directly — we receive only what is necessary to fulfill your order.</p>
+
+          <h4>How We Use Your Information</h4>
+          <p>We use your email to notify you about new product drops and order updates. We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
+
+          <h4>Cookies</h4>
+          <p>Our website may use basic cookies to improve your browsing experience. You can disable cookies in your browser settings at any time.</p>
+
+          <h4>Your Rights (GDPR)</h4>
+          <p>If you are located in the European Economic Area, you have the right to access, correct, or delete your personal data at any time. To exercise these rights, contact us at hello@soulmade.shop.</p>
+
+          <h4>Contact</h4>
+          <p>For any privacy-related questions, please email us at hello@soulmade.shop.</p>
+        `
+      },
+      terms: {
+        title: 'Terms of Service',
+        updated: 'Last updated: January 2025',
+        body: `
+          <p>By accessing and using SOULMADE (soulmade.shop), you agree to be bound by these Terms of Service. Please read them carefully.</p>
+
+          <h4>Products</h4>
+          <p>All SOULMADE pieces are handcrafted and one-of-a-kind. Product images are representative — due to the handmade nature of our work, slight variations in color, shape, and inclusions are normal and expected. These variations make each piece unique.</p>
+
+          <h4>Orders & Payment</h4>
+          <p>All orders are processed through PayPal. By placing an order, you confirm that you are authorized to use the payment method provided. Prices are listed in USD and are subject to change without notice.</p>
+
+          <h4>Intellectual Property</h4>
+          <p>All content on this website — including designs, photographs, text, and brand identity — is owned by SOULMADE and may not be reproduced without written permission.</p>
+
+          <h4>Limitation of Liability</h4>
+          <p>SOULMADE is not liable for any indirect or consequential damages arising from the use of our products or website. Our liability is limited to the value of the product purchased.</p>
+
+          <h4>Changes to Terms</h4>
+          <p>We reserve the right to update these terms at any time. Continued use of our website constitutes acceptance of any changes.</p>
+
+          <h4>Contact</h4>
+          <p>For questions about these terms, contact us at hello@soulmade.shop.</p>
+        `
+      },
+      refund: {
+        title: 'Refund & Return Policy',
+        updated: 'Last updated: January 2025',
+        body: `
+          <p>We want you to love your SOULMADE piece. If something isn't right, we're here to help.</p>
+
+          <h4>Returns</h4>
+          <p>We accept return requests within <strong>14 days</strong> of delivery. To be eligible, items must be unused, undamaged, and in their original packaging. Because each piece is handmade and one-of-a-kind, we cannot offer exchanges for a different design.</p>
+
+          <h4>Damaged or Defective Items</h4>
+          <p>If your item arrives damaged, please contact us within <strong>48 hours</strong> of delivery with photos of the damage at hello@soulmade.shop. We will offer a full refund or replacement at no additional cost.</p>
+
+          <h4>Refund Process</h4>
+          <p>Once we receive and inspect your return, we will process your refund within 5–7 business days. Refunds are issued to your original payment method via PayPal.</p>
+
+          <h4>Shipping Costs</h4>
+          <p>Return shipping costs are the responsibility of the buyer unless the item arrived damaged or defective. Original shipping fees are non-refundable.</p>
+
+          <h4>Non-Returnable Items</h4>
+          <p>Custom or personalized pieces cannot be returned unless they arrive damaged.</p>
+
+          <h4>Contact</h4>
+          <p>To initiate a return, email us at hello@soulmade.shop with your order number and reason for return.</p>
+        `
+      },
+      shipping: {
+        title: 'Shipping Policy',
+        updated: 'Last updated: January 2025',
+        body: `
+          <p>All SOULMADE pieces are handcrafted to order in Nanchang, China. Please read our shipping information carefully before placing your order.</p>
+
+          <h4>Processing Time</h4>
+          <p>Each piece is made by hand. Please allow <strong>3–7 business days</strong> for your order to be prepared, inspected, and carefully packaged before shipping.</p>
+
+          <h4>Shipping Times</h4>
+          <p><strong>United States:</strong> 10–20 business days<br>
+          <strong>Europe:</strong> 12–25 business days<br>
+          <strong>Australia & New Zealand:</strong> 12–20 business days<br>
+          <strong>Rest of World:</strong> 15–30 business days</p>
+          <p>These are estimates and may vary due to customs processing and local postal conditions.</p>
+
+          <h4>Tracking</h4>
+          <p>Once your order ships, you will receive a tracking number via email. Please allow 2–3 business days for tracking information to update.</p>
+
+          <h4>Customs & Duties</h4>
+          <p>International orders may be subject to customs fees, import duties, or taxes imposed by your country. These charges are the buyer's responsibility and are not included in our prices.</p>
+
+          <h4>Lost Packages</h4>
+          <p>If your package has not arrived within the estimated timeframe, please contact us at hello@soulmade.shop and we will investigate with the carrier.</p>
+        `
       }
     };
-    document.head.appendChild(script);
+
+    function openLegal(type) {
+      const content = legalContent[type];
+      document.getElementById('legalTitle').textContent = content.title;
+      document.getElementById('legalUpdated').textContent = content.updated;
+      document.getElementById('legalBody').innerHTML = content.body;
+      document.getElementById('legalOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLegal() {
+      document.getElementById('legalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Products data
+    const products = {
+      amber: {
+        name: 'Amber Drop',
+        nameZh: '琥珀吊坠',
+        id: 'SOULMADE-001',
+        price: 24,
+        desc: 'A warm golden pendant capturing the light of a late afternoon in Nanchang. Poured by hand, polished to crystal clarity. Comes with its origin story card.',
+        descZh: '一枚温暖的金色吊坠，封存了南昌某个午后的光线。手工注胶，打磨至晶莹剔透。附带起源故事卡片。'
+      },
+      forest: {
+        name: 'Forest Keychain',
+        nameZh: '森林钥匙扣',
+        id: 'SOULMADE-002',
+        price: 18,
+        desc: 'Deep green botanicals suspended in resin — a miniature forest you can carry. Each one unique. No two pieces ever the same.',
+        descZh: '深绿色植物标本悬浮于树脂中，一片可以随身携带的微型森林。每一件都独一无二，永远没有两件相同。'
+      },
+      twilight: {
+        name: 'Twilight Orb',
+        nameZh: '暮色摆件',
+        id: 'SOULMADE-003',
+        price: 32,
+        desc: 'A sphere of deep purple resin holding the last light before nightfall. A piece of the sky, frozen forever. Display it where light touches.',
+        descZh: '深紫色树脂球体，封存了夜幕降临前最后的光芒。一片被永久冻结的天空。放在光线能触碰的地方展示。'
+      }
+    };
+
+    const PAYPAL_CLIENT_ID = 'YOUR_CLIENT_ID';
+    let currentProduct = null;
+    let paypalLoaded = false;
+
+    function openModal(productKey) {
+      currentProduct = products[productKey];
+      const modal = document.getElementById('modal');
+      const overlay = document.getElementById('modalOverlay');
+
+      document.getElementById('modalName').textContent = isZh ? currentProduct.nameZh : currentProduct.name;
+      document.getElementById('modalId').textContent = currentProduct.id;
+      document.getElementById('modalDesc').textContent = isZh ? currentProduct.descZh : currentProduct.desc;
+      document.getElementById('modalPrice').innerHTML = `$${currentProduct.price} <span>USD</span>`;
+
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      if (PAYPAL_CLIENT_ID !== 'YOUR_CLIENT_ID') {
+        loadPayPal();
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+      document.getElementById('paypal-button-container').innerHTML = '<div class="paypal-placeholder" id="paypalPlaceholder">PayPal checkout will appear here.<br><span style="color:var(--amber);">Client ID not yet configured.</span></div>';
+      paypalLoaded = false;
+    }
+
+    function closeModalOutside(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    function loadPayPal() {
+      if (paypalLoaded) return;
+      paypalLoaded = true;
+      const container = document.getElementById('paypal-button-container');
+      container.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:2px;opacity:0.4;padding:16px 0;">Loading PayPal...</div>';
+
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`;
+      script.onload = () => {
+        container.innerHTML = '';
+        paypal.Buttons({
+          createOrder: (data, actions) => actions.order.create({
+            purchase_units: [{
+              description: `${currentProduct.name} (${currentProduct.id})`,
+              amount: { value: currentProduct.price.toString() }
+            }]
+          }),
+          onApprove: (data, actions) => actions.order.capture().then(() => {
+            container.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:12px;letter-spacing:2px;color:var(--amber);padding:20px 0;text-align:center;">✓ Payment successful. Thank you for owning a moment.</div>';
+          }),
+          onError: () => {
+            container.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:2px;color:#c0392b;padding:16px 0;">Payment error. Please try again.</div>';
+          }
+        }).render('#paypal-button-container');
+      };
+      document.head.appendChild(script);
+    }
+    async function handleNotify() {
+      const name = document.getElementById('notifyName').value.trim();
+      const email = document.getElementById('notifyEmail').value.trim();
+      const msg = document.getElementById('notifyMsg');
+      if (!email || !email.includes('@')) return;
+      try {
+        await fetch('https://formspree.io/f/mgorqjol', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email })
+        });
+        msg.textContent = "You're on the list. We'll be in touch.";
+        msg.style.opacity = '1';
+        document.getElementById('notifyName').value = '';
+        document.getElementById('notifyEmail').value = '';
+      } catch(e) {
+        msg.textContent = 'Something went wrong. Please try again.';
+        msg.style.opacity = '1';
+      }
+    }
   </script>
 </body>
 </html>
