@@ -8,56 +8,268 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Bebas+Neue&display=swap" rel="stylesheet" />
   <style>
-    /* 保持你原有的 CSS 变量和样式不变 */
-    :root { --cream: #f5f0e8; --ink: #1a1612; --amber: #c8a96e; --mist: #e8e2d8; --deep: #0d0b09; }
+    :root {
+      --cream: #f5f0e8;
+      --ink: #1a1612;
+      --amber: #c8a96e;
+      --rust: #8b4513;
+      --mist: #e8e2d8;
+      --deep: #0d0b09;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: var(--cream); color: var(--ink); font-family: 'Cormorant Garamond', serif; line-height: 1.6; overflow-x: hidden; }
-    .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; position: relative; }
-    .logo { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 10vw, 6rem); letter-spacing: 0.5rem; margin-bottom: 1rem; }
-    /* 这里是我们要替换的文字区域 */
-    .tagline { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.3rem; text-transform: uppercase; opacity: 0.7; max-width: 600px; text-align: center; transition: all 0.8s ease; }
-    /* 动态内容的特别样式 */
-    .memory-text { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; text-transform: none; font-style: italic; color: var(--ink); letter-spacing: 0; margin-bottom: 10px; }
-    .memory-meta { font-family: 'DM Mono', monospace; font-size: 10px; opacity: 0.5; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Cormorant Garamond', serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      mix-blend-mode: difference;
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.2rem;
+      color: var(--cream);
+      text-decoration: none;
+    }
+
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 10vw, 6rem);
+      letter-spacing: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tagline {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.3rem;
+      text-transform: uppercase;
+      opacity: 0.7;
+      max-width: 600px;
+      transition: all 0.5s ease;
+    }
+
+    /* 记忆文字的特殊样式 */
+    .memory-content {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      text-transform: none;
+      font-style: italic;
+      letter-spacing: 0.05rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .concept, .gallery, .cta {
+      padding: 8rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .concept-text h2 {
+      font-size: 2.5rem;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      letter-spacing: 0.2rem;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    .gallery-item {
+      position: relative;
+      aspect-ratio: 4/5;
+      overflow: hidden;
+      background: var(--mist);
+      border-radius: 4px;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(20%);
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.05);
+    }
+
+    .cta {
+      text-align: center;
+      background: var(--ink);
+      color: var(--cream);
+      max-width: 100%;
+      padding: 10rem 2rem;
+    }
+
+    .cta h2 {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      letter-spacing: 0.4rem;
+    }
+
+    .paypal-btn {
+      background: var(--cream);
+      color: var(--ink);
+      border: none;
+      padding: 1rem 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+      margin-top: 2rem;
+    }
+
+    footer {
+      padding: 4rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--mist);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1rem;
+      opacity: 0.5;
+    }
   </style>
 </head>
 <body>
+  <nav>
+    <a href=" " class="nav-logo">SOULMADE</a >
+  </nav>
+
   <section class="hero">
-    <h1 class="logo">SOULMADE</h1>
-    <p class="tagline" id="soul-display">EVERY ORDINARY PERSON IS AN ARTIST</p >
+    <div class="hero-content">
+      <h1 class="logo">SOULMADE</h1>
+      <p class="tagline" id="soul-display">EVERY ORDINARY PERSON IS AN ARTIST</p >
+    </div>
   </section>
 
+  <section id="concept" class="concept">
+    <div class="concept-grid">
+      <div class="concept-text">
+        <h2>Frozen in Time</h2>
+        <p>每一块滴胶都是时间的琥珀，封存着独一无二的自然灵魂。我们将传统工艺与数字情感结合，让每一个瞬间都在方寸之间获得永恒。</p >
+      </div>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        < img src="p1.png" alt="Soulmade Piece 1" />
+      </div>
+      <div class="gallery-item">
+        < img src="p2.png" alt="Soulmade Piece 2" />
+      </div>
+      <div class="gallery-item">
+        < img src="p3.png" alt="Soulmade Piece 3" />
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Own a Moment</h2>
+    <p style="font-family: 'DM Mono', monospace; font-size: 0.8rem; letter-spacing: 0.2rem; opacity: 0.7;">HANDMADE IN NANCHANG / LIMITED EDITION</p >
+    <div id="paypal-button-container" style="margin-top: 3rem; max-width: 300px; margin-left: auto; margin-right: auto;"></div>
+  </section>
+
+  <footer>
+    <p>© 2026 SOULMADE. ALL RIGHTS RESERVED.</p >
+  </footer>
+
   <script>
+    // 1. 记忆读取逻辑 (新增)
     (async function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-        if (!id) return; // 如果没有 ID，保持原样
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      if (!id) return; // 如果没有 ID，保持默认显示
 
-        const display = document.getElementById('soul-display');
-        const API = "https://soulmade-memory.2323371806.workers.dev";
+      const display = document.getElementById('soul-display');
+      const API = "https://soulmade-memory.2323371806.workers.dev";
 
-        display.style.opacity = "0.3";
-        display.innerText = "RECALLING MOMENT...";
+      display.style.opacity = "0.3";
+      display.innerText = "RECALLING MOMENT...";
 
-        try {
-            const res = await fetch(`${API}/memory/${id}`);
-            if (res.ok) {
-                const data = await res.json();
-                display.style.opacity = "0";
-                setTimeout(() => {
-                    display.innerHTML = `
-                        <div class="memory-text">“ ${data.message} ”</div>
-                        <div class="memory-meta">${data.place || ''} &nbsp; ${data.date || ''}</div>
-                    `;
-                    display.style.opacity = "1";
-                }, 500);
-            } else {
-                display.innerText = "A WAITING SOUL.";
-            }
-        } catch (e) {
-            display.innerText = "LOST IN TRANSLATION.";
+      try {
+        const res = await fetch(`${API}/memory/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          display.style.opacity = "0";
+          setTimeout(() => {
+            display.innerHTML = `
+              <div class="memory-content">“ ${data.message} ”</div>
+              <div style="font-size: 10px; opacity: 0.5; letter-spacing: 2px;">${data.place || ''} &nbsp; ${data.date || ''}</div>
+            `;
+            display.style.opacity = "1";
+          }, 500);
+        } else {
+          display.innerText = "THIS SOUL IS WAITING TO BE AWAKENED.";
         }
+      } catch (e) {
+        console.error(e);
+        display.innerText = "CONNECTION LOST.";
+      }
     })();
+
+    // 2. 你原本的 PayPal 逻辑 (保持不变)
+    const script = document.createElement('script');
+    script.src = "https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"; 
+    script.onload = () => {
+      if (window.paypal) {
+        paypal.Buttons({
+          style: { layout: 'vertical', color: 'silver', shape: 'rect', label: 'paypal' },
+          createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: '45.00' } }] }),
+          onApprove: (data, actions) => actions.order.capture().then(() => {
+            document.getElementById('paypal-button-container').innerHTML = '<div style="font-family:DM Mono,monospace;font-size:12px;letter-spacing:2px;color:var(--amber);padding:20px 0;text-align:center;">✓ Payment successful.</div>';
+          })
+        }).render('#paypal-button-container');
+      }
+    };
+    document.head.appendChild(script);
   </script>
 </body>
 </html>
