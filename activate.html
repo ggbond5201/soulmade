@@ -1,116 +1,451 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>激活记忆 | SOULMADE</title>
-    <style>
-        :root { --main-color: #1a1a1a; --bg-color: #f4f4f4; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg-color); color: var(--main-color); margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-        .container { width: 90%; max-width: 400px; background: white; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
-        .logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; margin-bottom: 10px; }
-        .slogan { font-size: 12px; color: #888; margin-bottom: 30px; }
-        .form-group { text-align: left; margin-bottom: 20px; }
-        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #555; }
-        input, textarea { width: 100%; padding: 12px; border: 1.5px solid #eee; border-radius: 10px; box-sizing: border-box; font-size: 14px; transition: border 0.3s; background: #fafafa; }
-        input:focus, textarea:focus { outline: none; border-color: var(--main-color); background: #fff; }
-        button { width: 100%; padding: 15px; background: var(--main-color); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: opacity 0.3s; }
-        button:active { opacity: 0.8; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-        #status { margin-top: 15px; font-size: 14px; min-height: 20px; }
-        .success { color: #27ae60; }
-        .error { color: #e74c3c; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOULMADE · Activate Your Memory</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A96E;
+    --gold-light: #E8D5A3;
+    --gold-pale: #F5EDD6;
+    --cream: #FAF6EF;
+    --warm-white: #FFFDF9;
+    --text-dark: #2C2417;
+    --text-mid: #6B5A3E;
+    --text-light: #A89070;
+    --blush: #F2D5CC;
+    --error: #C0665A;
+    --success: #7A9E7E;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(201,169,110,0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 80%, rgba(242,213,204,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px 80px;
+  }
+
+  .brand {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fadeDown 0.8s ease both;
+  }
+  .brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .brand-dot {
+    display: inline-block;
+    width: 3px; height: 3px;
+    background: var(--gold);
+    border-radius: 50%;
+    margin: 0 8px;
+    vertical-align: middle;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--warm-white);
+    border-radius: 28px;
+    padding: 44px 36px 48px;
+    box-shadow:
+      0 2px 8px rgba(44,36,23,0.04),
+      0 12px 40px rgba(44,36,23,0.08),
+      0 0 0 1px rgba(201,169,110,0.12);
+    animation: riseUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+  }
+  .card-subtitle {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+
+  /* Steps */
+  .steps {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+  .step {
+    flex: 1;
+    height: 3px;
+    background: var(--gold-pale);
+    border-radius: 2px;
+    transition: background 0.4s ease;
+  }
+  .step.active { background: var(--gold); }
+  .step.done { background: var(--gold-light); }
+
+  /* Form groups */
+  .form-group {
+    margin-bottom: 24px;
+  }
+  label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 8px;
+  }
+  input, textarea {
+    width: 100%;
+    background: var(--cream);
+    border: 1px solid rgba(201,169,110,0.2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    resize: none;
+  }
+  input:focus, textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,169,110,0.1);
+  }
+  input::placeholder, textarea::placeholder {
+    color: var(--text-light);
+    opacity: 0.6;
+  }
+  textarea { height: 100px; }
+
+  /* Button */
+  .btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--gold);
+    color: var(--warm-white);
+    border: none;
+    border-radius: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    margin-top: 8px;
+  }
+  .btn:hover {
+    background: #B8935A;
+    box-shadow: 0 4px 20px rgba(201,169,110,0.3);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Messages */
+  .msg {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .msg.error {
+    background: rgba(192,102,90,0.08);
+    border: 1px solid rgba(192,102,90,0.2);
+    color: var(--error);
+    display: block;
+  }
+  .msg.success {
+    background: rgba(122,158,126,0.08);
+    border: 1px solid rgba(122,158,126,0.2);
+    color: var(--success);
+    display: block;
+  }
+
+  /* Success screen */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+  .success-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .success-screen h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    margin-bottom: 12px;
+  }
+  .success-screen p {
+    font-size: 14px;
+    color: var(--text-light);
+    line-height: 1.7;
+    margin-bottom: 8px;
+  }
+  .success-id {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 20px;
+    background: var(--gold-pale);
+    border-radius: 20px;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--text-mid);
+  }
+
+  /* Section panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Hint */
+  .hint {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(201,169,110,0.1);
+    font-size: 12px;
+    color: var(--text-light);
+    text-align: center;
+    line-height: 1.7;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes riseUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+</style>
 </head>
 <body>
 
-<div class="container">
-    <div class="logo">SOULMADE</div>
-    <div class="slogan">每一位普通人都是艺术家</div>
-    
-    <div class="form-group">
-        <label>激活码</label>
-        <input type="text" id="code" placeholder="输入卡片上的激活码 (如: SM-0001-XXXXX)">
-    </div>
-    
-    <div class="form-group">
-        <label>想留下的话</label>
-        <textarea id="memory" rows="4" placeholder="写下这一刻的故事..."></textarea>
-    </div>
-    
-    <div class="form-group">
-        <label>地点 (可选)</label>
-        <input type="text" id="place" placeholder="例如：南昌 · 某某咖啡店">
+<div class="wrapper">
+  <div class="brand">
+    <span class="brand-name">Soulmade</span>
+    <span class="brand-dot"></span>
+    <span class="brand-name">Activate Your Memory</span>
+  </div>
+
+  <div class="card">
+
+    <!-- Progress steps -->
+    <div class="steps">
+      <div class="step active" id="step1"></div>
+      <div class="step" id="step2"></div>
+      <div class="step" id="step3"></div>
     </div>
 
-    <button id="submitBtn">保存并生成记忆</button>
-    <div id="status"></div>
+    <!-- Panel 1: Enter activation code -->
+    <div class="panel active" id="panel1">
+      <div class="card-title">Welcome</div>
+      <div class="card-subtitle">Enter the activation code from your package card to get started.</div>
+
+      <div id="msg1" class="msg"></div>
+
+      <div class="form-group">
+        <label>Activation Code</label>
+        <input type="text" id="codeInput" placeholder="e.g. SM-0001-XKQP7" autocomplete="off" style="letter-spacing:0.1em; text-transform:uppercase;">
+      </div>
+
+      <button class="btn" onclick="checkCode()">Continue →</button>
+
+      <div class="hint">
+        Find your activation code on the small card inside your SOULMADE package.
+      </div>
+    </div>
+
+    <!-- Panel 2: Fill in memory -->
+    <div class="panel" id="panel2">
+      <div class="card-title">Your Memory</div>
+      <div class="card-subtitle">Fill in the details below. This is what your recipient will see when they tap the keychain.</div>
+
+      <div id="msg2" class="msg"></div>
+
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="msgInput" placeholder="Write something from your heart..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="dateInput">
+      </div>
+      <div class="form-group">
+        <label>Place</label>
+        <input type="text" id="placeInput" placeholder="e.g. Paris, London, New York...">
+      </div>
+      <div class="form-group">
+        <label>Memory (optional)</label>
+        <textarea id="memoryInput" placeholder="Describe this special moment..." style="height:80px;"></textarea>
+      </div>
+
+      <button class="btn" onclick="submitMemory()">Save & Activate ✦</button>
+    </div>
+
+    <!-- Panel 3: Success -->
+    <div class="panel" id="panel3">
+      <div class="success-screen" style="display:block;">
+        <div class="success-icon">✦</div>
+        <h2>Memory Saved</h2>
+        <p>Your memory has been locked inside<br>your SOULMADE keychain forever.</p >
+        <p>When your recipient taps the keychain<br>with their phone, they'll see your message.</p >
+        <div class="success-id" id="successId"></div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-    const API_URL = "https://soulmade-memory.2323371806.workers.dev";
-    const btn = document.getElementById('submitBtn');
-    const status = document.getElementById('status');
+  const API = "https://soulmade-memory.2323371806.workers.dev";
+  let currentCode = "";
 
-    // 自动获取URL参数中的code
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('code')) {
-        document.getElementById('code').value = urlParams.get('code');
+  function showMsg(id, text, type) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = "msg " + type;
+  }
+
+  function goToPanel(n) {
+    document.querySelectorAll('.panel').forEach((p, i) => {
+      p.classList.toggle('active', i === n - 1);
+    });
+    document.querySelectorAll('.step').forEach((s, i) => {
+      s.classList.remove('active', 'done');
+      if (i < n - 1) s.classList.add('done');
+      if (i === n - 1) s.classList.add('active');
+    });
+  }
+
+  async function checkCode() {
+    const code = document.getElementById('codeInput').value.trim().toUpperCase();
+    if (!code) {
+      showMsg('msg1', 'Please enter your activation code.', 'error');
+      return;
     }
 
-    btn.onclick = async () => {
-        const code = document.getElementById('code').value.trim();
-        const memory = document.getElementById('memory').value.trim();
-        const place = document.getElementById('place').value.trim();
+    const btn = document.querySelector('#panel1 .btn');
+    btn.disabled = true;
+    btn.textContent = 'Checking...';
 
-        if (!code || !memory) {
-            showStatus("请填写激活码和内容", "error");
-            return;
-        }
+    try {
+      const res = await fetch(`${API}/check-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
 
-        btn.disabled = true;
-        btn.innerText = "正在封存记忆...";
-        showStatus("");
-
-        try {
-            const response = await fetch(`${API_URL}/activate`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    code: code,
-                    memory: memory,
-                    place: place,
-                    date: new Date().toLocaleDateString()
-                })
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                showStatus("记忆封存成功！", "success");
-                btn.innerText = "激活完成";
-                // 3秒后跳转到展示页查看
-                setTimeout(() => {
-                    // 这里跳转到你之前的展示逻辑，假设路径是 /memory.html?id=SM-0001
-                    window.location.href = `/memory.html?id=${result.id}`;
-                }, 2000);
-            } else {
-                showStatus(result.error || "激活码无效或已被使用", "error");
-                btn.disabled = false;
-                btn.innerText = "重新尝试";
-            }
-        } catch (err) {
-            showStatus("网络错误，请检查网络后重试", "error");
-            btn.disabled = false;
-            btn.innerText = "重新尝试";
-        }
-    };
-
-    function showStatus(msg, type) {
-        status.innerText = msg;
-        status.className = type || "";
+      if (data.error === 'invalid_code') {
+        showMsg('msg1', 'Code not found. Please check your card and try again.', 'error');
+      } else if (data.error === 'already_activated') {
+        showMsg('msg1', 'This keychain has already been activated. Contact us if you need help.', 'error');
+      } else if (data.valid) {
+        currentCode = code;
+        goToPanel(2);
+      } else {
+        showMsg('msg1', 'Something went wrong. Please try again.', 'error');
+      }
+    } catch (e) {
+      showMsg('msg1', 'Connection error. Please check your internet and try again.', 'error');
     }
+
+    btn.disabled = false;
+    btn.textContent = 'Continue →';
+  }
+
+  async function submitMemory() {
+    const message = document.getElementById('msgInput').value.trim();
+    const date = document.getElementById('dateInput').value;
+    const place = document.getElementById('placeInput').value.trim();
+    const memory = document.getElementById('memoryInput').value.trim();
+
+    if (!message) {
+      showMsg('msg2', 'Please write a message for your recipient.', 'error');
+      return;
+    }
+    if (!date) {
+      showMsg('msg2', 'Please select a date.', 'error');
+      return;
+    }
+    if (!place) {
+      showMsg('msg2', 'Please enter a place.', 'error');
+      return;
+    }
+
+    const btn = document.querySelector('#panel2 .btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    try {
+      const res = await fetch(`${API}/activate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: currentCode, message, date, place, memory })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        document.getElementById('successId').textContent = data.id;
+        goToPanel(3);
+      } else {
+        showMsg('msg2', 'Something went wrong. Please try again.', 'error');
+      }
+    } catch (e) {
+      showMsg('msg2', 'Connection error. Please try again.', 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Save & Activate ✦';
+  }
+
+  // Allow Enter key on code input
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('codeInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkCode();
+    });
+  });
 </script>
-
 </body>
 </html>
