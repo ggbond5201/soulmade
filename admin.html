@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOULMADE · Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A96E;
+    --gold-light: #E8D5A3;
+    --gold-pale: #F5EDD6;
+    --cream: #FAF6EF;
+    --warm-white: #FFFDF9;
+    --text-dark: #2C2417;
+    --text-mid: #6B5A3E;
+    --text-light: #A89070;
+    --blush: #F2D5CC;
+    --error: #C0665A;
+    --success: #7A9E7E;
+    --sidebar: #2C2417;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* Login screen */
+  .login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--cream);
+  }
+  .login-card {
+    width: 100%;
+    max-width: 360px;
+    background: var(--warm-white);
+    border-radius: 24px;
+    padding: 44px 36px;
+    box-shadow: 0 12px 40px rgba(44,36,23,0.08), 0 0 0 1px rgba(201,169,110,0.12);
+    text-align: center;
+  }
+  .login-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .login-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 300;
+    margin-bottom: 32px;
+    color: var(--text-dark);
+  }
+  .login-input {
+    width: 100%;
+    background: var(--cream);
+    border: 1px solid rgba(201,169,110,0.2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text-dark);
+    outline: none;
+    text-align: center;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .login-input:focus { border-color: var(--gold); }
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--sidebar);
+    color: var(--gold-light);
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .login-btn:hover { opacity: 0.85; }
+  .login-error {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--error);
+    display: none;
+  }
+
+  /* Main dashboard */
+  .dashboard {
+    display: none;
+    min-height: 100vh;
+  }
+
+  /* Top bar */
+  .topbar {
+    background: var(--sidebar);
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    letter-spacing: 0.2em;
+    color: var(--gold-light);
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .topbar-logout {
+    font-size: 12px;
+    color: rgba(232,213,163,0.5);
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .topbar-logout:hover { color: var(--gold-light); }
+
+  /* Content */
+  .content {
+    padding: 40px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Section title */
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    margin-bottom: 24px;
+    color: var(--text-dark);
+  }
+
+  /* Create code panel */
+  .create-panel {
+    background: var(--warm-white);
+    border-radius: 20px;
+    padding: 28px 32px;
+    margin-bottom: 40px;
+    box-shadow: 0 2px 8px rgba(44,36,23,0.04), 0 0 0 1px rgba(201,169,110,0.1);
+  }
+  .create-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .create-group {
+    flex: 1;
+    min-width: 140px;
+  }
+  .create-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .create-input {
+    width: 100%;
+    background: var(--cream);
+    border: 1px solid rgba(201,169,110,0.2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: border-color 0.2s;
+  }
+  .create-input:focus { border-color: var(--gold); }
+  .create-btn {
+    padding: 12px 24px;
+    background: var(--gold);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .create-btn:hover { background: #B8935A; }
+
+  .code-result {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: var(--gold-pale);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--text-mid);
+    display: none;
+    letter-spacing: 0.05em;
+  }
+  .code-result strong {
+    font-size: 18px;
+    letter-spacing: 0.15em;
+    color: var(--text-dark);
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* Keys list */
+  .keys-panel {
+    background: var(--warm-white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(44,36,23,0.04), 0 0 0 1px rgba(201,169,110,0.1);
+  }
+  .keys-header {
+    padding: 20px 28px;
+    border-bottom: 1px solid rgba(201,169,110,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .keys-header span {
+    font-size: 12px;
+    color: var(--text-light);
+    letter-spacing: 0.08em;
+  }
+  .refresh-btn {
+    font-size: 12px;
+    color: var(--gold);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.08em;
+  }
+
+  /* Key item */
+  .key-item {
+    padding: 20px 28px;
+    border-bottom: 1px solid rgba(201,169,110,0.08);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: background 0.15s;
+  }
+  .key-item:last-child { border-bottom: none; }
+  .key-item:hover { background: rgba(245,237,214,0.3); }
+
+  .key-status {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .key-status.activated { background: var(--success); }
+  .key-status.pending { background: var(--gold-light); }
+
+  .key-info { flex: 1; }
+  .key-id {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    margin-bottom: 2px;
+  }
+  .key-meta {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+
+  .key-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .action-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s;
+  }
+  .action-btn:hover { opacity: 0.75; }
+  .btn-view {
+    background: var(--gold-pale);
+    color: var(--text-mid);
+  }
+  .btn-unlock {
+    background: rgba(192,102,90,0.08);
+    color: var(--error);
+  }
+
+  .empty-state {
+    padding: 60px 28px;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 14px;
+  }
+
+  /* Memory modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(44,36,23,0.4);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--warm-white);
+    border-radius: 24px;
+    padding: 36px;
+    max-width: 420px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(44,36,23,0.2);
+  }
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    margin-bottom: 24px;
+  }
+  .modal-row {
+    margin-bottom: 16px;
+  }
+  .modal-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 4px;
+  }
+  .modal-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    color: var(--text-dark);
+    line-height: 1.5;
+  }
+  .modal-close {
+    margin-top: 24px;
+    width: 100%;
+    padding: 12px;
+    background: var(--cream);
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-mid);
+    cursor: pointer;
+  }
+
+  /* Notification toast */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--sidebar);
+    color: var(--gold-light);
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 300;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">Soulmade</div>
+    <div class="login-title">Admin Dashboard</div>
+    <input type="password" class="login-input" id="passwordInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">Enter</button>
+    <div class="login-error" id="loginError">Incorrect password</div>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+
+  <div class="topbar">
+    <div class="topbar-brand">SOULMADE · Admin</div>
+    <div class="topbar-right">
+      <button class="topbar-logout" onclick="logout()">Log out</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Create code section -->
+    <div class="section-title">Generate Activation Code</div>
+    <div class="create-panel">
+      <div class="create-row">
+        <div class="create-group">
+          <span class="create-label">Keychain ID</span>
+          <input type="text" class="create-input" id="newId" placeholder="SM-0001">
+        </div>
+        <button class="create-btn" onclick="createCode()">Generate Code</button>
+      </div>
+      <div class="code-result" id="codeResult">
+        Activation code generated:
+        <strong id="generatedCode"></strong>
+        <span style="font-size:12px; color:var(--text-light); margin-top:6px; display:block;">Print this on the card inside the package.</span>
+      </div>
+    </div>
+
+    <!-- Keys list -->
+    <div class="section-title">All Keychains</div>
+    <div class="keys-panel">
+      <div class="keys-header">
+        <span id="keysCount">Loading...</span>
+        <button class="refresh-btn" onclick="loadKeys()">↻ Refresh</button>
+      </div>
+      <div id="keysList">
+        <div class="empty-state">Loading keychains...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Memory modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-title" id="modalId"></div>
+    <div id="modalContent"></div>
+    <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">Close</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = "https://soulmade-memory.2323371806.workers.dev";
+  let adminPassword = "";
+  let allKeys = [];
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  async function login() {
+    const pw = document.getElementById('passwordInput').value;
+    // Test password by making a real API call
+    try {
+      const res = await fetch(`${API}/admin/list`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw })
+      });
+      const data = await res.json();
+      if (data.error === 'unauthorized') {
+        document.getElementById('loginError').style.display = 'block';
+        return;
+      }
+      adminPassword = pw;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      allKeys = data.keys || [];
+      renderKeys();
+    } catch (e) {
+      document.getElementById('loginError').style.display = 'block';
+      document.getElementById('loginError').textContent = 'Connection error. Try again.';
+    }
+  }
+
+  function logout() {
+    adminPassword = "";
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('passwordInput').value = '';
+  }
+
+  async function loadKeys() {
+    try {
+      const res = await fetch(`${API}/admin/list`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword })
+      });
+      const data = await res.json();
+      allKeys = data.keys || [];
+      renderKeys();
+    } catch (e) {
+      showToast('Failed to load keychains');
+    }
+  }
+
+  function renderKeys() {
+    const list = document.getElementById('keysList');
+    const count = document.getElementById('keysCount');
+    count.textContent = `${allKeys.length} keychain${allKeys.length !== 1 ? 's' : ''} total`;
+
+    if (allKeys.length === 0) {
+      list.innerHTML = '<div class="empty-state">No keychains yet. Generate your first activation code above.</div>';
+      return;
+    }
+
+    list.innerHTML = allKeys.map(k => `
+      <div class="key-item">
+        <div class="key-status ${k.activated ? 'activated' : 'pending'}"></div>
+        <div class="key-info">
+          <div class="key-id">${k.id}</div>
+          <div class="key-meta">
+            ${k.activated ? `✓ Activated · Code: ${k.code}` : `Pending · Code: ${k.code}`}
+          </div>
+        </div>
+        <div class="key-actions">
+          ${k.activated ? `<button class="action-btn btn-view" onclick="viewMemory('${k.id}')">View</button>` : ''}
+          ${k.activated ? `<button class="action-btn btn-unlock" onclick="unlockKey('${k.id}', '${k.code}')">Unlock</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function createCode() {
+    const id = document.getElementById('newId').value.trim().toUpperCase();
+    if (!id) { showToast('Please enter a keychain ID'); return; }
+
+    try {
+      const res = await fetch(`${API}/admin/create-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('generatedCode').textContent = data.code;
+        document.getElementById('codeResult').style.display = 'block';
+        document.getElementById('newId').value = '';
+        loadKeys();
+        showToast('Code generated!');
+      } else {
+        showToast('Failed to generate code');
+      }
+    } catch (e) {
+      showToast('Connection error');
+    }
+  }
+
+  async function viewMemory(id) {
+    try {
+      const res = await fetch(`${API}/memory/${id}`);
+      const data = await res.json();
+      if (data.error) { showToast('Memory not found'); return; }
+
+      document.getElementById('modalId').textContent = id;
+      document.getElementById('modalContent').innerHTML = `
+        <div class="modal-row">
+          <div class="modal-label">Message</div>
+          <div class="modal-value">${data.message || '—'}</div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-label">Date</div>
+          <div class="modal-value">${data.date || '—'}</div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-label">Place</div>
+          <div class="modal-value">${data.place || '—'}</div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-label">Memory</div>
+          <div class="modal-value">${data.memory || '—'}</div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-label">Activated</div>
+          <div class="modal-value" style="font-size:14px;">${new Date(data.activatedAt).toLocaleString()}</div>
+        </div>
+      `;
+      document.getElementById('modalOverlay').classList.add('open');
+    } catch (e) {
+      showToast('Failed to load memory');
+    }
+  }
+
+  async function unlockKey(id, code) {
+    if (!confirm(`Unlock ${id}? The buyer will be able to edit their memory again.`)) return;
+    try {
+      const res = await fetch(`${API}/admin/unlock`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, id, code })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`${id} unlocked successfully`);
+        loadKeys();
+      } else {
+        showToast('Failed to unlock');
+      }
+    } catch (e) {
+      showToast('Connection error');
+    }
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modalOverlay')) {
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
+  }
+
+  document.getElementById('passwordInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') login();
+  });
+</script>
+</body>
+</html>
