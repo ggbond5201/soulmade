@@ -1,3 +1,0 @@
-/memory/:id /memory/index.html?id=:id 200
-/activate /activate/index.html 200
-/admin /admin/index.html 200
