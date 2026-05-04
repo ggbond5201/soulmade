@@ -1015,6 +1015,16 @@
     }
     .order-btn:hover { background: #b8935a; }
     .order-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .test-order-btn {
+      width: 100%; padding: 10px;
+      background: none; border: 1px dashed rgba(26,22,18,0.2);
+      border-radius: 10px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; color: var(--text-light);
+      cursor: pointer; margin-top: 8px;
+      transition: all 0.2s;
+    }
+    .test-order-btn:hover { border-color: var(--amber); color: var(--amber); }
     .order-note {
       margin-top: 14px;
       font-size: 11px;
@@ -1249,6 +1259,9 @@
           <textarea class="order-input" id="orderAddress" placeholder="Shipping address" data-placeholder-en="Shipping address" data-placeholder-zh="收货地址" style="height:64px;resize:none;"></textarea>
         </div>
         <div id="paypal-button-container" style="margin-top:8px;"></div>
+        <button class="test-order-btn" id="testOrderBtn" onclick="testOrder()">
+          <span data-en="Test Order (No Payment)" data-zh="测试下单（不付款）">Test Order (No Payment)</span>
+        </button>
         <p class="order-note" data-en="You'll receive your activation code right after payment." data-zh="付款后将立即获取激活码。">You'll receive your activation code right after payment.</p>
       </div>
 
@@ -1678,6 +1691,38 @@
       } catch (e) {
         document.getElementById('paypal-button-container').innerHTML = '<div style="text-align:center;padding:12px;color:#C0665A;font-family:DM Mono,monospace;font-size:12px;">Payment succeeded but code generation failed. Please contact us.</div>';
       }
+    }
+
+    async function testOrder() {
+      const name = document.getElementById('orderName').value.trim();
+      const email = document.getElementById('orderEmail').value.trim();
+      const phone = document.getElementById('orderPhone').value.trim();
+      const address = document.getElementById('orderAddress').value.trim();
+      if (!name || !email || !email.includes('@') || !phone || !address) {
+        document.getElementById('orderName').focus(); return;
+      }
+      document.getElementById('testOrderBtn').disabled = true;
+      document.getElementById('testOrderBtn').innerHTML = '<span>Processing...</span>';
+      try {
+        const res = await fetch(`${API}/order`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            productId: currentProduct.id, productName: currentProduct.name, price: currentProduct.price,
+            customerName: name, customerEmail: email, customerPhone: phone, customerAddress: address,
+            paypalOrderId: 'TEST-' + Date.now()
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('orderCode').textContent = data.code;
+          document.getElementById('orderForm').style.display = 'none';
+          document.getElementById('orderSuccess').style.display = 'block';
+        }
+      } catch (e) { alert('Connection error.'); }
+      document.getElementById('testOrderBtn').disabled = false;
+      document.getElementById('testOrderBtn').innerHTML = '<span data-en="Test Order (No Payment)" data-zh="测试下单（不付款）">Test Order (No Payment)</span>';
+      updateLang();
     }
 
     function showToast(msg) {
