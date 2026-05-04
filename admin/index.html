@@ -445,6 +445,49 @@
       </div>
     </div>
 
+    <!-- Products Management -->
+    <div class="section-title">Products</div>
+    <div class="create-panel">
+      <div class="create-row" style="flex-wrap:wrap;">
+        <div class="create-group" style="min-width:110px;"><span class="create-label">Key (slug)*</span><input type="text" class="create-input" id="prodKey" placeholder="moonlight"></div>
+        <div class="create-group" style="min-width:140px;"><span class="create-label">Name (EN)*</span><input type="text" class="create-input" id="prodName" placeholder="Moonlight Pendant" oninput="autoFillKey()"></div>
+        <div class="create-group" style="min-width:140px;"><span class="create-label">Name (中文)*</span><input type="text" class="create-input" id="prodNameZh" placeholder="月光吊坠"></div>
+        <div class="create-group" style="min-width:130px;"><span class="create-label">Product ID*</span><input type="text" class="create-input" id="prodId" placeholder="SOULMADE-007"></div>
+      </div>
+      <div class="create-row" style="margin-top:12px;flex-wrap:wrap;">
+        <div class="create-group" style="min-width:80px;"><span class="create-label">Price ($)</span><input type="number" class="create-input" id="prodPrice" placeholder="24" min="0" step="1"></div>
+        <div class="create-group" style="min-width:110px;"><span class="create-label">Image File</span><input type="text" class="create-input" id="prodImg" placeholder="p1.png"></div>
+        <div class="create-group" style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding-top:4px;">
+          <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodCustomPrice" onchange="document.getElementById('prodPrice').disabled=this.checked;if(this.checked)document.getElementById('prodPrice').value='0';"> Custom Price</label>
+          <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodBundle" onchange="toggleBundleFields()"> Bundle</label>
+          <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodActive" checked> Active</label>
+        </div>
+      </div>
+      <div class="create-row" id="bundleItemsRow" style="margin-top:12px;display:none;">
+        <div class="create-group" style="flex:1;"><span class="create-label">Bundle Items (text)</span><input type="text" class="create-input" id="prodBundleItems" placeholder="Amber Drop + Forest Keychain"></div>
+      </div>
+      <div class="create-row" style="margin-top:12px;">
+        <div class="create-group" style="flex:1;"><span class="create-label">Description (EN)</span><textarea class="create-input" id="prodDesc" placeholder="Product description..." style="height:56px;resize:none;"></textarea></div>
+        <div class="create-group" style="flex:1;"><span class="create-label">Description (中文)</span><textarea class="create-input" id="prodDescZh" placeholder="产品描述..." style="height:56px;resize:none;"></textarea></div>
+      </div>
+      <button class="create-btn" onclick="createProduct()" style="margin-top:12px;" id="createProductBtn">Create Product</button>
+      <button class="create-btn" onclick="seedProducts()" style="margin-top:12px;background:var(--text-mid);margin-left:8px;display:none;" id="seedProductsBtn">Initialize Default Products</button>
+    </div>
+
+    <!-- Product list -->
+    <div style="margin-bottom:12px;margin-top:20px;">
+      <input type="text" class="create-input" id="productSearch" placeholder="Search products..." oninput="renderProducts()" style="max-width:400px;">
+    </div>
+    <div class="keys-panel">
+      <div class="keys-header">
+        <span id="productsCount">Loading...</span>
+        <button class="refresh-btn" onclick="loadProducts()">↻ Refresh</button>
+      </div>
+      <div id="productsList">
+        <div class="empty-state">Loading products...</div>
+      </div>
+    </div>
+
     <!-- Keys list -->
     <div class="section-title">All Keychains</div>
     <div style="margin-bottom:12px;">
@@ -497,6 +540,29 @@
   </div>
 </div>
 
+<!-- Edit Product modal -->
+<div class="modal-overlay" id="editProductOverlay" onclick="closeEditProduct(event)">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-title">Edit Product</div>
+    <div class="modal-row"><span class="modal-label">Key (slug)</span><input class="create-input" id="editProdKey" style="width:100%;background:#eee;color:#888;" disabled></div>
+    <div class="modal-row"><span class="modal-label">Name (EN)</span><input class="create-input" id="editProdName" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label">Name (中文)</span><input class="create-input" id="editProdNameZh" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label">Product ID</span><input class="create-input" id="editProdId" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label">Price ($)</span><input type="number" class="create-input" id="editProdPrice" style="width:100%;" min="0" step="1"></div>
+    <div class="modal-row"><span class="modal-label">Image File</span><input class="create-input" id="editProdImg" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label">Description (EN)</span><textarea class="create-input" id="editProdDesc" style="width:100%;height:56px;resize:none;"></textarea></div>
+    <div class="modal-row"><span class="modal-label">Description (中文)</span><textarea class="create-input" id="editProdDescZh" style="width:100%;height:56px;resize:none;"></textarea></div>
+    <div class="modal-row"><span class="modal-label">Bundle Items</span><input class="create-input" id="editProdBundleItems" style="width:100%;"></div>
+    <div class="modal-row" style="display:flex;gap:20px;">
+      <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdCustomPrice"> Custom Price</label>
+      <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdBundle"> Bundle</label>
+      <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdActive"> Active</label>
+    </div>
+    <button class="create-btn" onclick="saveEditProduct()" style="width:100%;margin-top:12px;">Save</button>
+    <button class="modal-close" onclick="document.getElementById('editProductOverlay').classList.remove('open')" style="margin-top:8px;">Close</button>
+  </div>
+</div>
+
 <!-- Edit Order modal -->
 <div class="modal-overlay" id="editOrderOverlay" onclick="closeEditOrder(event)">
   <div class="modal">
@@ -544,6 +610,7 @@
       document.getElementById('dashboard').style.display = 'block';
       allKeys = data.keys || [];
       renderKeys();
+      loadProducts();
       loadOrders();
       loadShipping();
     } catch (e) {
@@ -831,6 +898,220 @@
       const data = await res.json();
       if (data.success) { showToast('Order deleted'); loadOrders(); }
     } catch (e) { showToast('Failed to delete'); }
+  }
+
+  // ── Products ──
+  let allProducts = [];
+  let editingProductKey = null;
+
+  async function loadProducts() {
+    try {
+      const res = await fetch(`${API}/admin/products`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword })
+      });
+      const data = await res.json();
+      allProducts = data.products || [];
+      renderProducts();
+      if (allProducts.length === 0) {
+        document.getElementById('seedProductsBtn').style.display = 'inline-block';
+      } else {
+        document.getElementById('seedProductsBtn').style.display = 'none';
+      }
+    } catch (e) {
+      showToast('Failed to load products');
+    }
+  }
+
+  function renderProducts() {
+    const list = document.getElementById('productsList');
+    const count = document.getElementById('productsCount');
+    const q = (document.getElementById('productSearch').value || '').toLowerCase();
+    const filtered = q ? allProducts.filter(p =>
+      p.key.includes(q) || p.name.toLowerCase().includes(q) || p.nameZh.includes(q) || p.id.toLowerCase().includes(q)
+    ) : allProducts;
+    count.textContent = `${filtered.length} / ${allProducts.length} product${allProducts.length !== 1 ? 's' : ''}`;
+
+    if (filtered.length === 0) {
+      list.innerHTML = '<div class="empty-state">No products found.</div>';
+      return;
+    }
+
+    list.innerHTML = filtered.map(p => `
+      <div class="key-item">
+        <div class="key-status ${p.active !== false ? 'activated' : 'pending'}"></div>
+        <div class="key-info">
+          <div class="key-id">${p.key} · ${p.name} · $${p.price}</div>
+          <div class="key-meta">
+            ${p.id}${p.customPrice ? ' · Custom Price' : ''}${p.bundle ? ' · Bundle: ' + (p.bundleItems || '') : ''} ${p.active === false ? ' · Inactive' : ''}
+          </div>
+        </div>
+        <div class="key-actions">
+          <button class="action-btn btn-view" onclick="editProduct('${p.key}')">Edit</button>
+          <button class="action-btn btn-view" onclick="toggleProduct('${p.key}')">${p.active !== false ? 'Down' : 'Up'}</button>
+          <button class="action-btn btn-unlock" onclick="deleteProduct('${p.key}')">Del</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function autoFillKey() {
+    const name = document.getElementById('prodName').value;
+    if (!document.getElementById('prodKey').value) {
+      document.getElementById('prodKey').value = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+  }
+
+  function toggleBundleFields() {
+    const checked = document.getElementById('prodBundle').checked;
+    document.getElementById('bundleItemsRow').style.display = checked ? 'flex' : 'none';
+  }
+
+  async function createProduct() {
+    const key = document.getElementById('prodKey').value.trim();
+    const name = document.getElementById('prodName').value.trim();
+    const nameZh = document.getElementById('prodNameZh').value.trim();
+    const id = document.getElementById('prodId').value.trim();
+    if (!key || !name || !nameZh || !id) { showToast('Key, name, nameZh, and ID are required'); return; }
+    try {
+      const res = await fetch(`${API}/admin/create-product`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password: adminPassword, key, name, nameZh,
+          id, price: parseInt(document.getElementById('prodPrice').value) || 0,
+          img: document.getElementById('prodImg').value.trim(),
+          desc: document.getElementById('prodDesc').value.trim(),
+          descZh: document.getElementById('prodDescZh').value.trim(),
+          customPrice: document.getElementById('prodCustomPrice').checked,
+          bundle: document.getElementById('prodBundle').checked,
+          bundleItems: document.getElementById('prodBundleItems').value.trim(),
+          active: document.getElementById('prodActive').checked
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Product created!');
+        clearProductForm();
+        loadProducts();
+      } else if (data.error === 'duplicate_key') {
+        showToast('Product key already exists');
+      } else if (data.error === 'duplicate_id') {
+        showToast('Product ID already exists');
+      } else {
+        showToast('Failed to create product');
+      }
+    } catch (e) { showToast('Connection error'); }
+  }
+
+  function clearProductForm() {
+    document.getElementById('prodKey').value = '';
+    document.getElementById('prodName').value = '';
+    document.getElementById('prodNameZh').value = '';
+    document.getElementById('prodId').value = '';
+    document.getElementById('prodPrice').value = '';
+    document.getElementById('prodPrice').disabled = false;
+    document.getElementById('prodImg').value = '';
+    document.getElementById('prodDesc').value = '';
+    document.getElementById('prodDescZh').value = '';
+    document.getElementById('prodCustomPrice').checked = false;
+    document.getElementById('prodBundle').checked = false;
+    document.getElementById('prodActive').checked = true;
+    document.getElementById('prodBundleItems').value = '';
+    document.getElementById('bundleItemsRow').style.display = 'none';
+  }
+
+  function editProduct(key) {
+    const p = allProducts.find(x => x.key === key);
+    if (!p) return;
+    editingProductKey = key;
+    document.getElementById('editProdKey').value = p.key;
+    document.getElementById('editProdName').value = p.name;
+    document.getElementById('editProdNameZh').value = p.nameZh;
+    document.getElementById('editProdId').value = p.id;
+    document.getElementById('editProdPrice').value = p.price;
+    document.getElementById('editProdImg').value = p.img || '';
+    document.getElementById('editProdDesc').value = p.desc || '';
+    document.getElementById('editProdDescZh').value = p.descZh || '';
+    document.getElementById('editProdCustomPrice').checked = !!p.customPrice;
+    document.getElementById('editProdBundle').checked = !!p.bundle;
+    document.getElementById('editProdBundleItems').value = p.bundleItems || '';
+    document.getElementById('editProdActive').checked = p.active !== false;
+    document.getElementById('editProductOverlay').classList.add('open');
+  }
+
+  function closeEditProduct(e) {
+    if (e && e.target !== document.getElementById('editProductOverlay')) return;
+    document.getElementById('editProductOverlay').classList.remove('open');
+  }
+
+  async function saveEditProduct() {
+    try {
+      const res = await fetch(`${API}/admin/edit-product`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password: adminPassword, key: editingProductKey,
+          name: document.getElementById('editProdName').value.trim(),
+          nameZh: document.getElementById('editProdNameZh').value.trim(),
+          id: document.getElementById('editProdId').value.trim(),
+          price: parseInt(document.getElementById('editProdPrice').value) || 0,
+          img: document.getElementById('editProdImg').value.trim(),
+          desc: document.getElementById('editProdDesc').value.trim(),
+          descZh: document.getElementById('editProdDescZh').value.trim(),
+          customPrice: document.getElementById('editProdCustomPrice').checked,
+          bundle: document.getElementById('editProdBundle').checked,
+          bundleItems: document.getElementById('editProdBundleItems').value.trim(),
+          active: document.getElementById('editProdActive').checked
+        })
+      });
+      const data = await res.json();
+      if (data.success) { showToast('Product updated'); closeEditProduct(); loadProducts(); }
+      else { showToast('Failed to update'); }
+    } catch (e) { showToast('Connection error'); }
+  }
+
+  async function toggleProduct(key) {
+    const p = allProducts.find(x => x.key === key);
+    if (!p) return;
+    try {
+      const res = await fetch(`${API}/admin/edit-product`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, key, active: p.active === false })
+      });
+      const data = await res.json();
+      if (data.success) { showToast(p.active === false ? 'Product activated' : 'Product deactivated'); loadProducts(); }
+      else { showToast('Failed to toggle'); }
+    } catch (e) { showToast('Connection error'); }
+  }
+
+  async function deleteProduct(key) {
+    if (!confirm('Delete this product? This cannot be undone.')) return;
+    try {
+      const res = await fetch(`${API}/admin/delete-product`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, key })
+      });
+      const data = await res.json();
+      if (data.success) { showToast('Product deleted'); loadProducts(); }
+      else { showToast('Failed to delete'); }
+    } catch (e) { showToast('Connection error'); }
+  }
+
+  async function seedProducts() {
+    try {
+      const res = await fetch(`${API}/admin/seed-products`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword })
+      });
+      const data = await res.json();
+      if (data.success) { showToast(data.message || 'Products seeded!'); loadProducts(); }
+      else { showToast('Seed failed'); }
+    } catch (e) { showToast('Connection error'); }
   }
 
   // ── Test Email ──
