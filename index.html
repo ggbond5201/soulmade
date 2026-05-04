@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Bebas+Neue&display=swap" rel="stylesheet" />
-  <script src="https://www.paypal.com/sdk/js?client-id=AWZfpa3qdNiMenhzpHvWnyN1osNxZ8nN3LQo-sGNtD6jm5ji3Ls2a4YNwr_JOvC-JWw6qQEMzyHd_1e7&currency=USD" async onload="paypalSdkReady=true"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=AWZfpa3qdNiMenhzpHvWnyN1osNxZ8nN3LQo-sGNtD6jm5ji3Ls2a4YNwr_JOvC-JWw6qQEMzyHd_1e7&currency=USD" async></script>
   <style>
     :root {
       --cream: #f5f0e8;
@@ -1411,9 +1411,6 @@
     }, { threshold: 0.1 });
     reveals.forEach(r => obs.observe(r));
 
-    // Init shop
-    renderShop();
-
     // Legal pages
     const legalContent = {
       privacy: {
@@ -1729,6 +1726,9 @@
         msg.style.opacity = '1';
       }
     }
+
+    // Init shop on page load
+    renderShop();
   </script>
 </body>
 </html>
