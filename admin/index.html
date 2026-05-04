@@ -456,6 +456,18 @@
       </div>
     </div>
 
+    <!-- Orders list -->
+    <div class="section-title" style="margin-top:40px;">Orders</div>
+    <div class="keys-panel">
+      <div class="keys-header">
+        <span id="ordersCount">Loading...</span>
+        <button class="refresh-btn" onclick="loadOrders()">↻ Refresh</button>
+      </div>
+      <div id="ordersList">
+        <div class="empty-state">Loading orders...</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -502,6 +514,7 @@
       document.getElementById('dashboard').style.display = 'block';
       allKeys = data.keys || [];
       renderKeys();
+      loadOrders();
     } catch (e) {
       document.getElementById('loginError').style.display = 'block';
       document.getElementById('loginError').textContent = 'Connection error. Try again.';
@@ -644,6 +657,68 @@
   function closeModal(e) {
     if (e.target === document.getElementById('modalOverlay')) {
       document.getElementById('modalOverlay').classList.remove('open');
+    }
+  }
+
+  // ── Orders ──
+  let allOrders = [];
+
+  async function loadOrders() {
+    try {
+      const res = await fetch(`${API}/admin/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword })
+      });
+      const data = await res.json();
+      allOrders = data.orders || [];
+      renderOrders();
+    } catch (e) {
+      showToast('Failed to load orders');
+    }
+  }
+
+  function renderOrders() {
+    const list = document.getElementById('ordersList');
+    const count = document.getElementById('ordersCount');
+    count.textContent = `${allOrders.length} order${allOrders.length !== 1 ? 's' : ''}`;
+
+    if (allOrders.length === 0) {
+      list.innerHTML = '<div class="empty-state">No orders yet.</div>';
+      return;
+    }
+
+    list.innerHTML = allOrders.map(o => `
+      <div class="key-item">
+        <div class="key-status ${o.shipped ? 'activated' : 'pending'}"></div>
+        <div class="key-info">
+          <div class="key-id">${o.productName} — ${o.customerName}</div>
+          <div class="key-meta">
+            Code: ${o.activationCode} · ${o.customerEmail} · ${new Date(o.createdAt).toLocaleDateString()}
+            ${o.shipped ? ' · ✓ Shipped' : ' · Pending'}
+          </div>
+        </div>
+        <div class="key-actions">
+          ${!o.shipped ? `<button class="action-btn btn-view" onclick="markShipped('${o.orderId}')">Ship</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function markShipped(orderId) {
+    try {
+      const res = await fetch(`${API}/admin/ship`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, orderId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Order marked as shipped');
+        loadOrders();
+      }
+    } catch (e) {
+      showToast('Failed to update');
     }
   }
 

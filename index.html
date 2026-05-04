@@ -975,6 +975,48 @@
       transform: translateY(0);
     }
 
+    /* ORDER FORM */
+    .order-field { margin-bottom: 12px; }
+    .order-input {
+      width: 100%;
+      background: var(--cream);
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .order-input:focus { border-color: var(--amber); }
+    .order-input::placeholder { color: rgba(26,22,18,0.3); }
+    .order-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--amber);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+    .order-btn:hover { background: #b8935a; }
+    .order-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .order-note {
+      margin-top: 14px;
+      font-size: 11px;
+      color: var(--text-light);
+      text-align: center;
+      line-height: 1.6;
+    }
+
     /* LIGHTBOX */
     .lightbox-overlay {
       position: fixed;
@@ -1185,17 +1227,31 @@
       <div class="modal-price" id="modalPrice"></div>
       <div class="modal-divider"></div>
 
-      <!-- Contact to Buy -->
-      <div class="modal-label" data-en="Contact to Purchase" data-zh="联系购买">Contact to Purchase</div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <a class="modal-contact-btn" id="modalEmailBtn" href="#" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:12px;border:1px solid rgba(26,22,18,0.15);text-decoration:none;color:var(--ink);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;transition:all 0.2s;">
-          <span style="font-size:18px;">✉️</span> Email Inquiry
-        </a>
-        <button class="modal-contact-btn" id="modalCopyBtn" onclick="copyProductInfo()" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:12px;border:1px solid rgba(26,22,18,0.15);background:#fff;cursor:pointer;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--ink);transition:all 0.2s;">
-          <span style="font-size:18px;">📋</span> <span data-en="Copy Product Info" data-zh="复制产品信息">Copy Product Info</span>
+      <!-- Order Form -->
+      <div id="orderForm">
+        <div class="modal-label" data-en="Place Your Order" data-zh="下单购买">Place Your Order</div>
+        <div class="order-field">
+          <input type="text" class="order-input" id="orderName" placeholder="Your name" data-placeholder-en="Your name" data-placeholder-zh="你的名字">
+        </div>
+        <div class="order-field">
+          <input type="email" class="order-input" id="orderEmail" placeholder="Your email" data-placeholder-en="Your email" data-placeholder-zh="你的邮箱">
+        </div>
+        <button class="order-btn" id="orderBtn" onclick="placeOrder()">
+          <span data-en="Place Order" data-zh="提交订单">Place Order</span>
         </button>
+        <p class="order-note" data-en="Your activation code will appear here instantly. No payment required yet — we'll follow up with you." data-zh="你的激活码会立刻显示在这里。暂不需要付款，我们会联系你确认。">Your activation code will appear here instantly. No payment required yet — we'll follow up with you.</p>
       </div>
-      <p style="margin-top:16px;font-size:12px;color:var(--text-light);text-align:center;line-height:1.7;" data-en="Tell me which piece you'd like. Each one is handmade and unique." data-zh="告诉我你想要哪一件，每件都是手工制作，独一无二。">Tell me which piece you'd like. Each one is handmade and unique.</p>
+
+      <!-- Order Success -->
+      <div id="orderSuccess" style="display:none;text-align:center;">
+        <div style="font-size:40px;margin-bottom:16px;">✨</div>
+        <div class="modal-label" data-en="Your Activation Code" data-zh="你的激活码">Your Activation Code</div>
+        <div class="order-code" id="orderCode" style="font-family:'DM Mono',monospace;font-size:22px;letter-spacing:3px;padding:16px;background:var(--gold-pale);border-radius:12px;margin:12px 0;word-break:break-all;"></div>
+        <p style="font-size:13px;color:var(--text-light);line-height:1.7;margin-bottom:16px;" data-en="Copy this code and go to the activation page to write your memory. We'll also contact you at your email." data-zh="复制这个激活码，前往激活页面写下你的记忆。我们也会通过邮件联系你。">Copy this code and go to the activation page to write your memory. We'll also contact you at your email.</p>
+        <a class="order-btn" href="activate/" style="display:block;text-align:center;text-decoration:none;">
+          <span data-en="Activate Now →" data-zh="立即激活 →">Activate Now →</span>
+        </a>
+      </div>
 
       <!-- PayPal (hidden until configured) -->
       <div id="paypalSection" style="display:none;">
@@ -1515,6 +1571,8 @@
     // ── Product Modal ──
     let currentProduct = null;
 
+    const API = "https://soulmade-memory.2323371806.workers.dev";
+
     function openModal(productKey) {
       currentProduct = products.find(p => p.key === productKey);
       if (!currentProduct) return;
@@ -1526,9 +1584,11 @@
       document.getElementById('modalDesc').textContent = isZh ? currentProduct.descZh : currentProduct.desc;
       document.getElementById('modalPrice').innerHTML = `$${currentProduct.price} <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--amber);margin-left:8px;">USD</span>`;
 
-      const emailSubject = encodeURIComponent(`Inquiry: ${currentProduct.name} (${currentProduct.id})`);
-      const emailBody = encodeURIComponent(`Hi SOULMADE,\n\nI'm interested in "${currentProduct.name}" (${currentProduct.id}) at $${currentProduct.price}.\n\nPlease let me know how to purchase.\n\nThank you.`);
-      document.getElementById('modalEmailBtn').href = `mailto:hello@soulmade.shop?subject=${emailSubject}&body=${emailBody}`;
+      // Reset order form state
+      document.getElementById('orderForm').style.display = 'block';
+      document.getElementById('orderSuccess').style.display = 'none';
+      document.getElementById('orderName').value = '';
+      document.getElementById('orderEmail').value = '';
 
       document.getElementById('modalOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -1544,17 +1604,45 @@
       if (e.target === document.getElementById('modalOverlay')) closeModal();
     }
 
-    function copyProductInfo() {
+    async function placeOrder() {
       if (!currentProduct) return;
-      const text = `${currentProduct.name} (${currentProduct.id})\nPrice: $${currentProduct.price}\n\nContact: hello@soulmade.shop`;
-      navigator.clipboard.writeText(text).then(() => {
-        const btn = document.getElementById('modalCopyBtn');
-        btn.innerHTML = '<span style="font-size:18px;">✓</span> <span>Copied!</span>';
-        setTimeout(() => {
-          btn.innerHTML = '<span style="font-size:18px;">📋</span> <span data-en="Copy Product Info" data-zh="复制产品信息">Copy Product Info</span>';
-          updateLang();
-        }, 2000);
-      });
+      const name = document.getElementById('orderName').value.trim();
+      const email = document.getElementById('orderEmail').value.trim();
+      if (!name) { document.getElementById('orderName').focus(); return; }
+      if (!email || !email.includes('@')) { document.getElementById('orderEmail').focus(); return; }
+
+      const btn = document.getElementById('orderBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span data-en="Placing Order..." data-zh="提交中...">Placing Order...</span>';
+
+      try {
+        const res = await fetch(`${API}/order`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            productId: currentProduct.id,
+            productName: currentProduct.name,
+            price: currentProduct.price,
+            customerName: name,
+            customerEmail: email
+          })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          document.getElementById('orderCode').textContent = data.code;
+          document.getElementById('orderForm').style.display = 'none';
+          document.getElementById('orderSuccess').style.display = 'block';
+        } else {
+          alert('Something went wrong. Please try again.');
+        }
+      } catch (e) {
+        alert('Connection error. Please try again.');
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = '<span data-en="Place Order" data-zh="提交订单">Place Order</span>';
+      updateLang();
     }
 
     // ── Image Lightbox ──
@@ -1576,6 +1664,10 @@
         } else {
           el.innerHTML = isZh ? el.dataset.zh : el.dataset.en;
         }
+      });
+      // Also handle placeholder-only inputs (no data-en)
+      document.querySelectorAll('[data-placeholder-en]').forEach(el => {
+        el.placeholder = isZh ? el.dataset.placeholderZh : el.dataset.placeholderEn;
       });
     }
     async function handleNotify() {
