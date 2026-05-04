@@ -1395,6 +1395,7 @@
         <div style="font-size:40px;margin-bottom:16px;">✨</div>
         <div class="modal-label" data-en="Your Activation Code" data-zh="你的激活码">Your Activation Code</div>
         <div class="order-code" id="orderCode" style="font-family:'DM Mono',monospace;font-size:22px;letter-spacing:3px;padding:16px;background:var(--gold-pale);border-radius:12px;margin:12px 0;word-break:break-all;"></div>
+        <div class="order-code" id="orderIdDisplay" style="font-family:'DM Mono',monospace;font-size:13px;letter-spacing:1px;color:var(--text-light);margin-bottom:4px;"></div>
         <p style="font-size:13px;color:var(--text-light);line-height:1.7;margin-bottom:16px;" data-en="Copy this code and go to the activation page to write your memory. We'll also contact you at your email." data-zh="复制这个激活码，前往激活页面写下你的记忆。我们也会通过邮件联系你。">Copy this code and go to the activation page to write your memory. We'll also contact you at your email.</p>
         <a class="order-btn" href="activate/" style="display:block;text-align:center;text-decoration:none;">
           <span data-en="Activate Now →" data-zh="立即激活 →">Activate Now →</span>
@@ -1879,6 +1880,7 @@
         const data = await res.json();
         if (data.success) {
           document.getElementById('orderCode').textContent = data.code;
+          document.getElementById('orderIdDisplay').textContent = 'Order: ' + (data.orderId || '');
           document.getElementById('orderForm').style.display = 'none';
           document.getElementById('orderSuccess').style.display = 'block';
         }
@@ -1969,6 +1971,7 @@
         const data = await res.json();
         if (data.success) {
           document.getElementById('orderCode').textContent = data.code;
+          document.getElementById('orderIdDisplay').textContent = 'Order: ' + (data.orderId || '');
           document.getElementById('orderForm').style.display = 'none';
           document.getElementById('orderSuccess').style.display = 'block';
         }
@@ -2006,6 +2009,7 @@
         const data = await res.json();
         if (data.success) {
           document.getElementById('orderCode').textContent = data.code;
+          document.getElementById('orderIdDisplay').textContent = 'Order: ' + (data.orderId || '');
           document.getElementById('orderForm').style.display = 'none';
           document.getElementById('orderSuccess').style.display = 'block';
         }

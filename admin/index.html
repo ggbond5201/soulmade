@@ -756,7 +756,7 @@
       <div class="key-item">
         <div class="key-status ${o.shipped ? 'activated' : 'pending'}"></div>
         <div class="key-info">
-          <div class="key-id">${o.productName} — ${o.customerName}</div>
+          <div class="key-id">${o.orderId} · ${o.productName} — ${o.customerName}</div>
           <div class="key-meta">
             📞 ${o.customerPhone || '—'} · 📍 ${o.customerAddress || '—'}<br>
             🚚 ${o.shippingRegion || '—'} · $${o.shippingCost || 0} shipping<br>
