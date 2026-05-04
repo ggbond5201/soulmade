@@ -69,6 +69,16 @@
     margin: 0 8px;
     vertical-align: middle;
   }
+  .back-link {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-light);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--gold); }
 
   .card {
     width: 100%;
@@ -297,6 +307,7 @@
     <span class="brand-name">Soulmade</span>
     <span class="brand-dot"></span>
     <span class="brand-name">Activate Your Memory</span>
+    <br><a href="/" class="back-link">← Back to Shop</a>
   </div>
 
   <div class="card">
@@ -323,7 +334,8 @@
       <button class="btn" onclick="checkCode()">Continue →</button>
 
       <div class="hint">
-        Find your activation code on the small card inside your SOULMADE package.
+        Find your activation code on the card inside your SOULMADE package.<br>
+        Format: SM-0001-XXXXX (full code). Your recipient only needs the last 5 letters to view.
       </div>
     </div>
 
