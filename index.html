@@ -981,6 +981,66 @@
       transform: translateY(0);
     }
 
+    /* SHOP SEARCH */
+    .shop-search-wrap {
+      max-width: 360px;
+      margin: 0 auto 32px;
+    }
+    .shop-search {
+      width: 100%;
+      padding: 14px 20px;
+      background: #fff;
+      border: 1px solid rgba(200,169,110,0.3);
+      border-radius: 50px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .shop-search:focus { border-color: var(--amber); }
+    .shop-search::placeholder { color: rgba(26,22,18,0.3); }
+
+    /* BUNDLE BAR */
+    .bundle-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--ink);
+      color: #fff;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 90;
+      animation: fadeUp 0.3s ease;
+    }
+    .bundle-bar span {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+    }
+    .bundle-bar .bundle-btn {
+      background: var(--amber);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+    .bundle-bar .bundle-btn:hover { background: #b8935a; }
+
+    /* CHECKBOX on product cards */
+    .product-check {
+      position: absolute;
+      top: 12px; right: 12px;
+      z-index: 5;
+      width: 22px; height: 22px;
+      accent-color: var(--amber);
+      cursor: pointer;
+    }
+
     /* ORDER FORM */
     .order-field { margin-bottom: 12px; }
     .order-input {
@@ -1227,6 +1287,14 @@
       <h2 class="reveal">The <em>Collection</em></h2>
       <span class="shop-coming reveal" data-en="Handcrafted · Limited Pieces" data-zh="手工限量 · 每件独一无二">Handcrafted · Limited Pieces</span>
     </div>
+    <div class="shop-search-wrap reveal">
+      <input type="text" class="shop-search" id="shopSearch" placeholder="Search pieces..." data-placeholder-en="Search pieces..." data-placeholder-zh="搜索产品..." oninput="renderShop()">
+    </div>
+    <!-- Bundle bar -->
+    <div class="bundle-bar" id="bundleBar" style="display:none;">
+      <span id="bundleInfo"></span>
+      <button class="bundle-btn" id="bundleBtn" onclick="checkoutBundle()">Checkout Bundle →</button>
+    </div>
     <div class="shop-grid" id="shopGrid"></div>
   </section>
 
@@ -1258,6 +1326,21 @@
         <div class="order-field">
           <textarea class="order-input" id="orderAddress" placeholder="Shipping address" data-placeholder-en="Shipping address" data-placeholder-zh="收货地址" style="height:64px;resize:none;"></textarea>
         </div>
+        <div class="order-field" id="customPriceField" style="display:none;">
+          <label style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;display:block;">Your Price (USD)</label>
+          <input type="number" class="order-input" id="orderCustomPrice" placeholder="50" min="10" step="1">
+        </div>
+        <div class="order-field">
+          <label style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;display:block;">Shipping Region</label>
+          <select class="order-input" id="orderRegion" onchange="updateShippingCost()">
+            <option value="">Select region...</option>
+            <option value="China">China · ¥0</option>
+            <option value="US">United States · $5</option>
+            <option value="Europe">Europe · $8</option>
+            <option value="Other">Other · $12</option>
+          </select>
+        </div>
+        <div id="priceSummary" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-light);margin-top:8px;display:none;"></div>
         <div id="paypal-button-container" style="margin-top:8px;"></div>
         <button class="test-order-btn" id="testOrderBtn" onclick="testOrder()">
           <span data-en="Test Order (No Payment)" data-zh="测试下单（不付款）">Test Order (No Payment)</span>
@@ -1558,33 +1641,74 @@
       { key:'twilight', name:'Twilight Orb',      nameZh:'暮色摆件',   id:'SOULMADE-003', price:32, img:'p3.png', desc:'A sphere of deep purple resin holding the last light before nightfall. Display it where light touches.', descZh:'深紫色树脂球体，封存了夜幕降临前最后的光芒。放在光线能触碰的地方展示。' },
       { key:'ocean',    name:'Ocean Pendant',     nameZh:'海洋之心吊坠',id:'SOULMADE-004', price:28, img:'p4.png', desc:'Layers of blue and white capturing the rhythm of waves. A piece of the sea, worn close to your heart.', descZh:'蓝白分层交叠，捕捉海浪的韵律。一片海洋，贴近心跳。' },
       { key:'cherry',   name:'Cherry Blossom',    nameZh:'樱花耳饰',   id:'SOULMADE-005', price:22, img:'p5.png', desc:'Delicate pink petals forever suspended mid-fall. Light as a spring breeze, elegant on any ear.', descZh:'粉色花瓣永久定格在飘落瞬间。如春日微风，轻盈优雅。' },
-      { key:'galaxy',   name:'Galaxy Sphere',     nameZh:'银河摆件',   id:'SOULMADE-006', price:36, img:'p6.png', desc:'A cosmos of swirling stars captured in crystal-clear resin. No two galaxies are the same.', descZh:'旋转星海被封装在水晶般透明的树脂中。每片银河都独一无二。' }
+      { key:'galaxy',   name:'Galaxy Sphere',     nameZh:'银河摆件',   id:'SOULMADE-006', price:36, img:'p6.png', desc:'A cosmos of swirling stars captured in crystal-clear resin. No two galaxies are the same.', descZh:'旋转星海被封装在水晶般透明的树脂中。每片银河都独一无二。' },
+      { key:'custom',   name:'Custom Commission',  nameZh:'定制作品',   id:'SOULMADE-CUSTOM', price:0, img:'', customPrice:true, desc:'Have your own idea? Describe what you want and name your price. We will handcraft a one-of-a-kind piece just for you.', descZh:'有自己的想法？描述你想要的，自定价格。我们将为你手工打造一件独一无二的作品。' },
+      { key:'bundle1',  name:'Pendant + Keychain Set', nameZh:'吊坠+钥匙扣套装', id:'SOULMADE-BUNDLE-1', price:35, img:'p1.png', bundle:true, bundleItems:'Amber Drop + Forest Keychain', desc:'Our most popular combo: a warm amber pendant paired with a forest keychain. Save $7.', descZh:'最受欢迎的搭配：琥珀吊坠 + 森林钥匙扣，立省 $7。' },
+      { key:'bundle2',  name:'Full Collection Set',   nameZh:'全套收藏', id:'SOULMADE-BUNDLE-2', price:120, img:'p6.png', bundle:true, bundleItems:'All 6 standard pieces', desc:'Own the entire collection. All 6 standard pieces at a special bundle price. Save $40.', descZh:'拥有全套。6 件标准作品打包特价，立省 $40。' }
     ];
 
     // ── Render Shop Grid ──
+    // ── Bundle state ──
+    let selectedItems = [];
+    let selectedProducts = [];
+
+    function toggleBundle(key) {
+      const idx = selectedItems.indexOf(key);
+      if (idx > -1) { selectedItems.splice(idx, 1); }
+      else { selectedItems.push(key); }
+      updateBundleBar();
+    }
+
+    function updateBundleBar() {
+      const bar = document.getElementById('bundleBar');
+      const info = document.getElementById('bundleInfo');
+      if (selectedItems.length >= 2) {
+        selectedProducts = selectedItems.map(k => products.find(p => p.key === k)).filter(Boolean);
+        const total = selectedProducts.reduce((s, p) => s + p.price, 0);
+        const discount = selectedItems.length >= 3 ? 0.15 : 0.10;
+        const finalPrice = Math.round(total * (1 - discount));
+        info.textContent = `${selectedItems.length} items · $${total} → $${finalPrice} (${Math.round(discount*100)}% off)`;
+        bar.style.display = 'flex';
+      } else {
+        bar.style.display = 'none';
+      }
+    }
+
+    function checkoutBundle() {
+      if (selectedProducts.length < 2) return;
+      document.getElementById('bundleBar').style.display = 'none';
+      openBundleModal(selectedProducts);
+    }
+
     function renderShop() {
       const grid = document.getElementById('shopGrid');
-      grid.innerHTML = products.map(p => `
-        <div class="product-card reveal" onclick="openModal('${p.key}')">
-          <div class="img-wrap">
-            <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='radial-gradient(circle at 35% 35%, rgba(255,240,200,0.9) 0%, rgba(200,169,110,0.6) 40%, rgba(100,60,20,0.4) 100%)';">
+      const q = (document.getElementById('shopSearch').value || '').toLowerCase();
+      const filtered = q ? products.filter(p =>
+        p.name.toLowerCase().includes(q) || p.nameZh.includes(q) ||
+        p.desc.toLowerCase().includes(q) || p.descZh.includes(q) ||
+        (p.bundleItems || '').toLowerCase().includes(q)
+      ) : products;
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="product-card reveal" style="position:relative;">
+          <input type="checkbox" class="product-check" onclick="event.stopPropagation();toggleBundle('${p.key}')" ${selectedItems.includes(p.key)?'checked':''}>
+          <div class="img-wrap" onclick="openModal('${p.key}')">
+            <img src="${p.img || 'p1.png'}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.background='radial-gradient(circle at 35% 35%, rgba(255,240,200,0.9) 0%, rgba(200,169,110,0.6) 40%, rgba(100,60,20,0.4) 100%)';this.style.display='none';">
             <div class="product-overlay">
               <span data-en="View Details" data-zh="查看详情">View Details</span>
-              <div class="overlay-price">$${p.price}</div>
+              <div class="overlay-price">${p.customPrice ? 'You Set' : '$'+p.price}</div>
             </div>
           </div>
-          <div class="product-info">
+          <div class="product-info" onclick="openModal('${p.key}')">
             <div>
               <div class="product-name" data-en="${p.name}" data-zh="${p.nameZh}">${p.name}</div>
-              <div class="product-id">${p.id}</div>
+              <div class="product-id">${p.id}${p.bundle ? ' · Bundle' : ''}</div>
             </div>
-            <div class="product-price">$${p.price}</div>
+            <div class="product-price">${p.customPrice ? 'Set Price' : '$'+p.price}</div>
           </div>
         </div>
       `).join('');
-      // Re-observe new reveal elements
       document.querySelectorAll('#shopGrid .reveal').forEach(r => obs.observe(r));
-      // Update lang on new elements
       updateLang();
     }
 
@@ -1600,24 +1724,113 @@
       currentProduct = products.find(p => p.key === productKey);
       if (!currentProduct) return;
 
-      document.getElementById('modalImg').src = currentProduct.img;
-      document.getElementById('modalImgWrap').onclick = function(e){ e.stopPropagation(); openLightbox(currentProduct.img); };
+      document.getElementById('modalImg').src = currentProduct.img || 'p1.png';
+      document.getElementById('modalImgWrap').onclick = function(e){ e.stopPropagation(); openLightbox(currentProduct.img || 'p1.png'); };
       document.getElementById('modalName').textContent = isZh ? currentProduct.nameZh : currentProduct.name;
       document.getElementById('modalId').textContent = currentProduct.id;
       document.getElementById('modalDesc').textContent = isZh ? currentProduct.descZh : currentProduct.desc;
-      document.getElementById('modalPrice').innerHTML = `$${currentProduct.price} <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--amber);margin-left:8px;">USD</span>`;
+      document.getElementById('modalPrice').innerHTML = currentProduct.customPrice ? 'Name Your Price <span style="font-family:DM Mono,monospace;font-size:12px;letter-spacing:2px;color:var(--amber);margin-left:8px;">USD</span>' : `$${currentProduct.price} <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--amber);margin-left:8px;">USD</span>`;
 
-      // Reset order form state
+      // Reset
       document.getElementById('orderForm').style.display = 'block';
       document.getElementById('orderSuccess').style.display = 'none';
       document.getElementById('orderName').value = '';
       document.getElementById('orderEmail').value = '';
+      document.getElementById('orderRegion').value = '';
+      document.getElementById('orderCustomPrice').value = '';
+      document.getElementById('customPriceField').style.display = currentProduct.customPrice ? 'block' : 'none';
+      document.getElementById('priceSummary').style.display = 'none';
+      document.getElementById('paypal-button-container').innerHTML = '';
 
       document.getElementById('modalOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
-
-      // Render PayPal button
       setTimeout(renderPayPal, 100);
+    }
+
+    function openBundleModal(items) {
+      currentProduct = { key:'bundle', id:'BUNDLE', bundleItems: items, price: 0 };
+      document.getElementById('modalImgWrap').innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--cream);font-size:40px;">📦</div>';
+      const names = items.map(p => p.name).join(' + ');
+      const total = items.reduce((s, p) => s + p.price, 0);
+      const discount = items.length >= 3 ? 0.15 : 0.10;
+      const finalPrice = Math.round(total * (1 - discount));
+      currentProduct.price = finalPrice;
+      currentProduct.bundleNames = names;
+      currentProduct.bundleIds = items.map(p => p.id);
+      currentProduct.bundleTotal = total;
+      currentProduct.bundleDiscount = discount;
+
+      document.getElementById('modalName').textContent = names;
+      document.getElementById('modalId').textContent = `Bundle · ${items.length} items`;
+      document.getElementById('modalDesc').textContent = `Total: $${total} → $${finalPrice} (${Math.round(discount*100)}% bundle discount)`;
+      document.getElementById('modalPrice').innerHTML = `$${finalPrice} <span style="font-family:DM Mono,monospace;font-size:12px;letter-spacing:2px;color:var(--amber);margin-left:8px;">USD</span>`;
+      document.getElementById('customPriceField').style.display = 'none';
+
+      // Reset form
+      document.getElementById('orderForm').style.display = 'block';
+      document.getElementById('orderSuccess').style.display = 'none';
+      document.getElementById('orderName').value = '';
+      document.getElementById('orderEmail').value = '';
+      document.getElementById('orderRegion').value = '';
+      document.getElementById('priceSummary').style.display = 'none';
+      document.getElementById('paypal-button-container').innerHTML = '';
+
+      document.getElementById('modalOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(renderPayPal, 100);
+    }
+
+    function updateShippingCost() {
+      const region = document.getElementById('orderRegion').value;
+      const rates = { China: 0, US: 5, Europe: 8, Other: 12 };
+      const shipping = rates[region] || 0;
+      const price = currentProduct.customPrice ? parseInt(document.getElementById('orderCustomPrice').value) || 0 : currentProduct.price;
+      const summary = document.getElementById('priceSummary');
+      if (region && price > 0) {
+        summary.style.display = 'block';
+        summary.innerHTML = `Subtotal: $${price} · Shipping: $${shipping} · <strong>Total: $${price + shipping}</strong>`;
+      }
+      return { shipping, price };
+    }
+
+    async function completeOrder(paypalOrderId) {
+      const name = document.getElementById('orderName').value.trim();
+      const email = document.getElementById('orderEmail').value.trim();
+      const phone = document.getElementById('orderPhone').value.trim();
+      const address = document.getElementById('orderAddress').value.trim();
+      const region = document.getElementById('orderRegion').value;
+      const { shipping, price } = updateShippingCost();
+      if (!name || !email || !email.includes('@') || !phone || !address || !region) {
+        document.getElementById('orderName').focus(); return;
+      }
+
+      document.getElementById('paypal-button-container').innerHTML = '<div style="text-align:center;padding:12px;font-family:DM Mono,monospace;font-size:12px;color:var(--amber);">Generating your activation code...</div>';
+
+      try {
+        const res = await fetch(`${API}/order`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            productId: currentProduct.id,
+            productName: currentProduct.bundleNames || currentProduct.name,
+            price: price + shipping,
+            customerName: name, customerEmail: email,
+            customerPhone: phone, customerAddress: address,
+            shippingRegion: region, shippingCost: shipping,
+            isBundle: !!currentProduct.bundleIds,
+            bundleIds: currentProduct.bundleIds || [],
+            paypalOrderId
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('orderCode').textContent = data.code;
+          document.getElementById('orderForm').style.display = 'none';
+          document.getElementById('orderSuccess').style.display = 'block';
+        }
+      } catch (e) {
+        document.getElementById('paypal-button-container').innerHTML = '<div style="text-align:center;padding:12px;color:#C0665A;font-family:DM Mono,monospace;font-size:12px;">Payment succeeded but code generation failed. Please contact us.</div>';
+      }
     }
 
     function renderPayPal() {
@@ -1631,13 +1844,14 @@
         return;
       }
 
+      const orderPrice = getOrderPrice();
       paypal.Buttons({
         style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay' },
         createOrder: (data, actions) => {
           return actions.order.create({
             purchase_units: [{
-              description: `${currentProduct.name} (${currentProduct.id})`,
-              amount: { value: currentProduct.price.toString() }
+              description: `${currentProduct.bundleNames || currentProduct.name} (${currentProduct.id})`,
+              amount: { value: orderPrice.toString() }
             }]
           });
         },
@@ -1698,7 +1912,9 @@
       const email = document.getElementById('orderEmail').value.trim();
       const phone = document.getElementById('orderPhone').value.trim();
       const address = document.getElementById('orderAddress').value.trim();
-      if (!name || !email || !email.includes('@') || !phone || !address) {
+      const region = document.getElementById('orderRegion').value;
+      const { shipping, price } = updateShippingCost();
+      if (!name || !email || !email.includes('@') || !phone || !address || !region) {
         document.getElementById('orderName').focus(); return;
       }
       document.getElementById('testOrderBtn').disabled = true;
@@ -1708,8 +1924,12 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            productId: currentProduct.id, productName: currentProduct.name, price: currentProduct.price,
+            productId: currentProduct.id, productName: currentProduct.bundleNames || currentProduct.name,
+            price: price + shipping,
             customerName: name, customerEmail: email, customerPhone: phone, customerAddress: address,
+            shippingRegion: region, shippingCost: shipping,
+            isBundle: !!currentProduct.bundleIds,
+            bundleIds: currentProduct.bundleIds || [],
             paypalOrderId: 'TEST-' + Date.now()
           })
         });

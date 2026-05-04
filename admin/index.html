@@ -447,6 +447,9 @@
 
     <!-- Keys list -->
     <div class="section-title">All Keychains</div>
+    <div style="margin-bottom:12px;">
+      <input type="text" class="create-input" id="keySearch" placeholder="Search by ID or activation code..." oninput="renderKeys()" style="max-width:400px;">
+    </div>
     <div class="keys-panel">
       <div class="keys-header">
         <span id="keysCount">Loading...</span>
@@ -560,14 +563,16 @@
   function renderKeys() {
     const list = document.getElementById('keysList');
     const count = document.getElementById('keysCount');
-    count.textContent = `${allKeys.length} keychain${allKeys.length !== 1 ? 's' : ''} total`;
+    const q = (document.getElementById('keySearch').value || '').toUpperCase();
+    const filtered = q ? allKeys.filter(k => k.id.includes(q) || k.code.includes(q)) : allKeys;
+    count.textContent = `${filtered.length} / ${allKeys.length} keychain${allKeys.length !== 1 ? 's' : ''}`;
 
-    if (allKeys.length === 0) {
-      list.innerHTML = '<div class="empty-state">No keychains yet. Generate your first activation code above.</div>';
+    if (filtered.length === 0) {
+      list.innerHTML = '<div class="empty-state">No keychains found.</div>';
       return;
     }
 
-    list.innerHTML = allKeys.map(k => `
+    list.innerHTML = filtered.map(k => `
       <div class="key-item">
         <div class="key-status ${k.activated ? 'activated' : 'pending'}"></div>
         <div class="key-info">
@@ -709,8 +714,9 @@
           <div class="key-id">${o.productName} — ${o.customerName}</div>
           <div class="key-meta">
             📞 ${o.customerPhone || '—'} · 📍 ${o.customerAddress || '—'}<br>
+            🚚 ${o.shippingRegion || '—'} · $${o.shippingCost || 0} shipping<br>
             Code: ${o.activationCode} · ${o.customerEmail} · ${new Date(o.createdAt).toLocaleDateString()}
-            ${o.shipped ? ' · ✓ Shipped' : ' · Pending'}
+            ${o.isBundle ? ' · Bundle' : ''} ${o.shipped ? ' · ✓ Shipped' : ' · Pending'}
           </div>
         </div>
         <div class="key-actions">
