@@ -1031,6 +1031,29 @@
     }
     .bundle-bar .bundle-btn:hover { background: #b8935a; }
 
+    /* CUSTOM PRODUCT card */
+    .product-card.card-custom {
+      border: 2px dashed var(--amber);
+      background: linear-gradient(135deg, rgba(200,169,110,0.06) 0%, rgba(200,169,110,0.02) 100%);
+      position: relative;
+    }
+    .product-card.card-custom::before {
+      content: '✨ Custom';
+      position: absolute;
+      top: 12px; left: 12px;
+      z-index: 5;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--amber);
+      background: rgba(200,169,110,0.12);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .product-card.card-custom .img-wrap {
+      background: linear-gradient(135deg, #fdf6f0 0%, #f5ecdd 50%, #fdf3ef 100%);
+    }
+
     /* CHECKBOX on product cards */
     .product-check {
       position: absolute;
@@ -1690,7 +1713,7 @@
       ) : products;
 
       grid.innerHTML = filtered.map(p => `
-        <div class="product-card reveal" style="position:relative;">
+        <div class="product-card reveal ${p.customPrice ? 'card-custom' : ''}" style="position:relative;">
           <input type="checkbox" class="product-check" onclick="event.stopPropagation();toggleBundle('${p.key}')" ${selectedItems.includes(p.key)?'checked':''}>
           <div class="img-wrap" onclick="openModal('${p.key}')">
             <img src="${p.img || 'p1.png'}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.background='radial-gradient(circle at 35% 35%, rgba(255,240,200,0.9) 0%, rgba(200,169,110,0.6) 40%, rgba(100,60,20,0.4) 100%)';this.style.display='none';">
@@ -1833,18 +1856,33 @@
       }
     }
 
+    function getOrderPrice() {
+      if (currentProduct.customPrice) {
+        const cp = parseInt(document.getElementById('orderCustomPrice').value) || 0;
+        if (cp < 10) return 0; // too low, will be rejected
+        const region = document.getElementById('orderRegion').value;
+        const rates = { China: 0, US: 5, Europe: 8, Other: 12 };
+        return cp + (rates[region] || 0);
+      }
+      const { shipping, price } = updateShippingCost();
+      return price + shipping;
+    }
+
     function renderPayPal() {
       const container = document.getElementById('paypal-button-container');
       container.innerHTML = '';
       if (!currentProduct) return;
       if (typeof paypal === 'undefined') {
         container.innerHTML = '<div style="text-align:center;padding:12px;font-family:DM Mono,monospace;font-size:12px;color:var(--text-light);">PayPal is loading...</div>';
-        // Retry after 1 second
         setTimeout(renderPayPal, 1000);
         return;
       }
 
       const orderPrice = getOrderPrice();
+      if (orderPrice <= 0) {
+        container.innerHTML = '<div style="text-align:center;padding:12px;font-family:DM Mono,monospace;font-size:12px;color:var(--amber);">Enter a price and select a shipping region.</div>';
+        return;
+      }
       paypal.Buttons({
         style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay' },
         createOrder: (data, actions) => {
