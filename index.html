@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <script src="https://www.paypal.com/sdk/js?client-id=AWZfpa3qdNiMenhzpHvWnyN1osNxZ8nN3LQo-sGNtD6jm5ji3Ls2a4YNwr_JOvC-JWw6qQEMzyHd_1e7&currency=USD"></script>
   <style>
     :root {
       --cream: #f5f0e8;
@@ -1236,10 +1237,8 @@
         <div class="order-field">
           <input type="email" class="order-input" id="orderEmail" placeholder="Your email" data-placeholder-en="Your email" data-placeholder-zh="你的邮箱">
         </div>
-        <button class="order-btn" id="orderBtn" onclick="placeOrder()">
-          <span data-en="Place Order" data-zh="提交订单">Place Order</span>
-        </button>
-        <p class="order-note" data-en="Your activation code will appear here instantly. No payment required yet — we'll follow up with you." data-zh="你的激活码会立刻显示在这里。暂不需要付款，我们会联系你确认。">Your activation code will appear here instantly. No payment required yet — we'll follow up with you.</p>
+        <div id="paypal-button-container" style="margin-top:8px;"></div>
+        <p class="order-note" data-en="You'll receive your activation code right after payment." data-zh="付款后将立即获取激活码。">You'll receive your activation code right after payment.</p>
       </div>
 
       <!-- Order Success -->
@@ -1573,6 +1572,8 @@
 
     const API = "https://soulmade-memory.2323371806.workers.dev";
 
+    let paypalRendered = false;
+
     function openModal(productKey) {
       currentProduct = products.find(p => p.key === productKey);
       if (!currentProduct) return;
@@ -1592,28 +1593,47 @@
 
       document.getElementById('modalOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
+
+      // Render PayPal button
+      setTimeout(renderPayPal, 100);
     }
 
-    function closeModal() {
-      document.getElementById('modalOverlay').classList.remove('open');
-      document.body.style.overflow = '';
-      currentProduct = null;
+    function renderPayPal() {
+      const container = document.getElementById('paypal-button-container');
+      container.innerHTML = '';
+      if (!currentProduct || !paypal) return;
+
+      paypal.Buttons({
+        style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay' },
+        createOrder: (data, actions) => {
+          return actions.order.create({
+            purchase_units: [{
+              description: `${currentProduct.name} (${currentProduct.id})`,
+              amount: { value: currentProduct.price.toString() }
+            }]
+          });
+        },
+        onApprove: async (data, actions) => {
+          const order = await actions.order.capture();
+          // Payment success → auto-generate activation code
+          await completeOrder(order.id);
+        },
+        onError: (err) => {
+          console.error('PayPal error:', err);
+          showToast('Payment failed. Please try again.');
+        }
+      }).render('#paypal-button-container');
     }
 
-    function closeModalOutside(e) {
-      if (e.target === document.getElementById('modalOverlay')) closeModal();
-    }
-
-    async function placeOrder() {
-      if (!currentProduct) return;
+    async function completeOrder(paypalOrderId) {
       const name = document.getElementById('orderName').value.trim();
       const email = document.getElementById('orderEmail').value.trim();
-      if (!name) { document.getElementById('orderName').focus(); return; }
-      if (!email || !email.includes('@')) { document.getElementById('orderEmail').focus(); return; }
+      if (!name || !email || !email.includes('@')) {
+        document.getElementById('orderName').focus();
+        return;
+      }
 
-      const btn = document.getElementById('orderBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<span data-en="Placing Order..." data-zh="提交中...">Placing Order...</span>';
+      document.getElementById('paypal-button-container').innerHTML = '<div style="text-align:center;padding:12px;font-family:DM Mono,monospace;font-size:12px;color:var(--amber);">Generating your activation code...</div>';
 
       try {
         const res = await fetch(`${API}/order`, {
@@ -1624,25 +1644,37 @@
             productName: currentProduct.name,
             price: currentProduct.price,
             customerName: name,
-            customerEmail: email
+            customerEmail: email,
+            paypalOrderId
           })
         });
         const data = await res.json();
-
         if (data.success) {
           document.getElementById('orderCode').textContent = data.code;
           document.getElementById('orderForm').style.display = 'none';
           document.getElementById('orderSuccess').style.display = 'block';
-        } else {
-          alert('Something went wrong. Please try again.');
         }
       } catch (e) {
-        alert('Connection error. Please try again.');
+        document.getElementById('paypal-button-container').innerHTML = '<div style="text-align:center;padding:12px;color:#C0665A;font-family:DM Mono,monospace;font-size:12px;">Payment succeeded but code generation failed. Please contact us.</div>';
       }
+    }
 
-      btn.disabled = false;
-      btn.innerHTML = '<span data-en="Place Order" data-zh="提交订单">Place Order</span>';
-      updateLang();
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#1a1612;color:#c8a96e;padding:12px 24px;border-radius:30px;font-size:13px;z-index:9999;font-family:DM Mono,monospace;';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3000);
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+      currentProduct = null;
+    }
+
+    function closeModalOutside(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
     }
 
     // ── Image Lightbox ──
