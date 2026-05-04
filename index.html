@@ -1034,24 +1034,43 @@
     /* CUSTOM PRODUCT card */
     .product-card.card-custom {
       border: 2px dashed var(--amber);
-      background: linear-gradient(135deg, rgba(200,169,110,0.06) 0%, rgba(200,169,110,0.02) 100%);
+      background: linear-gradient(135deg, rgba(200,169,110,0.08) 0%, rgba(200,169,110,0.03) 100%);
       position: relative;
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
     }
     .product-card.card-custom::before {
-      content: '✨ Custom';
+      content: '✨ Custom Commission';
       position: absolute;
-      top: 12px; left: 12px;
+      top: 14px; left: 16px;
       z-index: 5;
       font-family: 'DM Mono', monospace;
-      font-size: 10px;
+      font-size: 11px;
       letter-spacing: 2px;
       color: var(--amber);
-      background: rgba(200,169,110,0.12);
-      padding: 4px 10px;
+      background: rgba(200,169,110,0.15);
+      padding: 6px 14px;
       border-radius: 4px;
     }
     .product-card.card-custom .img-wrap {
       background: linear-gradient(135deg, #fdf6f0 0%, #f5ecdd 50%, #fdf3ef 100%);
+      aspect-ratio: auto;
+      height: 100%;
+      min-height: 240px;
+    }
+    .product-card.card-custom .product-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 32px;
+    }
+    @media (max-width: 768px) {
+      .product-card.card-custom {
+        grid-column: 1 / -1;
+        grid-template-columns: 1fr;
+      }
+      .product-card.card-custom .img-wrap { min-height: 180px; }
     }
 
     /* CHECKBOX on product cards */
@@ -1659,13 +1678,13 @@
 
     // ── Products Data (6 products, using repo images) ──
     const products = [
+      { key:'custom',   name:'Custom Commission',  nameZh:'定制作品',   id:'SOULMADE-CUSTOM', price:0, img:'', customPrice:true, desc:'Have your own idea? Describe what you want and name your price. We will handcraft a one-of-a-kind piece just for you.', descZh:'有自己的想法？描述你想要的，自定价格。我们将为你手工打造一件独一无二的作品。' },
       { key:'amber',    name:'Amber Drop',        nameZh:'琥珀吊坠',   id:'SOULMADE-001', price:24, img:'p1.png', desc:'A warm golden pendant capturing the light of a late afternoon in Nanchang. Poured by hand, polished to crystal clarity.', descZh:'一枚温暖的金色吊坠，封存了南昌某个午后的光线。手工注胶，打磨至晶莹剔透。' },
       { key:'forest',   name:'Forest Keychain',   nameZh:'森林钥匙扣', id:'SOULMADE-002', price:18, img:'p2.png', desc:'Deep green botanicals suspended in resin — a miniature forest you can carry. Each one unique.', descZh:'深绿色植物标本悬浮于树脂中，一片可以随身携带的微型森林。每一件都独一无二。' },
       { key:'twilight', name:'Twilight Orb',      nameZh:'暮色摆件',   id:'SOULMADE-003', price:32, img:'p3.png', desc:'A sphere of deep purple resin holding the last light before nightfall. Display it where light touches.', descZh:'深紫色树脂球体，封存了夜幕降临前最后的光芒。放在光线能触碰的地方展示。' },
       { key:'ocean',    name:'Ocean Pendant',     nameZh:'海洋之心吊坠',id:'SOULMADE-004', price:28, img:'p4.png', desc:'Layers of blue and white capturing the rhythm of waves. A piece of the sea, worn close to your heart.', descZh:'蓝白分层交叠，捕捉海浪的韵律。一片海洋，贴近心跳。' },
       { key:'cherry',   name:'Cherry Blossom',    nameZh:'樱花耳饰',   id:'SOULMADE-005', price:22, img:'p5.png', desc:'Delicate pink petals forever suspended mid-fall. Light as a spring breeze, elegant on any ear.', descZh:'粉色花瓣永久定格在飘落瞬间。如春日微风，轻盈优雅。' },
       { key:'galaxy',   name:'Galaxy Sphere',     nameZh:'银河摆件',   id:'SOULMADE-006', price:36, img:'p6.png', desc:'A cosmos of swirling stars captured in crystal-clear resin. No two galaxies are the same.', descZh:'旋转星海被封装在水晶般透明的树脂中。每片银河都独一无二。' },
-      { key:'custom',   name:'Custom Commission',  nameZh:'定制作品',   id:'SOULMADE-CUSTOM', price:0, img:'', customPrice:true, desc:'Have your own idea? Describe what you want and name your price. We will handcraft a one-of-a-kind piece just for you.', descZh:'有自己的想法？描述你想要的，自定价格。我们将为你手工打造一件独一无二的作品。' },
       { key:'bundle1',  name:'Pendant + Keychain Set', nameZh:'吊坠+钥匙扣套装', id:'SOULMADE-BUNDLE-1', price:35, img:'p1.png', bundle:true, bundleItems:'Amber Drop + Forest Keychain', desc:'Our most popular combo: a warm amber pendant paired with a forest keychain. Save $7.', descZh:'最受欢迎的搭配：琥珀吊坠 + 森林钥匙扣，立省 $7。' },
       { key:'bundle2',  name:'Full Collection Set',   nameZh:'全套收藏', id:'SOULMADE-BUNDLE-2', price:120, img:'p6.png', bundle:true, bundleItems:'All 6 standard pieces', desc:'Own the entire collection. All 6 standard pieces at a special bundle price. Save $40.', descZh:'拥有全套。6 件标准作品打包特价，立省 $40。' }
     ];
