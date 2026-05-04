@@ -460,6 +460,19 @@
       </div>
     </div>
 
+    <!-- Shipping Settings -->
+    <div class="section-title" style="margin-top:40px;">Shipping Rates</div>
+    <div class="create-panel">
+      <div class="create-row" style="flex-wrap:wrap;">
+        <div class="create-group" style="min-width:100px;"><span class="create-label">China ($)</span><input type="number" class="create-input" id="shipChina" step="1" min="0"></div>
+        <div class="create-group" style="min-width:100px;"><span class="create-label">US ($)</span><input type="number" class="create-input" id="shipUS" step="1" min="0"></div>
+        <div class="create-group" style="min-width:100px;"><span class="create-label">Europe ($)</span><input type="number" class="create-input" id="shipEurope" step="1" min="0"></div>
+        <div class="create-group" style="min-width:100px;"><span class="create-label">Other ($)</span><input type="number" class="create-input" id="shipOther" step="1" min="0"></div>
+        <div class="create-group" style="min-width:120px;"><span class="create-label">Free Over ($)</span><input type="number" class="create-input" id="shipFree" step="1" min="0"></div>
+      </div>
+      <button class="create-btn" onclick="saveShipping()" style="margin-top:12px;">Save Rates</button>
+    </div>
+
     <!-- Orders list -->
     <div class="section-title" style="margin-top:40px;">Orders</div>
     <div class="keys-panel">
@@ -532,6 +545,7 @@
       allKeys = data.keys || [];
       renderKeys();
       loadOrders();
+      loadShipping();
     } catch (e) {
       document.getElementById('loginError').style.display = 'block';
       document.getElementById('loginError').textContent = 'Connection error. Try again.';
@@ -677,6 +691,37 @@
     if (e.target === document.getElementById('modalOverlay')) {
       document.getElementById('modalOverlay').classList.remove('open');
     }
+  }
+
+  // ── Shipping ──
+  async function loadShipping() {
+    try {
+      const res = await fetch(`${API}/admin/shipping`);
+      const rates = await res.json();
+      document.getElementById('shipChina').value = rates.China || 0;
+      document.getElementById('shipUS').value = rates.US || 5;
+      document.getElementById('shipEurope').value = rates.Europe || 8;
+      document.getElementById('shipOther').value = rates.Other || 12;
+      document.getElementById('shipFree').value = rates.freeThreshold || 50;
+    } catch (e) {}
+  }
+  async function saveShipping() {
+    try {
+      const res = await fetch(`${API}/admin/shipping`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password: adminPassword,
+          China: parseInt(document.getElementById('shipChina').value) || 0,
+          US: parseInt(document.getElementById('shipUS').value) || 5,
+          Europe: parseInt(document.getElementById('shipEurope').value) || 8,
+          Other: parseInt(document.getElementById('shipOther').value) || 12,
+          freeThreshold: parseInt(document.getElementById('shipFree').value) || 50
+        })
+      });
+      const data = await res.json();
+      if (data.success) showToast('Shipping rates saved');
+    } catch (e) { showToast('Failed to save'); }
   }
 
   // ── Orders ──
