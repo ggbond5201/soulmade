@@ -1351,11 +1351,11 @@
         </div>
         <div class="order-field" id="customPriceField" style="display:none;">
           <label style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;display:block;">Your Price (USD)</label>
-          <input type="number" class="order-input" id="orderCustomPrice" placeholder="50" min="10" step="1">
+          <input type="number" class="order-input" id="orderCustomPrice" placeholder="Enter your price (min $10)" min="10" step="1" oninput="updateShippingCost();renderPayPal();">
         </div>
         <div class="order-field">
           <label style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;display:block;">Shipping Region</label>
-          <select class="order-input" id="orderRegion" onchange="updateShippingCost()">
+          <select class="order-input" id="orderRegion" onchange="updateShippingCost();renderPayPal();">
             <option value="">Select region...</option>
             <option value="China">China · ¥0</option>
             <option value="US">United States · $5</option>
