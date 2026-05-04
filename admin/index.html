@@ -408,10 +408,10 @@
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <div class="login-logo">Soulmade</div>
-    <div class="login-title">Admin Dashboard</div>
-    <input type="password" class="login-input" id="passwordInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')login()">
-    <button class="login-btn" onclick="login()">Enter</button>
-    <div class="login-error" id="loginError">Incorrect password</div>
+    <div class="login-title" data-en="Admin Dashboard" data-zh="管理后台">Admin Dashboard</div>
+    <input type="password" class="login-input" id="passwordInput" data-placeholder-en="Enter password" data-placeholder-zh="输入密码" placeholder="Enter password" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()"><span data-en="Enter" data-zh="进入">Enter</span></button>
+    <div class="login-error" id="loginError" data-en="Incorrect password" data-zh="密码错误">Incorrect password</div>
   </div>
 </div>
 
@@ -421,90 +421,91 @@
   <div class="topbar">
     <div class="topbar-brand">SOULMADE · Admin</div>
     <div class="topbar-right">
-      <button class="topbar-logout" onclick="testEmail()" style="margin-right:12px;">📧 Test</button>
-      <button class="topbar-logout" onclick="logout()">Log out</button>
+      <button class="topbar-logout" onclick="toggleAdminLang()" style="margin-right:12px;background:transparent;border:1px solid var(--gold);color:var(--gold);" id="adminLangToggle">中文</button>
+      <button class="topbar-logout" onclick="testEmail()" style="margin-right:12px;">📧 <span data-en="Test" data-zh="测试">Test</span></button>
+      <button class="topbar-logout" onclick="logout()"><span data-en="Log out" data-zh="退出">Log out</span></button>
     </div>
   </div>
 
   <div class="content">
 
     <!-- Create code section -->
-    <div class="section-title">Generate Activation Code</div>
+    <div class="section-title"><span data-en="Generate Activation Code" data-zh="生成激活码">Generate Activation Code</span></div>
     <div class="create-panel">
       <div class="create-row">
         <div class="create-group">
-          <span class="create-label">Keychain ID</span>
+          <span class="create-label" data-en="Keychain ID" data-zh="钥匙扣编号">Keychain ID</span>
           <input type="text" class="create-input" id="newId" placeholder="SM-0001">
         </div>
-        <button class="create-btn" onclick="createCode()">Generate Code</button>
+        <button class="create-btn" onclick="createCode()"><span data-en="Generate Code" data-zh="生成激活码">Generate Code</span></button>
       </div>
       <div class="code-result" id="codeResult">
-        Activation code generated:
+        <span data-en="Activation code generated:" data-zh="已生成激活码：">Activation code generated:</span>
         <strong id="generatedCode"></strong>
-        <span style="font-size:12px; color:var(--text-light); margin-top:6px; display:block;">Print this on the card inside the package.</span>
+        <span style="font-size:12px; color:var(--text-light); margin-top:6px; display:block;"><span data-en="Print this on the card inside the package." data-zh="请打印在包装内的卡片上。">Print this on the card inside the package.</span></span>
       </div>
     </div>
 
     <!-- Products Management -->
-    <div class="section-title">Products</div>
+    <div class="section-title"><span data-en="Products" data-zh="产品管理">Products</span></div>
     <div class="create-panel">
       <div class="create-row" style="flex-wrap:wrap;">
-        <div class="create-group" style="min-width:110px;"><span class="create-label">Key (slug)*</span><input type="text" class="create-input" id="prodKey" placeholder="moonlight"></div>
-        <div class="create-group" style="min-width:140px;"><span class="create-label">Name (EN)*</span><input type="text" class="create-input" id="prodName" placeholder="Moonlight Pendant" oninput="autoFillKey()"></div>
+        <div class="create-group" style="min-width:110px;"><span class="create-label" data-en="Key (slug)*" data-zh="标识(slug)*">Key (slug)*</span><input type="text" class="create-input" id="prodKey" placeholder="moonlight"></div>
+        <div class="create-group" style="min-width:140px;"><span class="create-label" data-en="Name (EN)*" data-zh="名称(英文)*">Name (EN)*</span><input type="text" class="create-input" id="prodName" placeholder="Moonlight Pendant" oninput="autoFillKey()"></div>
         <div class="create-group" style="min-width:140px;"><span class="create-label">Name (中文)*</span><input type="text" class="create-input" id="prodNameZh" placeholder="月光吊坠"></div>
-        <div class="create-group" style="min-width:130px;"><span class="create-label">Product ID*</span><input type="text" class="create-input" id="prodId" placeholder="SOULMADE-007"></div>
+        <div class="create-group" style="min-width:130px;"><span class="create-label" data-en="Product ID*" data-zh="产品编号*">Product ID*</span><input type="text" class="create-input" id="prodId" placeholder="SOULMADE-007"></div>
       </div>
       <div class="create-row" style="margin-top:12px;flex-wrap:wrap;">
         <div class="create-group" style="min-width:80px;"><span class="create-label">Price ($)</span><input type="number" class="create-input" id="prodPrice" placeholder="24" min="0" step="1"></div>
-        <div class="create-group" style="min-width:110px;"><span class="create-label">Image File</span><input type="text" class="create-input" id="prodImg" placeholder="p1.png"></div>
+        <div class="create-group" style="min-width:110px;"><span class="create-label" data-en="Image File" data-zh="图片文件">Image File</span><input type="text" class="create-input" id="prodImg" placeholder="p1.png"></div>
         <div class="create-group" style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding-top:4px;">
-          <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodCustomPrice" onchange="document.getElementById('prodPrice').disabled=this.checked;if(this.checked)document.getElementById('prodPrice').value='0';"> Custom Price</label>
-          <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodBundle" onchange="toggleBundleFields()"> Bundle</label>
-          <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodActive" checked> Active</label>
+          <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodCustomPrice" onchange="document.getElementById('prodPrice').disabled=this.checked;if(this.checked)document.getElementById('prodPrice').value='0';"><span data-en="Custom Price" data-zh="自主定价">Custom Price</span></label>
+          <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodBundle" onchange="toggleBundleFields()"><span data-en="Bundle" data-zh="套装">Bundle</span></label>
+          <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodActive" checked><span data-en="Active" data-zh="上架">Active</span></label>
         </div>
       </div>
       <div class="create-row" id="bundleItemsRow" style="margin-top:12px;display:none;">
-        <div class="create-group" style="flex:1;"><span class="create-label">Bundle Items (text)</span><input type="text" class="create-input" id="prodBundleItems" placeholder="Amber Drop + Forest Keychain"></div>
+        <div class="create-group" style="flex:1;"><span class="create-label" data-en="Bundle Items (text)" data-zh="套装内容(文本)">Bundle Items (text)</span><input type="text" class="create-input" id="prodBundleItems" placeholder="Amber Drop + Forest Keychain"></div>
       </div>
       <div class="create-row" style="margin-top:12px;">
-        <div class="create-group" style="flex:1;"><span class="create-label">Description (EN)</span><textarea class="create-input" id="prodDesc" placeholder="Product description..." style="height:56px;resize:none;"></textarea></div>
-        <div class="create-group" style="flex:1;"><span class="create-label">Description (中文)</span><textarea class="create-input" id="prodDescZh" placeholder="产品描述..." style="height:56px;resize:none;"></textarea></div>
+        <div class="create-group" style="flex:1;"><span class="create-label" data-en="Description (EN)" data-zh="描述(英文)">Description (EN)</span><textarea class="create-input" id="prodDesc" placeholder="Product description..." style="height:56px;resize:none;"></textarea></div>
+        <div class="create-group" style="flex:1;"><span class="create-label" data-en="Description (中文)" data-zh="描述(中文)">Description (中文)</span><textarea class="create-input" id="prodDescZh" placeholder="产品描述..." style="height:56px;resize:none;"></textarea></div>
       </div>
-      <button class="create-btn" onclick="createProduct()" style="margin-top:12px;" id="createProductBtn">Create Product</button>
-      <button class="create-btn" onclick="seedProducts()" style="margin-top:12px;background:var(--text-mid);margin-left:8px;display:none;" id="seedProductsBtn">Initialize Default Products</button>
+      <button class="create-btn" onclick="createProduct()" style="margin-top:12px;" id="createProductBtn"><span data-en="Create Product" data-zh="创建产品">Create Product</span></button>
+      <button class="create-btn" onclick="seedProducts()" style="margin-top:12px;background:var(--text-mid);margin-left:8px;display:none;" id="seedProductsBtn"><span data-en="Initialize Default Products" data-zh="初始化默认产品">Initialize Default Products</span></button>
     </div>
 
     <!-- Product list -->
     <div style="margin-bottom:12px;margin-top:20px;">
-      <input type="text" class="create-input" id="productSearch" placeholder="Search products..." oninput="renderProducts()" style="max-width:400px;">
+      <input type="text" class="create-input" id="productSearch" data-placeholder-en="Search products..." data-placeholder-zh="搜索产品..." placeholder="Search products..." oninput="renderProducts()" style="max-width:400px;">
     </div>
     <div class="keys-panel">
       <div class="keys-header">
         <span id="productsCount">Loading...</span>
-        <button class="refresh-btn" onclick="loadProducts()">↻ Refresh</button>
+        <button class="refresh-btn" onclick="loadProducts()"><span data-en="↻ Refresh" data-zh="↻ 刷新">↻ Refresh</span></button>
       </div>
       <div id="productsList">
-        <div class="empty-state">Loading products...</div>
+        <div class="empty-state"><span data-en="Loading products..." data-zh="加载中...">Loading products...</span></div>
       </div>
     </div>
 
     <!-- Keys list -->
-    <div class="section-title">All Keychains</div>
+    <div class="section-title"><span data-en="All Keychains" data-zh="所有钥匙扣">All Keychains</span></div>
     <div style="margin-bottom:12px;">
-      <input type="text" class="create-input" id="keySearch" placeholder="Search by ID or activation code..." oninput="renderKeys()" style="max-width:400px;">
+      <input type="text" class="create-input" id="keySearch" data-placeholder-en="Search by ID or activation code..." data-placeholder-zh="按编号或激活码搜索..." placeholder="Search by ID or activation code..." oninput="renderKeys()" style="max-width:400px;">
     </div>
     <div class="keys-panel">
       <div class="keys-header">
         <span id="keysCount">Loading...</span>
-        <button class="refresh-btn" onclick="loadKeys()">↻ Refresh</button>
+        <button class="refresh-btn" onclick="loadKeys()"><span data-en="↻ Refresh" data-zh="↻ 刷新">↻ Refresh</span></button>
       </div>
       <div id="keysList">
-        <div class="empty-state">Loading keychains...</div>
+        <div class="empty-state"><span data-en="Loading keychains..." data-zh="加载中...">Loading keychains...</span></div>
       </div>
     </div>
 
     <!-- Shipping Settings -->
-    <div class="section-title" style="margin-top:40px;">Shipping Rates</div>
+    <div class="section-title" style="margin-top:40px;"><span data-en="Shipping Rates" data-zh="运费设置">Shipping Rates</span></div>
     <div class="create-panel">
       <div class="create-row" style="flex-wrap:wrap;">
         <div class="create-group" style="min-width:100px;"><span class="create-label">China ($)</span><input type="number" class="create-input" id="shipChina" step="1" min="0"></div>
@@ -513,18 +514,18 @@
         <div class="create-group" style="min-width:100px;"><span class="create-label">Other ($)</span><input type="number" class="create-input" id="shipOther" step="1" min="0"></div>
         <div class="create-group" style="min-width:120px;"><span class="create-label">Free Over ($)</span><input type="number" class="create-input" id="shipFree" step="1" min="0"></div>
       </div>
-      <button class="create-btn" onclick="saveShipping()" style="margin-top:12px;">Save Rates</button>
+      <button class="create-btn" onclick="saveShipping()" style="margin-top:12px;"><span data-en="Save Rates" data-zh="保存运费">Save Rates</span></button>
     </div>
 
     <!-- Orders list -->
-    <div class="section-title" style="margin-top:40px;">Orders</div>
+    <div class="section-title" style="margin-top:40px;"><span data-en="Orders" data-zh="订单管理">Orders</span></div>
     <div class="keys-panel">
       <div class="keys-header">
         <span id="ordersCount">Loading...</span>
-        <button class="refresh-btn" onclick="loadOrders()">↻ Refresh</button>
+        <button class="refresh-btn" onclick="loadOrders()"><span data-en="↻ Refresh" data-zh="↻ 刷新">↻ Refresh</span></button>
       </div>
       <div id="ordersList">
-        <div class="empty-state">Loading orders...</div>
+        <div class="empty-state"><span data-en="Loading orders..." data-zh="加载中...">Loading orders...</span></div>
       </div>
     </div>
 
@@ -536,43 +537,43 @@
   <div class="modal">
     <div class="modal-title" id="modalId"></div>
     <div id="modalContent"></div>
-    <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">Close</button>
+    <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')"><span data-en="Close" data-zh="关闭"><span data-en="Close" data-zh="关闭">Close</span></span></button>
   </div>
 </div>
 
 <!-- Edit Product modal -->
 <div class="modal-overlay" id="editProductOverlay" onclick="closeEditProduct(event)">
   <div class="modal" style="max-width:520px;">
-    <div class="modal-title">Edit Product</div>
-    <div class="modal-row"><span class="modal-label">Key (slug)</span><input class="create-input" id="editProdKey" style="width:100%;background:#eee;color:#888;" disabled></div>
-    <div class="modal-row"><span class="modal-label">Name (EN)</span><input class="create-input" id="editProdName" style="width:100%;"></div>
-    <div class="modal-row"><span class="modal-label">Name (中文)</span><input class="create-input" id="editProdNameZh" style="width:100%;"></div>
-    <div class="modal-row"><span class="modal-label">Product ID</span><input class="create-input" id="editProdId" style="width:100%;"></div>
+    <div class="modal-title"><span data-en="Edit Product" data-zh="编辑产品">Edit Product</span></div>
+    <div class="modal-row"><span class="modal-label" data-en="Key (slug)" data-zh="标识(slug)">Key (slug)</span><input class="create-input" id="editProdKey" style="width:100%;background:#eee;color:#888;" disabled></div>
+    <div class="modal-row"><span class="modal-label" data-en="Name (EN)" data-zh="名称(英文)">Name (EN)</span><input class="create-input" id="editProdName" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label" data-en="Name (中文)" data-zh="名称(中文)">Name (中文)</span><input class="create-input" id="editProdNameZh" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label" data-en="Product ID" data-zh="产品编号">Product ID</span><input class="create-input" id="editProdId" style="width:100%;"></div>
     <div class="modal-row"><span class="modal-label">Price ($)</span><input type="number" class="create-input" id="editProdPrice" style="width:100%;" min="0" step="1"></div>
-    <div class="modal-row"><span class="modal-label">Image File</span><input class="create-input" id="editProdImg" style="width:100%;"></div>
-    <div class="modal-row"><span class="modal-label">Description (EN)</span><textarea class="create-input" id="editProdDesc" style="width:100%;height:56px;resize:none;"></textarea></div>
-    <div class="modal-row"><span class="modal-label">Description (中文)</span><textarea class="create-input" id="editProdDescZh" style="width:100%;height:56px;resize:none;"></textarea></div>
-    <div class="modal-row"><span class="modal-label">Bundle Items</span><input class="create-input" id="editProdBundleItems" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label" data-en="Image File" data-zh="图片文件">Image File</span><input class="create-input" id="editProdImg" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label" data-en="Description (EN)" data-zh="描述(英文)">Description (EN)</span><textarea class="create-input" id="editProdDesc" style="width:100%;height:56px;resize:none;"></textarea></div>
+    <div class="modal-row"><span class="modal-label" data-en="Description (中文)" data-zh="描述(中文)">Description (中文)</span><textarea class="create-input" id="editProdDescZh" style="width:100%;height:56px;resize:none;"></textarea></div>
+    <div class="modal-row"><span class="modal-label" data-en="Bundle Items" data-zh="套装内容">Bundle Items</span><input class="create-input" id="editProdBundleItems" style="width:100%;"></div>
     <div class="modal-row" style="display:flex;gap:20px;">
-      <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdCustomPrice"> Custom Price</label>
-      <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdBundle"> Bundle</label>
-      <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdActive"> Active</label>
+      <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdCustomPrice"><span data-en="Custom Price" data-zh="自主定价">Custom Price</span></label>
+      <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdBundle"><span data-en="Bundle" data-zh="套装">Bundle</span></label>
+      <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdActive"><span data-en="Active" data-zh="上架">Active</span></label>
     </div>
-    <button class="create-btn" onclick="saveEditProduct()" style="width:100%;margin-top:12px;">Save</button>
-    <button class="modal-close" onclick="document.getElementById('editProductOverlay').classList.remove('open')" style="margin-top:8px;">Close</button>
+    <button class="create-btn" onclick="saveEditProduct()" style="width:100%;margin-top:12px;"><span data-en="Save" data-zh="保存">Save</span></button>
+    <button class="modal-close" onclick="document.getElementById('editProductOverlay').classList.remove('open')" style="margin-top:8px;"><span data-en="Close" data-zh="关闭">Close</span></button>
   </div>
 </div>
 
 <!-- Edit Order modal -->
 <div class="modal-overlay" id="editOrderOverlay" onclick="closeEditOrder(event)">
   <div class="modal">
-    <div class="modal-title">Edit Order</div>
-    <div class="modal-row"><span class="modal-label">Name</span><input class="create-input" id="editOrderName" style="width:100%;"></div>
-    <div class="modal-row"><span class="modal-label">Email</span><input class="create-input" id="editOrderEmail" style="width:100%;"></div>
-    <div class="modal-row"><span class="modal-label">Phone</span><input class="create-input" id="editOrderPhone" style="width:100%;"></div>
-    <div class="modal-row"><span class="modal-label">Address</span><textarea class="create-input" id="editOrderAddress" style="width:100%;height:60px;resize:none;"></textarea></div>
-    <button class="create-btn" onclick="saveEditOrder()" style="width:100%;margin-top:8px;">Save</button>
-    <button class="modal-close" onclick="document.getElementById('editOrderOverlay').classList.remove('open')" style="margin-top:8px;">Close</button>
+    <div class="modal-title"><span data-en="Edit Order" data-zh="编辑订单">Edit Order</span></div>
+    <div class="modal-row"><span class="modal-label" data-en="Name" data-zh="姓名">Name</span><input class="create-input" id="editOrderName" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label" data-en="Email" data-zh="邮箱">Email</span><input class="create-input" id="editOrderEmail" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label" data-en="Phone" data-zh="电话">Phone</span><input class="create-input" id="editOrderPhone" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label" data-en="Address" data-zh="地址">Address</span><textarea class="create-input" id="editOrderAddress" style="width:100%;height:60px;resize:none;"></textarea></div>
+    <button class="create-btn" onclick="saveEditOrder()" style="width:100%;margin-top:8px;"><span data-en="Save" data-zh="保存">Save</span></button>
+    <button class="modal-close" onclick="document.getElementById('editOrderOverlay').classList.remove('open')" style="margin-top:8px;"><span data-en="Close" data-zh="关闭">Close</span></button>
   </div>
 </div>
 
@@ -583,6 +584,23 @@
   const API = "https://soulmade-memory.2323371806.workers.dev";
   let adminPassword = "";
   let allKeys = [];
+  let adminIsZh = false;
+
+  function toggleAdminLang() {
+    adminIsZh = !adminIsZh;
+    document.getElementById('adminLangToggle').textContent = adminIsZh ? 'EN' : '中文';
+    updateAdminLang();
+  }
+
+  function updateAdminLang() {
+    document.querySelectorAll('[data-en]').forEach(el => {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.placeholder = adminIsZh ? (el.dataset.placeholderZh || el.placeholder) : (el.dataset.placeholderEn || el.placeholder);
+      } else {
+        el.textContent = adminIsZh ? (el.dataset.zh || el.textContent) : (el.dataset.en || el.textContent);
+      }
+    });
+  }
 
   function showToast(msg) {
     const t = document.getElementById('toast');
@@ -649,7 +667,8 @@
     count.textContent = `${filtered.length} / ${allKeys.length} keychain${allKeys.length !== 1 ? 's' : ''}`;
 
     if (filtered.length === 0) {
-      list.innerHTML = '<div class="empty-state">No keychains found.</div>';
+      list.innerHTML = '<div class="empty-state"><span data-en="No keychains found." data-zh="未找到钥匙扣。">No keychains found.</span></div>';
+      updateAdminLang();
       return;
     }
 
@@ -659,12 +678,12 @@
         <div class="key-info">
           <div class="key-id">${k.id}</div>
           <div class="key-meta">
-            ${k.activated ? `✓ Activated · Code: ${k.code}` : `Pending · Code: ${k.code}`}
+            ${k.activated ? `✓ <span data-en="Activated" data-zh="已激活">Activated</span> · Code: ${k.code}` : `<span data-en="Pending" data-zh="待激活">Pending</span> · Code: ${k.code}`}
           </div>
         </div>
         <div class="key-actions">
-          ${k.activated ? `<button class="action-btn btn-view" onclick="viewMemory('${k.id}')">View</button>` : ''}
-          ${k.activated ? `<button class="action-btn btn-unlock" onclick="unlockKey('${k.id}', '${k.code}')">Unlock</button>` : ''}
+          ${k.activated ? `<button class="action-btn btn-view" onclick="viewMemory('${k.id}')"><span data-en="View" data-zh="查看">View</span></button>` : ''}
+          ${k.activated ? `<button class="action-btn btn-unlock" onclick="unlockKey('${k.id}', '${k.code}')"><span data-en="Unlock" data-zh="解锁">Unlock</span></button>` : ''}
         </div>
       </div>
     `).join('');
@@ -708,26 +727,27 @@
       document.getElementById('modalId').textContent = id;
       document.getElementById('modalContent').innerHTML = `
         <div class="modal-row">
-          <div class="modal-label">Message</div>
+          <div class="modal-label"><span data-en="Message" data-zh="留言">Message</span></div>
           <div class="modal-value">${data.message || '—'}</div>
         </div>
         <div class="modal-row">
-          <div class="modal-label">Date</div>
+          <div class="modal-label"><span data-en="Date" data-zh="日期">Date</span></div>
           <div class="modal-value">${data.date || '—'}</div>
         </div>
         <div class="modal-row">
-          <div class="modal-label">Place</div>
+          <div class="modal-label"><span data-en="Place" data-zh="地点">Place</span></div>
           <div class="modal-value">${data.place || '—'}</div>
         </div>
         <div class="modal-row">
-          <div class="modal-label">Memory</div>
+          <div class="modal-label"><span data-en="Memory" data-zh="回忆">Memory</span></div>
           <div class="modal-value">${data.memory || '—'}</div>
         </div>
         <div class="modal-row">
-          <div class="modal-label">Activated</div>
+          <div class="modal-label"><span data-en="Activated" data-zh="激活时间">Activated</span></div>
           <div class="modal-value" style="font-size:14px;">${data.activatedAt ? new Date(data.activatedAt).toLocaleString() : '—'}</div>
         </div>
       `;
+      updateAdminLang();
       document.getElementById('modalOverlay').classList.add('open');
     } catch (e) {
       showToast('Failed to load memory');
@@ -815,7 +835,8 @@
     count.textContent = `${allOrders.length} order${allOrders.length !== 1 ? 's' : ''}`;
 
     if (allOrders.length === 0) {
-      list.innerHTML = '<div class="empty-state">No orders yet.</div>';
+      list.innerHTML = '<div class="empty-state"><span data-en="No orders yet." data-zh="暂无订单。">No orders yet.</span></div>';
+      updateAdminLang();
       return;
     }
 
@@ -826,18 +847,19 @@
           <div class="key-id">${o.orderId} · ${o.productName} — ${o.customerName}</div>
           <div class="key-meta">
             📞 ${o.customerPhone || '—'} · 📍 ${o.customerAddress || '—'}<br>
-            🚚 ${o.shippingRegion || '—'} · $${o.shippingCost || 0} shipping<br>
+            🚚 ${o.shippingRegion || '—'} · $${o.shippingCost || 0} <span data-en="shipping" data-zh="运费">shipping</span><br>
             Code: ${o.activationCode} · ${o.customerEmail} · ${new Date(o.createdAt).toLocaleDateString()}
-            ${o.isBundle ? ' · Bundle' : ''} ${o.shipped ? ' · ✓ Shipped' : ' · Pending'}
+            ${o.isBundle ? ' · <span data-en="Bundle" data-zh="套装">Bundle</span>' : ''} ${o.shipped ? ' · ✓ <span data-en="Shipped" data-zh="已发货">Shipped</span>' : ' · <span data-en="Pending" data-zh="待处理">Pending</span>'}
           </div>
         </div>
         <div class="key-actions">
-          <button class="action-btn btn-view" onclick="editOrder('${o.orderId}')">Edit</button>
-          ${!o.shipped ? `<button class="action-btn btn-view" onclick="markShipped('${o.orderId}')">Ship</button>` : ''}
-          <button class="action-btn btn-unlock" onclick="deleteOrder('${o.orderId}')">Del</button>
+          <button class="action-btn btn-view" onclick="editOrder('${o.orderId}')"><span data-en="Edit" data-zh="编辑">Edit</span></button>
+          ${!o.shipped ? `<button class="action-btn btn-view" onclick="markShipped('${o.orderId}')"><span data-en="Ship" data-zh="发货">Ship</span></button>` : ''}
+          <button class="action-btn btn-unlock" onclick="deleteOrder('${o.orderId}')"><span data-en="Del" data-zh="删除">Del</span></button>
         </div>
       </div>
     `).join('');
+    updateAdminLang();
   }
 
   async function markShipped(orderId) {
@@ -934,7 +956,8 @@
     count.textContent = `${filtered.length} / ${allProducts.length} product${allProducts.length !== 1 ? 's' : ''}`;
 
     if (filtered.length === 0) {
-      list.innerHTML = '<div class="empty-state">No products found.</div>';
+      list.innerHTML = '<div class="empty-state"><span data-en="No products found." data-zh="未找到产品。">No products found.</span></div>';
+      updateAdminLang();
       return;
     }
 
@@ -944,16 +967,17 @@
         <div class="key-info">
           <div class="key-id">${p.key} · ${p.name} · $${p.price}</div>
           <div class="key-meta">
-            ${p.id}${p.customPrice ? ' · Custom Price' : ''}${p.bundle ? ' · Bundle: ' + (p.bundleItems || '') : ''} ${p.active === false ? ' · Inactive' : ''}
+            ${p.id}${p.customPrice ? ' · <span data-en="Custom Price" data-zh="自主定价">Custom Price</span>' : ''}${p.bundle ? ' · <span data-en="Bundle" data-zh="套装">Bundle</span>: ' + (p.bundleItems || '') : ''} ${p.active === false ? ' · <span data-en="Inactive" data-zh="已下架">Inactive</span>' : ''}
           </div>
         </div>
         <div class="key-actions">
-          <button class="action-btn btn-view" onclick="editProduct('${p.key}')">Edit</button>
-          <button class="action-btn btn-view" onclick="toggleProduct('${p.key}')">${p.active !== false ? 'Down' : 'Up'}</button>
-          <button class="action-btn btn-unlock" onclick="deleteProduct('${p.key}')">Del</button>
+          <button class="action-btn btn-view" onclick="editProduct('${p.key}')"><span data-en="Edit" data-zh="编辑">Edit</span></button>
+          <button class="action-btn btn-view" onclick="toggleProduct('${p.key}')">${p.active !== false ? '<span data-en="Down" data-zh="下架">Down</span>' : '<span data-en="Up" data-zh="上架">Up</span>'}</button>
+          <button class="action-btn btn-unlock" onclick="deleteProduct('${p.key}')"><span data-en="Del" data-zh="删除">Del</span></button>
         </div>
       </div>
     `).join('');
+    updateAdminLang();
   }
 
   function autoFillKey() {
