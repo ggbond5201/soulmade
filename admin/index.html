@@ -694,6 +694,7 @@
         <div class="key-info">
           <div class="key-id">${o.productName} — ${o.customerName}</div>
           <div class="key-meta">
+            📞 ${o.customerPhone || '—'} · 📍 ${o.customerAddress || '—'}<br>
             Code: ${o.activationCode} · ${o.customerEmail} · ${new Date(o.createdAt).toLocaleDateString()}
             ${o.shipped ? ' · ✓ Shipped' : ' · Pending'}
           </div>
