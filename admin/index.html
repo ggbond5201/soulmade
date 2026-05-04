@@ -421,6 +421,7 @@
   <div class="topbar">
     <div class="topbar-brand">SOULMADE · Admin</div>
     <div class="topbar-right">
+      <button class="topbar-logout" onclick="testEmail()" style="margin-right:12px;">📧 Test</button>
       <button class="topbar-logout" onclick="logout()">Log out</button>
     </div>
   </div>
@@ -477,6 +478,19 @@
     <div class="modal-title" id="modalId"></div>
     <div id="modalContent"></div>
     <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">Close</button>
+  </div>
+</div>
+
+<!-- Edit Order modal -->
+<div class="modal-overlay" id="editOrderOverlay" onclick="closeEditOrder(event)">
+  <div class="modal">
+    <div class="modal-title">Edit Order</div>
+    <div class="modal-row"><span class="modal-label">Name</span><input class="create-input" id="editOrderName" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label">Email</span><input class="create-input" id="editOrderEmail" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label">Phone</span><input class="create-input" id="editOrderPhone" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label">Address</span><textarea class="create-input" id="editOrderAddress" style="width:100%;height:60px;resize:none;"></textarea></div>
+    <button class="create-btn" onclick="saveEditOrder()" style="width:100%;margin-top:8px;">Save</button>
+    <button class="modal-close" onclick="document.getElementById('editOrderOverlay').classList.remove('open')" style="margin-top:8px;">Close</button>
   </div>
 </div>
 
@@ -700,7 +714,9 @@
           </div>
         </div>
         <div class="key-actions">
+          <button class="action-btn btn-view" onclick="editOrder('${o.orderId}')">Edit</button>
           ${!o.shipped ? `<button class="action-btn btn-view" onclick="markShipped('${o.orderId}')">Ship</button>` : ''}
+          <button class="action-btn btn-unlock" onclick="deleteOrder('${o.orderId}')">Del</button>
         </div>
       </div>
     `).join('');
@@ -714,13 +730,71 @@
         body: JSON.stringify({ password: adminPassword, orderId })
       });
       const data = await res.json();
-      if (data.success) {
-        showToast('Order marked as shipped');
-        loadOrders();
-      }
-    } catch (e) {
-      showToast('Failed to update');
-    }
+      if (data.success) { showToast('Order marked as shipped'); loadOrders(); }
+    } catch (e) { showToast('Failed to update'); }
+  }
+
+  // ── Edit Order ──
+  let editingOrderId = null;
+  function editOrder(orderId) {
+    const o = allOrders.find(x => x.orderId === orderId);
+    if (!o) return;
+    editingOrderId = orderId;
+    document.getElementById('editOrderName').value = o.customerName || '';
+    document.getElementById('editOrderEmail').value = o.customerEmail || '';
+    document.getElementById('editOrderPhone').value = o.customerPhone || '';
+    document.getElementById('editOrderAddress').value = o.customerAddress || '';
+    document.getElementById('editOrderOverlay').classList.add('open');
+  }
+  function closeEditOrder(e) {
+    if (e && e.target !== document.getElementById('editOrderOverlay')) return;
+    document.getElementById('editOrderOverlay').classList.remove('open');
+  }
+  async function saveEditOrder() {
+    try {
+      const res = await fetch(`${API}/admin/edit-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password: adminPassword, orderId: editingOrderId,
+          customerName: document.getElementById('editOrderName').value.trim(),
+          customerEmail: document.getElementById('editOrderEmail').value.trim(),
+          customerPhone: document.getElementById('editOrderPhone').value.trim(),
+          customerAddress: document.getElementById('editOrderAddress').value.trim()
+        })
+      });
+      const data = await res.json();
+      if (data.success) { showToast('Order updated'); closeEditOrder(); loadOrders(); }
+    } catch (e) { showToast('Failed to update'); }
+  }
+
+  // ── Delete Order ──
+  async function deleteOrder(orderId) {
+    if (!confirm('Delete this order? This cannot be undone.')) return;
+    try {
+      const res = await fetch(`${API}/admin/delete-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, orderId })
+      });
+      const data = await res.json();
+      if (data.success) { showToast('Order deleted'); loadOrders(); }
+    } catch (e) { showToast('Failed to delete'); }
+  }
+
+  // ── Test Email ──
+  async function testEmail() {
+    try {
+      const res = await fetch(`${API}/admin/test-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword })
+      });
+      const data = await res.json();
+      if (data.success) showToast('Test email sent! Check your inbox.');
+      else if (data.error === 'email_not_configured') showToast('Email not configured. Add RESEND_API_KEY and ADMIN_EMAIL env vars.');
+      else showToast('Send failed: ' + (data.detail || JSON.stringify(data.resendResponse)));
+    } catch (e) { showToast('Connection error'); }
   }
 
   document.getElementById('passwordInput').addEventListener('keydown', e => {
