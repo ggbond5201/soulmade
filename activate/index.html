@@ -234,6 +234,37 @@
   .panel { display: none; }
   .panel.active { display: block; }
 
+  /* Voice recorder */
+  .voice-section {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .voice-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 20px;
+    background: var(--cream);
+    border: 1px solid rgba(201,169,110,0.3);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; color: var(--text-dark);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .voice-btn:hover { border-color: var(--gold); }
+  .voice-btn.recording {
+    background: rgba(192,102,90,0.08);
+    border-color: var(--error); color: var(--error);
+    animation: pulse-rec 1.5s ease infinite;
+  }
+  @keyframes pulse-rec {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(192,102,90,0.2); }
+    50% { box-shadow: 0 0 0 8px rgba(192,102,90,0); }
+  }
+  .voice-icon { font-size: 18px; }
+  .voice-timer {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; color: var(--text-light);
+  }
+  .voice-timer.warning { color: var(--error); }
+
   /* Hint */
   .hint {
     margin-top: 24px;
@@ -320,6 +351,25 @@
         <textarea id="memoryInput" placeholder="Describe this special moment..." style="height:80px;"></textarea>
       </div>
 
+      <!-- Video Link -->
+      <div class="form-group">
+        <label>Video Link (optional)</label>
+        <input type="url" id="videoUrlInput" placeholder="YouTube or Bilibili link...">
+      </div>
+
+      <!-- Voice Message -->
+      <div class="form-group">
+        <label>Voice Message (optional, max 60s)</label>
+        <div class="voice-section" id="voiceSection">
+          <button type="button" class="voice-btn" id="voiceBtn" onclick="toggleRecording()">
+            <span class="voice-icon">🎤</span> <span id="voiceBtnLabel">Record Voice</span>
+          </button>
+          <span class="voice-timer" id="voiceTimer">00:00</span>
+          <audio id="voicePreview" controls style="display:none;width:100%;margin-top:12px;border-radius:10px;"></audio>
+          <input type="hidden" id="audioBase64Input">
+        </div>
+      </div>
+
       <button class="btn" id="submitBtn" onclick="submitMemory()">Save & Activate ✦</button>
     </div>
 
@@ -342,6 +392,72 @@
   let currentCode = "";
   let isEditing = false;
 
+  // ── Voice Recording ──
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let recordTimer = null;
+  let recordSeconds = 0;
+
+  async function toggleRecording() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      stopRecording();
+      return;
+    }
+    startRecording();
+  }
+
+  async function startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+      audioChunks = [];
+      recordSeconds = 0;
+
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) audioChunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        stream.getTracks().forEach(t => t.stop());
+        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+        const reader = new FileReader();
+        reader.onload = () => {
+          document.getElementById('audioBase64Input').value = reader.result;
+          document.getElementById('voicePreview').src = reader.result;
+          document.getElementById('voicePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(blob);
+      };
+
+      mediaRecorder.start(1000);
+      document.getElementById('voiceBtn').classList.add('recording');
+      document.getElementById('voiceBtnLabel').textContent = 'Stop';
+      document.getElementById('voiceTimer').textContent = '00:00';
+      document.getElementById('voiceTimer').classList.remove('warning');
+
+      recordTimer = setInterval(() => {
+        recordSeconds++;
+        const m = Math.floor(recordSeconds / 60).toString().padStart(2, '0');
+        const s = (recordSeconds % 60).toString().padStart(2, '0');
+        document.getElementById('voiceTimer').textContent = `${m}:${s}`;
+        if (recordSeconds >= 55) document.getElementById('voiceTimer').classList.add('warning');
+        if (recordSeconds >= 60) stopRecording();
+      }, 1000);
+    } catch (e) {
+      showMsg('msg2', 'Microphone access denied. Please allow microphone permissions.', 'error');
+    }
+  }
+
+  function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+    }
+    clearInterval(recordTimer);
+    document.getElementById('voiceBtn').classList.remove('recording');
+    document.getElementById('voiceBtnLabel').textContent = 'Re-record';
+  }
+
+  // ── Panels ──
   function showMsg(id, text, type) {
     const el = document.getElementById(id);
     el.textContent = text;
@@ -382,12 +498,10 @@
       if (data.error === 'invalid_code') {
         showMsg('msg1', 'Code not found. Please check your card and try again.', 'error');
       } else if (data.error === 'already_activated') {
-        // Code already activated — offer edit
         currentCode = code;
         isEditing = true;
         await loadExistingMemory(code);
       } else if (data.valid) {
-        // Fresh activation
         currentCode = code;
         isEditing = false;
         clearForm();
@@ -421,11 +535,18 @@
         return;
       }
 
-      // Pre-fill form with existing data
       document.getElementById('msgInput').value = data.message || '';
       document.getElementById('dateInput').value = data.date || '';
       document.getElementById('placeInput').value = data.place || '';
       document.getElementById('memoryInput').value = data.memory || '';
+      document.getElementById('videoUrlInput').value = data.videoUrl || '';
+
+      if (data.audioBase64) {
+        document.getElementById('audioBase64Input').value = data.audioBase64;
+        document.getElementById('voicePreview').src = data.audioBase64;
+        document.getElementById('voicePreview').style.display = 'block';
+        document.getElementById('voiceBtnLabel').textContent = 'Re-record';
+      }
 
       document.getElementById('panel2Title').textContent = 'Edit Your Memory';
       document.getElementById('panel2Sub').textContent = 'Update your memory. The viewing code stays the same.';
@@ -443,6 +564,18 @@
     document.getElementById('dateInput').value = '';
     document.getElementById('placeInput').value = '';
     document.getElementById('memoryInput').value = '';
+    document.getElementById('videoUrlInput').value = '';
+    document.getElementById('audioBase64Input').value = '';
+    document.getElementById('voicePreview').style.display = 'none';
+    document.getElementById('voicePreview').src = '';
+    document.getElementById('voiceBtnLabel').textContent = 'Record Voice';
+    document.getElementById('voiceTimer').textContent = '00:00';
+    clearInterval(recordTimer);
+    if (mediaRecorder) {
+      if (mediaRecorder.state === 'recording') mediaRecorder.stop();
+      mediaRecorder = null;
+    }
+    document.getElementById('voiceBtn').classList.remove('recording');
   }
 
   async function submitMemory() {
@@ -450,6 +583,8 @@
     const date = document.getElementById('dateInput').value;
     const place = document.getElementById('placeInput').value.trim();
     const memory = document.getElementById('memoryInput').value.trim();
+    const videoUrl = document.getElementById('videoUrlInput').value.trim();
+    const audioBase64 = document.getElementById('audioBase64Input').value;
 
     if (!message) {
       showMsg('msg2', 'Please write a message for your recipient.', 'error');
@@ -473,7 +608,7 @@
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: currentCode, message, date, place, memory })
+        body: JSON.stringify({ code: currentCode, message, date, place, memory, videoUrl, audioBase64 })
       });
       const data = await res.json();
 
@@ -495,7 +630,6 @@
     btn.textContent = isEditing ? 'Update Memory ✦' : 'Save & Activate ✦';
   }
 
-  // Allow Enter key on code input
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('codeInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') checkCode();

@@ -447,6 +447,18 @@
     }
   }
 
+  function getVideoEmbed(url) {
+    if (!url) return '';
+    // Bilibili
+    const biliMatch = url.match(/bilibili\.com\/video\/(BV[\w]+)/i) || url.match(/b23\.tv\/([\w]+)/i);
+    if (biliMatch) return `<iframe src="https://player.bilibili.com/player.html?bvid=${biliMatch[1]}&autoplay=0" width="100%" height="220" frameborder="0" allowfullscreen style="border-radius:12px;margin-top:16px;"></iframe>`;
+    // YouTube
+    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/i);
+    if (ytMatch) return `<iframe src="https://www.youtube.com/embed/${ytMatch[1]}" width="100%" height="220" frameborder="0" allowfullscreen style="border-radius:12px;margin-top:16px;"></iframe>`;
+    // Generic: show as link
+    return `<a href="${url}" target="_blank" rel="noopener" style="display:block;margin-top:16px;padding:14px 18px;background:var(--gold-pale);border-radius:12px;text-decoration:none;color:var(--text-dark);font-size:14px;text-align:center;">▶ Watch Video</a>`;
+  }
+
   function showMemory(m) {
     document.getElementById('lockScreen').style.display = 'none';
     document.getElementById('memoryContent').style.display = 'block';
@@ -460,6 +472,17 @@
     if (m.memory) {
       html += `<div class="detail-row"><div class="detail-icon">✦</div><div><div class="detail-label">Memory</div><div class="detail-value">${m.memory}</div></div></div>`;
     }
+
+    // Video embed
+    if (m.videoUrl) {
+      html += getVideoEmbed(m.videoUrl);
+    }
+
+    // Audio player
+    if (m.audioBase64) {
+      html += `<div style="margin-top:16px;"><div class="detail-label" style="margin-bottom:8px;">🎵 Voice Message</div><audio controls src="${m.audioBase64}" style="width:100%;border-radius:10px;"></audio></div>`;
+    }
+
     document.getElementById('detailsEl').innerHTML = html;
     document.title = `SOULMADE · ${m.id}`;
   }
