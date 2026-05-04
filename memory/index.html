@@ -16,8 +16,8 @@
     --text-mid: #6B5A3E;
     --text-light: #A89070;
     --blush: #F2D5CC;
+    --error: #C0665A;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
@@ -30,13 +30,11 @@
 
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background:
       radial-gradient(ellipse 60% 50% at 20% 20%, rgba(201,169,110,0.10) 0%, transparent 70%),
       radial-gradient(ellipse 50% 60% at 80% 80%, rgba(242,213,204,0.15) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
 
   /* Floating petals */
@@ -44,12 +42,10 @@
     position: fixed;
     width: 6px; height: 9px;
     border-radius: 50% 50% 50% 0;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 0;
+    opacity: 0; pointer-events: none; z-index: 0;
     animation: floatPetal linear infinite;
   }
-  .petal:nth-child(1) { background: rgba(242,213,204,0.6); left: 10%; animation-duration: 14s; animation-delay: 0s; }
+  .petal:nth-child(1) { background: rgba(242,213,204,0.6); left: 10%; animation-duration: 14s; }
   .petal:nth-child(2) { background: rgba(201,169,110,0.4); left: 25%; animation-duration: 18s; animation-delay: 2s; width:4px; height:7px; }
   .petal:nth-child(3) { background: rgba(242,213,204,0.5); left: 50%; animation-duration: 12s; animation-delay: 5s; }
   .petal:nth-child(4) { background: rgba(232,213,163,0.5); left: 70%; animation-duration: 16s; animation-delay: 1s; width:5px; height:8px; }
@@ -63,8 +59,7 @@
   }
 
   .wrapper {
-    position: relative;
-    z-index: 1;
+    position: relative; z-index: 1;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -73,71 +68,24 @@
   }
 
   .brand {
-    text-align: center;
-    margin-bottom: 40px;
+    text-align: center; margin-bottom: 40px;
     animation: fadeDown 0.8s ease both;
   }
   .brand-name {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 13px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--gold);
+    font-size: 13px; letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--gold);
   }
   .brand-dot {
     display: inline-block;
     width: 3px; height: 3px;
-    background: var(--gold);
-    border-radius: 50%;
-    margin: 0 8px;
-    vertical-align: middle;
+    background: var(--gold); border-radius: 50%;
+    margin: 0 8px; vertical-align: middle;
   }
 
-  /* Loading state */
-  .loading {
-    text-align: center;
-    padding: 80px 24px;
-    animation: fadeIn 0.5s ease both;
-  }
-  .loading-ring {
-    width: 40px; height: 40px;
-    border: 2px solid var(--gold-pale);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
-  }
-  .loading p {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 16px;
-    font-style: italic;
-    color: var(--text-light);
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Not found state */
-  .not-found {
-    text-align: center;
-    padding: 60px 24px;
-    display: none;
-  }
-  .not-found h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 24px;
-    font-weight: 300;
-    margin-bottom: 12px;
-    color: var(--text-dark);
-  }
-  .not-found p {
-    font-size: 14px;
-    color: var(--text-light);
-    line-height: 1.7;
-  }
-
-  /* Memory card */
+  /* Card */
   .card {
-    width: 100%;
-    max-width: 380px;
+    width: 100%; max-width: 420px;
     background: var(--warm-white);
     border-radius: 28px;
     padding: 44px 36px 48px;
@@ -148,42 +96,106 @@
       0 0 0 1px rgba(201,169,110,0.12);
     animation: riseUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
     overflow: hidden;
-    display: none;
   }
   .card::before {
     content: '✿';
     position: absolute;
     top: 16px; right: 20px;
-    font-size: 32px;
-    opacity: 0.07;
-    color: var(--gold);
-    transform: rotate(20deg);
-  }
-  .card::after {
-    content: '✿';
-    position: absolute;
-    bottom: 16px; left: 20px;
-    font-size: 22px;
-    opacity: 0.07;
-    color: var(--gold);
-    transform: rotate(-15deg);
+    font-size: 32px; opacity: 0.07;
+    color: var(--gold); transform: rotate(20deg);
   }
 
+  /* Lock Screen */
+  .lock-icon {
+    font-size: 44px; margin-bottom: 20px; display: block; text-align: center;
+  }
+  .lock-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 300; margin-bottom: 8px; text-align: center;
+  }
+  .lock-sub {
+    font-size: 13px; color: var(--text-light); margin-bottom: 32px;
+    line-height: 1.6; text-align: center;
+  }
+  .lock-label {
+    font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--text-light);
+    margin-bottom: 8px; display: block; text-align: left;
+  }
+  .lock-input {
+    width: 100%;
+    background: var(--cream);
+    border: 1px solid rgba(201,169,110,0.2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px; color: var(--text-dark);
+    outline: none; text-align: center;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    transition: border-color 0.2s;
+  }
+  .lock-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,169,110,0.1);
+  }
+  .lock-btn {
+    width: 100%; padding: 16px;
+    background: var(--gold); color: white;
+    border: none; border-radius: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500;
+    letter-spacing: 0.08em; cursor: pointer;
+    margin-top: 16px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .lock-btn:hover { background: #B8935A; }
+  .lock-btn:active { transform: scale(0.98); }
+  .lock-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .lock-error {
+    margin-top: 12px; font-size: 13px; color: var(--error);
+    text-align: center; display: none;
+  }
+  .lock-hint {
+    margin-top: 20px; font-size: 12px; color: var(--text-light);
+    text-align: center; line-height: 1.6;
+  }
+
+  /* Loading state */
+  .loading { display: none; text-align: center; padding: 40px 0; }
+  .loading-ring {
+    width: 36px; height: 36px;
+    border: 2px solid var(--gold-pale);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px; font-style: italic; color: var(--text-light);
+  }
+
+  /* Not found state */
+  .not-found { display: none; text-align: center; padding: 40px 0; }
+  .not-found h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px; font-weight: 300; margin-bottom: 12px;
+  }
+  .not-found p { font-size: 14px; color: var(--text-light); line-height: 1.7; }
+
+  /* Memory content */
+  .memory-content { display: none; }
   .serial {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    display: inline-flex; align-items: center; gap: 6px;
     background: var(--gold-pale);
     border: 1px solid rgba(201,169,110,0.25);
-    border-radius: 20px;
-    padding: 4px 12px;
-    margin-bottom: 28px;
-    animation: fadeIn 0.6s ease 0.6s both;
+    border-radius: 20px; padding: 4px 12px; margin-bottom: 28px;
+    animation: fadeIn 0.6s ease both;
   }
   .serial-dot {
     width: 6px; height: 6px;
-    background: var(--gold);
-    border-radius: 50%;
+    background: var(--gold); border-radius: 50%;
     animation: pulse 2s ease infinite;
   }
   @keyframes pulse {
@@ -191,134 +203,104 @@
     50% { opacity: 0.5; transform: scale(0.7); }
   }
   .serial-text {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    color: var(--text-light);
+    font-size: 11px; letter-spacing: 0.15em; color: var(--text-light);
   }
-
-  .card-title {
+  .card-label {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 13px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--text-light);
-    margin-bottom: 10px;
-    animation: fadeIn 0.6s ease 0.7s both;
+    font-size: 13px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--text-light);
+    margin-bottom: 10px; animation: fadeIn 0.6s ease 0.1s both;
   }
-
   .message {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 300;
-    font-style: italic;
-    line-height: 1.55;
-    color: var(--text-dark);
-    margin-bottom: 36px;
-    padding-bottom: 32px;
+    font-size: 26px; font-weight: 300; font-style: italic;
+    line-height: 1.55; color: var(--text-dark);
+    margin-bottom: 36px; padding-bottom: 32px;
     border-bottom: 1px solid rgba(201,169,110,0.15);
-    animation: fadeIn 0.8s ease 0.8s both;
+    animation: fadeIn 0.8s ease 0.2s both;
   }
   .message::before {
     content: '\201C';
-    font-size: 60px;
-    color: var(--gold-light);
-    line-height: 0;
-    display: block;
-    margin-bottom: -12px;
-    font-style: normal;
+    font-size: 60px; color: var(--gold-light);
+    line-height: 0; display: block;
+    margin-bottom: -12px; font-style: normal;
   }
-
   .details {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: flex; flex-direction: column; gap: 20px;
     margin-bottom: 36px;
   }
-
   .detail-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
+    display: flex; align-items: flex-start; gap: 14px;
     animation: fadeIn 0.6s ease both;
   }
-  .detail-row:nth-child(1) { animation-delay: 0.9s; }
-  .detail-row:nth-child(2) { animation-delay: 1.0s; }
-  .detail-row:nth-child(3) { animation-delay: 1.1s; }
-
+  .detail-row:nth-child(1) { animation-delay: 0.3s; }
+  .detail-row:nth-child(2) { animation-delay: 0.4s; }
+  .detail-row:nth-child(3) { animation-delay: 0.5s; }
   .detail-icon {
     width: 32px; height: 32px;
-    background: var(--gold-pale);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 14px;
+    background: var(--gold-pale); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
     border: 1px solid rgba(201,169,110,0.2);
   }
   .detail-label {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-light);
+    font-size: 10px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--text-light);
     margin-bottom: 2px;
   }
   .detail-value {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 17px;
-    color: var(--text-dark);
-    line-height: 1.4;
+    font-size: 17px; color: var(--text-dark); line-height: 1.4;
   }
-
   .heart-divider {
-    text-align: center;
-    margin-bottom: 28px;
-    animation: fadeIn 0.6s ease 1.2s both;
+    text-align: center; margin-bottom: 28px;
+    animation: fadeIn 0.6s ease 0.6s both;
   }
   .heart-divider::before, .heart-divider::after {
-    content: '';
-    display: inline-block;
+    content: ''; display: inline-block;
     width: 48px; height: 1px;
     background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3));
-    vertical-align: middle;
-    margin: 0 12px;
+    vertical-align: middle; margin: 0 12px;
   }
   .heart-divider::after {
     background: linear-gradient(90deg, rgba(201,169,110,0.3), transparent);
   }
   .heart-divider span { color: var(--blush); font-size: 16px; vertical-align: middle; }
-
   .footer-note {
     text-align: center;
-    animation: fadeIn 0.6s ease 1.3s both;
+    animation: fadeIn 0.6s ease 0.7s both;
   }
   .footer-note p {
     font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 15px;
-    color: var(--text-light);
-    line-height: 1.7;
+    font-style: italic; font-size: 15px;
+    color: var(--text-light); line-height: 1.7;
   }
   .made-with {
-    margin-top: 16px;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    margin-top: 16px; font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
     color: rgba(168,144,112,0.4);
   }
 
+  /* Error toast */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text-dark); color: var(--gold-light);
+    padding: 12px 24px; border-radius: 30px;
+    font-size: 13px; letter-spacing: 0.05em;
+    opacity: 0; transition: all 0.3s ease;
+    z-index: 100; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
   .bottom-brand {
-    margin-top: 40px;
-    text-align: center;
-    animation: fadeIn 0.6s ease 1.5s both;
+    margin-top: 40px; text-align: center;
+    animation: fadeIn 0.6s ease 1.0s both;
   }
   .bottom-brand span {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--text-light);
-    opacity: 0.5;
+    font-size: 11px; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--text-light); opacity: 0.5;
   }
 
   @keyframes fadeDown {
@@ -351,59 +333,48 @@
     <span class="brand-name">A Memory For You</span>
   </div>
 
-  <!-- Loading -->
-  <div class="loading" id="loading">
-    <div class="loading-ring"></div>
-    <p>Opening your memory...</p >
-  </div>
+  <div class="card" id="mainCard">
 
-  <!-- Not found -->
-  <div class="not-found" id="notFound">
-    <h2>Memory Not Found</h2>
-    <p>This keychain hasn't been activated yet,<br>or the link may be incorrect.</p >
-  </div>
-
-  <!-- Memory card -->
-  <div class="card" id="memoryCard">
-    <div class="serial">
-      <div class="serial-dot"></div>
-      <span class="serial-text" id="serialText"></span>
+    <!-- Loading -->
+    <div class="loading" id="loading">
+      <div class="loading-ring"></div>
+      <p>Opening your memory...</p>
     </div>
 
-    <div class="card-title">A message for you</div>
+    <!-- Not Found -->
+    <div class="not-found" id="notFound">
+      <h2>Memory Not Found</h2>
+      <p>This keychain hasn't been activated yet,<br>or the link may be incorrect.</p>
+    </div>
 
-    <div class="message" id="messageText"></div>
+    <!-- Lock Screen -->
+    <div id="lockScreen" style="display:none;">
+      <span class="lock-icon">🔒</span>
+      <div class="lock-title">This memory is private</div>
+      <div class="lock-sub">Enter the viewing code from your package card to open this memory.</div>
+      <span class="lock-label">Viewing Code</span>
+      <input type="text" class="lock-input" id="pwInput" placeholder="XXXXX" maxlength="10" autocomplete="off">
+      <button class="lock-btn" id="lockBtn" onclick="checkPassword()">Open Memory →</button>
+      <div class="lock-error" id="lockError">Incorrect code. Please check your card.</div>
+      <div class="lock-hint">Find the 5-letter code on your SOULMADE package card.</div>
+    </div>
 
-    <div class="details">
-      <div class="detail-row">
-        <div class="detail-icon">📅</div>
-        <div class="detail-content">
-          <div class="detail-label">Date</div>
-          <div class="detail-value" id="dateText"></div>
-        </div>
+    <!-- Memory Content -->
+    <div class="memory-content" id="memoryContent">
+      <div class="serial">
+        <div class="serial-dot"></div>
+        <span class="serial-text" id="serialText"></span>
       </div>
-      <div class="detail-row">
-        <div class="detail-icon">📍</div>
-        <div class="detail-content">
-          <div class="detail-label">Place</div>
-          <div class="detail-value" id="placeText"></div>
-        </div>
-      </div>
-      <div class="detail-row" id="memoryRow">
-        <div class="detail-icon">✦</div>
-        <div class="detail-content">
-          <div class="detail-label">Memory</div>
-          <div class="detail-value" id="memoryText"></div>
-        </div>
+      <div class="card-label">A message for you</div>
+      <div class="message" id="messageText"></div>
+      <div class="details" id="detailsEl"></div>
+      <div class="heart-divider"><span>♡</span></div>
+      <div class="footer-note">
+        <p>This memory was made for you,<br>with love.</p>
+        <div class="made-with">Made with love, for you.</div>
       </div>
     </div>
 
-    <div class="heart-divider"><span>♡</span></div>
-
-    <div class="footer-note">
-      <p>This memory was made for you,<br>with love.</p >
-      <div class="made-with">Made with love, for you.</div>
-    </div>
   </div>
 
   <div class="bottom-brand">
@@ -412,22 +383,27 @@
 
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
   const API = "https://soulmade-memory.2323371806.workers.dev";
+  let memoryId = null;
 
-  // 从URL取得ID，支持 /memory/SM-0001 格式
   function getIdFromUrl() {
     const path = window.location.pathname;
     const parts = path.split('/').filter(Boolean);
-    // 找memory后面的部分
     const idx = parts.indexOf('memory');
-    if (idx !== -1 && parts[idx + 1]) {
-      return parts[idx + 1].toUpperCase();
-    }
-    // 或者直接用query string ?id=SM-0001
+    if (idx !== -1 && parts[idx + 1]) return parts[idx + 1].toUpperCase();
     const params = new URLSearchParams(window.location.search);
     if (params.get('id')) return params.get('id').toUpperCase();
     return null;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
   }
 
   function formatDate(dateStr) {
@@ -435,56 +411,93 @@
     try {
       const d = new Date(dateStr + 'T00:00:00');
       return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    } catch {
-      return dateStr;
+    } catch { return dateStr; }
+  }
+
+  async function checkPassword() {
+    const input = document.getElementById('pwInput').value.trim().toUpperCase();
+    if (!input) return;
+
+    const btn = document.getElementById('lockBtn');
+    btn.textContent = 'Opening...';
+    btn.disabled = true;
+    document.getElementById('lockError').style.display = 'none';
+
+    try {
+      const res = await fetch(`${API}/memory/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: memoryId, code: input })
+      });
+      const data = await res.json();
+
+      if (data.error) {
+        document.getElementById('lockError').style.display = 'block';
+        btn.textContent = 'Open Memory →';
+        btn.disabled = false;
+        return;
+      }
+
+      showMemory(data);
+    } catch (e) {
+      document.getElementById('lockError').textContent = 'Connection error. Please try again.';
+      document.getElementById('lockError').style.display = 'block';
+      btn.textContent = 'Open Memory →';
+      btn.disabled = false;
     }
   }
 
-  async function loadMemory() {
-    const id = getIdFromUrl();
+  function showMemory(m) {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('memoryContent').style.display = 'block';
+    document.getElementById('serialText').textContent = m.id;
+    document.getElementById('messageText').textContent = m.message;
 
-    if (!id) {
+    let dateStr = formatDate(m.date);
+    let html = '';
+    html += `<div class="detail-row"><div class="detail-icon">📅</div><div><div class="detail-label">Date</div><div class="detail-value">${dateStr || '—'}</div></div></div>`;
+    html += `<div class="detail-row"><div class="detail-icon">📍</div><div><div class="detail-label">Place</div><div class="detail-value">${m.place || '—'}</div></div></div>`;
+    if (m.memory) {
+      html += `<div class="detail-row"><div class="detail-icon">✦</div><div><div class="detail-label">Memory</div><div class="detail-value">${m.memory}</div></div></div>`;
+    }
+    document.getElementById('detailsEl').innerHTML = html;
+    document.title = `SOULMADE · ${m.id}`;
+  }
+
+  async function init() {
+    memoryId = getIdFromUrl();
+    if (!memoryId) {
       document.getElementById('loading').style.display = 'none';
       document.getElementById('notFound').style.display = 'block';
       return;
     }
-
+    // Verify the ID exists
     try {
-      const res = await fetch(`${API}/memory/${id}`);
+      const res = await fetch(`${API}/memory/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: memoryId, code: '__CHECK__' })
+      });
       const data = await res.json();
-
+      // If we get "wrong_code", the ID exists (just wrong code)
+      // If "not_found", the ID doesn't exist
       document.getElementById('loading').style.display = 'none';
-
-      if (data.error) {
+      if (data.error === 'not_found') {
         document.getElementById('notFound').style.display = 'block';
-        return;
-      }
-
-      // Fill in data
-      document.getElementById('serialText').textContent = data.id;
-      document.getElementById('messageText').textContent = data.message;
-      document.getElementById('dateText').textContent = formatDate(data.date);
-      document.getElementById('placeText').textContent = data.place;
-
-      if (data.memory) {
-        document.getElementById('memoryText').textContent = data.memory;
       } else {
-        document.getElementById('memoryRow').style.display = 'none';
+        document.getElementById('lockScreen').style.display = 'block';
       }
-
-      // Update page title
-      document.title = `SOULMADE · ${data.id}`;
-
-      // Show card
-      document.getElementById('memoryCard').style.display = 'block';
-
     } catch (e) {
       document.getElementById('loading').style.display = 'none';
-      document.getElementById('notFound').style.display = 'block';
+      document.getElementById('lockScreen').style.display = 'block';
     }
   }
 
-  loadMemory();
+  document.getElementById('pwInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+
+  init();
 </script>
 </body>
 </html>

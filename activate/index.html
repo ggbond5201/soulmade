@@ -298,8 +298,8 @@
 
     <!-- Panel 2: Fill in memory -->
     <div class="panel" id="panel2">
-      <div class="card-title">Your Memory</div>
-      <div class="card-subtitle">Fill in the details below. This is what your recipient will see when they tap the keychain.</div>
+      <div class="card-title" id="panel2Title">Your Memory</div>
+      <div class="card-subtitle" id="panel2Sub">Fill in the details below. This is what your recipient will see when they tap the keychain.</div>
 
       <div id="msg2" class="msg"></div>
 
@@ -320,15 +320,15 @@
         <textarea id="memoryInput" placeholder="Describe this special moment..." style="height:80px;"></textarea>
       </div>
 
-      <button class="btn" onclick="submitMemory()">Save & Activate ✦</button>
+      <button class="btn" id="submitBtn" onclick="submitMemory()">Save & Activate ✦</button>
     </div>
 
     <!-- Panel 3: Success -->
     <div class="panel" id="panel3">
       <div class="success-screen" style="display:block;">
         <div class="success-icon">✦</div>
-        <h2>Memory Saved</h2>
-        <p>Your memory has been locked inside<br>your SOULMADE keychain forever.</p >
+        <h2 id="successTitle">Memory Saved</h2>
+        <p id="successMsg">Your memory has been locked inside<br>your SOULMADE keychain forever.</p >
         <p>When your recipient taps the keychain<br>with their phone, they'll see your message.</p >
         <div class="success-id" id="successId"></div>
       </div>
@@ -340,6 +340,7 @@
 <script>
   const API = "https://soulmade-memory.2323371806.workers.dev";
   let currentCode = "";
+  let isEditing = false;
 
   function showMsg(id, text, type) {
     const el = document.getElementById(id);
@@ -368,6 +369,7 @@
     const btn = document.querySelector('#panel1 .btn');
     btn.disabled = true;
     btn.textContent = 'Checking...';
+    document.getElementById('msg1').className = 'msg';
 
     try {
       const res = await fetch(`${API}/check-code`, {
@@ -380,9 +382,18 @@
       if (data.error === 'invalid_code') {
         showMsg('msg1', 'Code not found. Please check your card and try again.', 'error');
       } else if (data.error === 'already_activated') {
-        showMsg('msg1', 'This keychain has already been activated. Contact us if you need help.', 'error');
-      } else if (data.valid) {
+        // Code already activated — offer edit
         currentCode = code;
+        isEditing = true;
+        await loadExistingMemory(code);
+      } else if (data.valid) {
+        // Fresh activation
+        currentCode = code;
+        isEditing = false;
+        clearForm();
+        document.getElementById('panel2Title').textContent = 'Your Memory';
+        document.getElementById('panel2Sub').textContent = 'Fill in the details below. This is what your recipient will see when they tap the keychain.';
+        document.getElementById('submitBtn').textContent = 'Save & Activate ✦';
         goToPanel(2);
       } else {
         showMsg('msg1', 'Something went wrong. Please try again.', 'error');
@@ -393,6 +404,45 @@
 
     btn.disabled = false;
     btn.textContent = 'Continue →';
+  }
+
+  async function loadExistingMemory(code) {
+    const btn = document.querySelector('#panel1 .btn');
+    try {
+      const res = await fetch(`${API}/get-memory-by-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+
+      if (data.error) {
+        showMsg('msg1', 'Could not load existing memory. Please contact us for help.', 'error');
+        return;
+      }
+
+      // Pre-fill form with existing data
+      document.getElementById('msgInput').value = data.message || '';
+      document.getElementById('dateInput').value = data.date || '';
+      document.getElementById('placeInput').value = data.place || '';
+      document.getElementById('memoryInput').value = data.memory || '';
+
+      document.getElementById('panel2Title').textContent = 'Edit Your Memory';
+      document.getElementById('panel2Sub').textContent = 'Update your memory. The viewing code stays the same.';
+      document.getElementById('submitBtn').textContent = 'Update Memory ✦';
+      goToPanel(2);
+    } catch (e) {
+      showMsg('msg1', 'Connection error. Please try again.', 'error');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Continue →';
+  }
+
+  function clearForm() {
+    document.getElementById('msgInput').value = '';
+    document.getElementById('dateInput').value = '';
+    document.getElementById('placeInput').value = '';
+    document.getElementById('memoryInput').value = '';
   }
 
   async function submitMemory() {
@@ -418,8 +468,9 @@
     btn.disabled = true;
     btn.textContent = 'Saving...';
 
+    const endpoint = isEditing ? `${API}/edit-memory` : `${API}/activate`;
     try {
-      const res = await fetch(`${API}/activate`, {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: currentCode, message, date, place, memory })
@@ -427,6 +478,10 @@
       const data = await res.json();
 
       if (data.success) {
+        document.getElementById('successTitle').textContent = isEditing ? 'Memory Updated' : 'Memory Saved';
+        document.getElementById('successMsg').textContent = isEditing
+          ? 'Your memory has been updated.'
+          : 'Your memory has been locked inside your SOULMADE keychain forever.';
         document.getElementById('successId').textContent = data.id;
         goToPanel(3);
       } else {
@@ -437,7 +492,7 @@
     }
 
     btn.disabled = false;
-    btn.textContent = 'Save & Activate ✦';
+    btn.textContent = isEditing ? 'Update Memory ✦' : 'Save & Activate ✦';
   }
 
   // Allow Enter key on code input

@@ -584,7 +584,11 @@
 
   async function viewMemory(id) {
     try {
-      const res = await fetch(`${API}/memory/${id}`);
+      const res = await fetch(`${API}/admin/view`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, id })
+      });
       const data = await res.json();
       if (data.error) { showToast('Memory not found'); return; }
 
@@ -608,7 +612,7 @@
         </div>
         <div class="modal-row">
           <div class="modal-label">Activated</div>
-          <div class="modal-value" style="font-size:14px;">${new Date(data.activatedAt).toLocaleString()}</div>
+          <div class="modal-value" style="font-size:14px;">${data.activatedAt ? new Date(data.activatedAt).toLocaleString() : '—'}</div>
         </div>
       `;
       document.getElementById('modalOverlay').classList.add('open');
