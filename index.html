@@ -451,49 +451,40 @@
 
     .product-card {
       position: relative;
-      aspect-ratio: 3/4;
       background: var(--mist);
       overflow: hidden;
-      cursor: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
     }
-
-    .product-card:hover .product-overlay { opacity: 1; }
-    .product-card:hover .product-img-placeholder { transform: scale(1.05); }
-
-    .product-img-placeholder {
+    .product-card .img-wrap {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: #e8e2d8;
+    }
+    .product-card .img-wrap img {
       width: 100%;
       height: 100%;
+      object-fit: cover;
       transition: transform 0.6s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-
-    .placeholder-orb {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%,
-        rgba(255,240,200,0.9) 0%,
-        rgba(200,169,110,0.6) 40%,
-        rgba(100,60,20,0.4) 100%);
-      box-shadow: inset -8px -8px 20px rgba(0,0,0,0.3),
-                  inset 4px 4px 12px rgba(255,220,150,0.4);
-    }
+    .product-card:hover .img-wrap img { transform: scale(1.05); }
 
     .product-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(26,22,18,0.85);
+      background: rgba(26,22,18,0.8);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       opacity: 0;
       transition: opacity 0.4s;
-      gap: 16px;
+      gap: 12px;
+      pointer-events: none;
     }
-
+    .product-card:hover .product-overlay { opacity: 1; }
     .product-overlay span {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
@@ -501,16 +492,22 @@
       text-transform: uppercase;
       color: var(--amber);
     }
+    .product-overlay .overlay-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: #fff;
+    }
 
     .product-info {
-      padding: 24px 0;
+      padding: 20px 16px;
       display: flex;
       justify-content: space-between;
       align-items: baseline;
     }
 
     .product-name {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 300;
       letter-spacing: -0.3px;
     }
@@ -521,6 +518,12 @@
       letter-spacing: 2px;
       color: var(--amber);
       opacity: 0.7;
+    }
+
+    .product-price {
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--ink);
     }
 
     /* IDENTITY SYSTEM */
@@ -972,6 +975,41 @@
       transform: translateY(0);
     }
 
+    /* LIGHTBOX */
+    .lightbox-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(13,11,9,0.92);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      cursor: zoom-out;
+    }
+    .lightbox-overlay.open { display: flex; }
+    .lightbox-overlay img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+      animation: fadeUp 0.3s ease both;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      background: none;
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      z-index: 1;
+    }
+    .lightbox-close:hover { color: #fff; }
+
     /* RESPONSIVE */
     @media (max-width: 768px) {
       nav { padding: 20px 24px; }
@@ -1131,79 +1169,49 @@
       <h2 class="reveal">The <em>Collection</em></h2>
       <span class="shop-coming reveal" data-en="Handcrafted · Limited Pieces" data-zh="手工限量 · 每件独一无二">Handcrafted · Limited Pieces</span>
     </div>
-    <div class="shop-grid">
-
-      <!-- Product 1 -->
-      <div class="product-card reveal" onclick="openModal('amber')">
-        <div class="product-img-placeholder" style="background:#f0e8d8;">
-          <div class="placeholder-orb" style="background:radial-gradient(circle at 35% 35%, rgba(255,230,150,0.95) 0%, rgba(200,140,40,0.7) 40%, rgba(100,60,10,0.5) 100%); width:140px;height:140px;box-shadow:inset -10px -10px 30px rgba(0,0,0,0.3),inset 6px 6px 16px rgba(255,220,100,0.5),0 0 40px rgba(200,160,60,0.3);"></div>
-        </div>
-        <div class="product-overlay">
-          <span data-en="View & Buy" data-zh="查看购买">View & Buy</span>
-        </div>
-        <div class="product-info">
-          <div>
-            <div class="product-name" data-en="Amber Drop" data-zh="琥珀吊坠">Amber Drop</div>
-            <div class="product-id">SOULMADE-001</div>
-          </div>
-          <div style="font-size:20px;font-weight:300;">$24</div>
-        </div>
-      </div>
-
-      <!-- Product 2 -->
-      <div class="product-card reveal" onclick="openModal('forest')">
-        <div class="product-img-placeholder" style="background:#dde8dd;">
-          <div class="placeholder-orb" style="background:radial-gradient(circle at 35% 35%, rgba(180,240,180,0.95) 0%, rgba(60,160,80,0.7) 40%, rgba(10,60,20,0.5) 100%); width:120px;height:180px;border-radius:60px;box-shadow:inset -8px -8px 24px rgba(0,0,0,0.3),inset 4px 4px 12px rgba(180,255,180,0.4);"></div>
-        </div>
-        <div class="product-overlay">
-          <span data-en="View & Buy" data-zh="查看购买">View & Buy</span>
-        </div>
-        <div class="product-info">
-          <div>
-            <div class="product-name" data-en="Forest Keychain" data-zh="森林钥匙扣">Forest Keychain</div>
-            <div class="product-id">SOULMADE-002</div>
-          </div>
-          <div style="font-size:20px;font-weight:300;">$18</div>
-        </div>
-      </div>
-
-      <!-- Product 3 -->
-      <div class="product-card reveal" onclick="openModal('twilight')">
-        <div class="product-img-placeholder" style="background:#1a1420;">
-          <div class="placeholder-orb" style="background:radial-gradient(circle at 35% 35%, rgba(220,180,255,0.95) 0%, rgba(120,60,180,0.7) 40%, rgba(30,10,60,0.8) 100%); width:160px;height:160px;box-shadow:inset -12px -12px 40px rgba(0,0,0,0.5),inset 8px 8px 20px rgba(200,150,255,0.3),0 0 60px rgba(120,60,180,0.4);"></div>
-        </div>
-        <div class="product-overlay">
-          <span data-en="View & Buy" data-zh="查看购买">View & Buy</span>
-        </div>
-        <div class="product-info">
-          <div>
-            <div class="product-name" data-en="Twilight Orb" data-zh="暮色摆件">Twilight Orb</div>
-            <div class="product-id">SOULMADE-003</div>
-          </div>
-          <div style="font-size:20px;font-weight:300;">$32</div>
-        </div>
-      </div>
-
-    </div>
+    <div class="shop-grid" id="shopGrid"></div>
   </section>
 
   <!-- PRODUCT MODAL -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
     <div class="modal" id="modal">
       <button class="modal-close" onclick="closeModal()">CLOSE ✕</button>
+      <div class="modal-img-wrap" id="modalImgWrap" style="width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:12px;margin-bottom:24px;background:#e8e2d8;cursor:zoom-in;">
+        <img id="modalImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s;">
+      </div>
       <div class="modal-product-name" id="modalName"></div>
       <div class="modal-product-id" id="modalId"></div>
       <div class="modal-product-desc" id="modalDesc"></div>
       <div class="modal-price" id="modalPrice"></div>
       <div class="modal-divider"></div>
-      <div class="modal-label" data-en="Pay with PayPal" data-zh="PayPal付款">Pay with PayPal</div>
-      <div id="paypal-button-container">
-        <div class="paypal-placeholder" id="paypalPlaceholder">
-          PayPal checkout will appear here.<br>
-          <span style="color:var(--amber);">Client ID not yet configured.</span>
+
+      <!-- Contact to Buy -->
+      <div class="modal-label" data-en="Contact to Purchase" data-zh="联系购买">Contact to Purchase</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <a class="modal-contact-btn" id="modalEmailBtn" href="#" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:12px;border:1px solid rgba(26,22,18,0.15);text-decoration:none;color:var(--ink);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;transition:all 0.2s;">
+          <span style="font-size:18px;">✉️</span> Email Inquiry
+        </a>
+        <button class="modal-contact-btn" id="modalCopyBtn" onclick="copyProductInfo()" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:12px;border:1px solid rgba(26,22,18,0.15);background:#fff;cursor:pointer;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--ink);transition:all 0.2s;">
+          <span style="font-size:18px;">📋</span> <span data-en="Copy Product Info" data-zh="复制产品信息">Copy Product Info</span>
+        </button>
+      </div>
+      <p style="margin-top:16px;font-size:12px;color:var(--text-light);text-align:center;line-height:1.7;" data-en="Tell me which piece you'd like. Each one is handmade and unique." data-zh="告诉我你想要哪一件，每件都是手工制作，独一无二。">Tell me which piece you'd like. Each one is handmade and unique.</p>
+
+      <!-- PayPal (hidden until configured) -->
+      <div id="paypalSection" style="display:none;">
+        <div class="modal-divider"></div>
+        <div class="modal-label" data-en="Pay with PayPal" data-zh="PayPal付款">Pay with PayPal</div>
+        <div id="paypal-button-container">
+          <div class="paypal-placeholder">PayPal checkout will appear here.</div>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- IMAGE LIGHTBOX -->
+  <div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">CLOSE ✕</button>
+    <img id="lightboxImg" src="" alt="" onclick="event.stopPropagation()">
   </div>
 
   <!-- IDENTITY SYSTEM -->
@@ -1318,12 +1326,16 @@
     document.getElementById('langToggle').addEventListener('click', () => {
       isZh = !isZh;
       document.getElementById('langToggle').textContent = isZh ? 'EN' : '中文';
-      document.querySelectorAll('[data-en]').forEach(el => {
-        el.innerHTML = isZh ? el.dataset.zh : el.dataset.en;
-      });
-      document.querySelectorAll('[data-placeholder-en]').forEach(el => {
-        el.placeholder = isZh ? el.dataset.placeholderZh : el.dataset.placeholderEn;
-      });
+      updateLang();
+    });
+
+    // Keyboard: ESC to close modals
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeLegal();
+        closeLightbox();
+      }
     });
 
     // Mobile menu
@@ -1343,6 +1355,9 @@
       });
     }, { threshold: 0.1 });
     reveals.forEach(r => obs.observe(r));
+
+    // Init shop
+    renderShop();
 
     // Legal pages
     const legalContent = {
@@ -1460,93 +1475,108 @@
       document.body.style.overflow = '';
     }
 
-    // Products data
-    const products = {
-      amber: {
-        name: 'Amber Drop',
-        nameZh: '琥珀吊坠',
-        id: 'SOULMADE-001',
-        price: 24,
-        desc: 'A warm golden pendant capturing the light of a late afternoon in Nanchang. Poured by hand, polished to crystal clarity. Comes with its origin story card.',
-        descZh: '一枚温暖的金色吊坠，封存了南昌某个午后的光线。手工注胶，打磨至晶莹剔透。附带起源故事卡片。'
-      },
-      forest: {
-        name: 'Forest Keychain',
-        nameZh: '森林钥匙扣',
-        id: 'SOULMADE-002',
-        price: 18,
-        desc: 'Deep green botanicals suspended in resin — a miniature forest you can carry. Each one unique. No two pieces ever the same.',
-        descZh: '深绿色植物标本悬浮于树脂中，一片可以随身携带的微型森林。每一件都独一无二，永远没有两件相同。'
-      },
-      twilight: {
-        name: 'Twilight Orb',
-        nameZh: '暮色摆件',
-        id: 'SOULMADE-003',
-        price: 32,
-        desc: 'A sphere of deep purple resin holding the last light before nightfall. A piece of the sky, frozen forever. Display it where light touches.',
-        descZh: '深紫色树脂球体，封存了夜幕降临前最后的光芒。一片被永久冻结的天空。放在光线能触碰的地方展示。'
-      }
-    };
+    // ── Products Data (6 products, using repo images) ──
+    const products = [
+      { key:'amber',    name:'Amber Drop',        nameZh:'琥珀吊坠',   id:'SOULMADE-001', price:24, img:'p1.png', desc:'A warm golden pendant capturing the light of a late afternoon in Nanchang. Poured by hand, polished to crystal clarity.', descZh:'一枚温暖的金色吊坠，封存了南昌某个午后的光线。手工注胶，打磨至晶莹剔透。' },
+      { key:'forest',   name:'Forest Keychain',   nameZh:'森林钥匙扣', id:'SOULMADE-002', price:18, img:'p2.png', desc:'Deep green botanicals suspended in resin — a miniature forest you can carry. Each one unique.', descZh:'深绿色植物标本悬浮于树脂中，一片可以随身携带的微型森林。每一件都独一无二。' },
+      { key:'twilight', name:'Twilight Orb',      nameZh:'暮色摆件',   id:'SOULMADE-003', price:32, img:'p3.png', desc:'A sphere of deep purple resin holding the last light before nightfall. Display it where light touches.', descZh:'深紫色树脂球体，封存了夜幕降临前最后的光芒。放在光线能触碰的地方展示。' },
+      { key:'ocean',    name:'Ocean Pendant',     nameZh:'海洋之心吊坠',id:'SOULMADE-004', price:28, img:'p4.png', desc:'Layers of blue and white capturing the rhythm of waves. A piece of the sea, worn close to your heart.', descZh:'蓝白分层交叠，捕捉海浪的韵律。一片海洋，贴近心跳。' },
+      { key:'cherry',   name:'Cherry Blossom',    nameZh:'樱花耳饰',   id:'SOULMADE-005', price:22, img:'p5.png', desc:'Delicate pink petals forever suspended mid-fall. Light as a spring breeze, elegant on any ear.', descZh:'粉色花瓣永久定格在飘落瞬间。如春日微风，轻盈优雅。' },
+      { key:'galaxy',   name:'Galaxy Sphere',     nameZh:'银河摆件',   id:'SOULMADE-006', price:36, img:'p6.png', desc:'A cosmos of swirling stars captured in crystal-clear resin. No two galaxies are the same.', descZh:'旋转星海被封装在水晶般透明的树脂中。每片银河都独一无二。' }
+    ];
 
-    const PAYPAL_CLIENT_ID = 'YOUR_CLIENT_ID';
+    // ── Render Shop Grid ──
+    function renderShop() {
+      const grid = document.getElementById('shopGrid');
+      grid.innerHTML = products.map(p => `
+        <div class="product-card reveal" onclick="openModal('${p.key}')">
+          <div class="img-wrap">
+            <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='radial-gradient(circle at 35% 35%, rgba(255,240,200,0.9) 0%, rgba(200,169,110,0.6) 40%, rgba(100,60,20,0.4) 100%)';">
+            <div class="product-overlay">
+              <span data-en="View Details" data-zh="查看详情">View Details</span>
+              <div class="overlay-price">$${p.price}</div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div>
+              <div class="product-name" data-en="${p.name}" data-zh="${p.nameZh}">${p.name}</div>
+              <div class="product-id">${p.id}</div>
+            </div>
+            <div class="product-price">$${p.price}</div>
+          </div>
+        </div>
+      `).join('');
+      // Re-observe new reveal elements
+      document.querySelectorAll('#shopGrid .reveal').forEach(r => obs.observe(r));
+      // Update lang on new elements
+      updateLang();
+    }
+
+    // ── Product Modal ──
     let currentProduct = null;
-    let paypalLoaded = false;
 
     function openModal(productKey) {
-      currentProduct = products[productKey];
-      const modal = document.getElementById('modal');
-      const overlay = document.getElementById('modalOverlay');
+      currentProduct = products.find(p => p.key === productKey);
+      if (!currentProduct) return;
 
+      document.getElementById('modalImg').src = currentProduct.img;
+      document.getElementById('modalImgWrap').onclick = function(e){ e.stopPropagation(); openLightbox(currentProduct.img); };
       document.getElementById('modalName').textContent = isZh ? currentProduct.nameZh : currentProduct.name;
       document.getElementById('modalId').textContent = currentProduct.id;
       document.getElementById('modalDesc').textContent = isZh ? currentProduct.descZh : currentProduct.desc;
-      document.getElementById('modalPrice').innerHTML = `$${currentProduct.price} <span>USD</span>`;
+      document.getElementById('modalPrice').innerHTML = `$${currentProduct.price} <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--amber);margin-left:8px;">USD</span>`;
 
-      overlay.classList.add('open');
+      const emailSubject = encodeURIComponent(`Inquiry: ${currentProduct.name} (${currentProduct.id})`);
+      const emailBody = encodeURIComponent(`Hi SOULMADE,\n\nI'm interested in "${currentProduct.name}" (${currentProduct.id}) at $${currentProduct.price}.\n\nPlease let me know how to purchase.\n\nThank you.`);
+      document.getElementById('modalEmailBtn').href = `mailto:hello@soulmade.shop?subject=${emailSubject}&body=${emailBody}`;
+
+      document.getElementById('modalOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
-
-      if (PAYPAL_CLIENT_ID !== 'YOUR_CLIENT_ID') {
-        loadPayPal();
-      }
     }
 
     function closeModal() {
       document.getElementById('modalOverlay').classList.remove('open');
       document.body.style.overflow = '';
-      document.getElementById('paypal-button-container').innerHTML = '<div class="paypal-placeholder" id="paypalPlaceholder">PayPal checkout will appear here.<br><span style="color:var(--amber);">Client ID not yet configured.</span></div>';
-      paypalLoaded = false;
+      currentProduct = null;
     }
 
     function closeModalOutside(e) {
       if (e.target === document.getElementById('modalOverlay')) closeModal();
     }
 
-    function loadPayPal() {
-      if (paypalLoaded) return;
-      paypalLoaded = true;
-      const container = document.getElementById('paypal-button-container');
-      container.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:2px;opacity:0.4;padding:16px 0;">Loading PayPal...</div>';
+    function copyProductInfo() {
+      if (!currentProduct) return;
+      const text = `${currentProduct.name} (${currentProduct.id})\nPrice: $${currentProduct.price}\n\nContact: hello@soulmade.shop`;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('modalCopyBtn');
+        btn.innerHTML = '<span style="font-size:18px;">✓</span> <span>Copied!</span>';
+        setTimeout(() => {
+          btn.innerHTML = '<span style="font-size:18px;">📋</span> <span data-en="Copy Product Info" data-zh="复制产品信息">Copy Product Info</span>';
+          updateLang();
+        }, 2000);
+      });
+    }
 
-      const script = document.createElement('script');
-      script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`;
-      script.onload = () => {
-        container.innerHTML = '';
-        paypal.Buttons({
-          createOrder: (data, actions) => actions.order.create({
-            purchase_units: [{
-              description: `${currentProduct.name} (${currentProduct.id})`,
-              amount: { value: currentProduct.price.toString() }
-            }]
-          }),
-          onApprove: (data, actions) => actions.order.capture().then(() => {
-            container.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:12px;letter-spacing:2px;color:var(--amber);padding:20px 0;text-align:center;">✓ Payment successful. Thank you for owning a moment.</div>';
-          }),
-          onError: () => {
-            container.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:2px;color:#c0392b;padding:16px 0;">Payment error. Please try again.</div>';
-          }
-        }).render('#paypal-button-container');
-      };
-      document.head.appendChild(script);
+    // ── Image Lightbox ──
+    function openLightbox(src) {
+      document.getElementById('lightboxImg').src = src;
+      document.getElementById('lightboxOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('lightboxOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // ── Language Helper ──
+    function updateLang() {
+      document.querySelectorAll('[data-en]').forEach(el => {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+          el.placeholder = isZh ? el.dataset.placeholderZh : el.dataset.placeholderEn;
+        } else {
+          el.innerHTML = isZh ? el.dataset.zh : el.dataset.en;
+        }
+      });
     }
     async function handleNotify() {
       const name = document.getElementById('notifyName').value.trim();
