@@ -423,6 +423,7 @@
     <div class="topbar-right">
       <button class="topbar-logout" onclick="toggleAdminLang()" style="margin-right:12px;background:transparent;border:1px solid var(--gold);color:var(--gold);" id="adminLangToggle">中文</button>
       <button class="topbar-logout" onclick="testEmail()" style="margin-right:12px;">📧 <span data-en="Test" data-zh="测试">Test</span></button>
+      <button class="topbar-logout" onclick="backupData()" style="margin-right:12px;">💾 <span data-en="Backup" data-zh="备份">Backup</span></button>
       <button class="topbar-logout" onclick="logout()"><span data-en="Log out" data-zh="退出">Log out</span></button>
     </div>
   </div>
@@ -1262,6 +1263,25 @@
       if (data.success) showToast('Test email sent! Check your inbox.');
       else if (data.error === 'email_not_configured') showToast('Email not configured. Add RESEND_API_KEY and ADMIN_EMAIL env vars.');
       else showToast('Send failed: ' + (data.detail || JSON.stringify(data.resendResponse)));
+    } catch (e) { showToast('Connection error'); }
+  }
+
+  async function backupData() {
+    try {
+      const res = await fetch(`${API}/admin/backup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword })
+      });
+      if (!res.ok) { showToast('Backup failed'); return; }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'soulmade-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Backup downloaded');
     } catch (e) { showToast('Connection error'); }
   }
 
