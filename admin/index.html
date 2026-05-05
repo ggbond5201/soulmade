@@ -723,7 +723,7 @@
         </div>
         <div class="key-actions">
           ${k.activated ? `<button class="action-btn btn-view" onclick="viewMemory('${k.id}')"><span data-en="View" data-zh="查看">View</span></button>` : ''}
-          ${k.activated ? `<button class="action-btn btn-unlock" onclick="unlockKey('${k.id}', '${k.code}')"><span data-en="Unlock" data-zh="解锁">Unlock</span></button>` : ''}
+          ${k.activated ? `<button class="action-btn btn-unlock" onclick="unlockKey('${k.id}', '${k.code}')"><span data-en="Unlock" data-zh="解锁">Unlock</span></button>` : `<button class="action-btn btn-unlock" onclick="deleteCode('${k.code}')"><span data-en="Del" data-zh="删除">Del</span></button>`}
         </div>
       </div>
     `).join('');
@@ -812,6 +812,20 @@
     } catch (e) {
       showToast('Connection error');
     }
+  }
+
+  async function deleteCode(code) {
+    if (!confirm('Delete this activation code? This cannot be undone.')) return;
+    try {
+      const res = await fetch(`${API}/admin/delete-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, code })
+      });
+      const data = await res.json();
+      if (data.success) { showToast('Code deleted'); loadKeys(); }
+      else { showToast('Failed to delete'); }
+    } catch (e) { showToast('Connection error'); }
   }
 
   function closeModal(e) {
