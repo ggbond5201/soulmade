@@ -517,6 +517,16 @@
       <button class="create-btn" onclick="saveShipping()" style="margin-top:12px;"><span data-en="Save Rates" data-zh="保存运费">Save Rates</span></button>
     </div>
 
+    <!-- Export Orders -->
+    <div class="section-title" style="margin-top:40px;"><span data-en="Export Orders" data-zh="导出账单">Export Orders</span></div>
+    <div class="create-panel">
+      <div class="create-row" style="flex-wrap:wrap;align-items:end;">
+        <div class="create-group" style="min-width:140px;"><span class="create-label" data-en="From" data-zh="开始日期">From</span><input type="date" class="create-input" id="exportFrom"></div>
+        <div class="create-group" style="min-width:140px;"><span class="create-label" data-en="To" data-zh="结束日期">To</span><input type="date" class="create-input" id="exportTo"></div>
+        <button class="create-btn" onclick="exportOrders()"><span data-en="⬇ Export CSV" data-zh="⬇ 导出 CSV">⬇ Export CSV</span></button>
+      </div>
+    </div>
+
     <!-- Orders list -->
     <div class="section-title" style="margin-top:40px;"><span data-en="Orders" data-zh="订单管理">Orders</span></div>
     <div class="keys-panel">
@@ -572,8 +582,37 @@
     <div class="modal-row"><span class="modal-label" data-en="Email" data-zh="邮箱">Email</span><input class="create-input" id="editOrderEmail" style="width:100%;"></div>
     <div class="modal-row"><span class="modal-label" data-en="Phone" data-zh="电话">Phone</span><input class="create-input" id="editOrderPhone" style="width:100%;"></div>
     <div class="modal-row"><span class="modal-label" data-en="Address" data-zh="地址">Address</span><textarea class="create-input" id="editOrderAddress" style="width:100%;height:60px;resize:none;"></textarea></div>
+    <div class="modal-row"><span class="modal-label" data-en="Tracking Number" data-zh="快递单号">Tracking Number</span><input class="create-input" id="editOrderTracking" style="width:100%;"></div>
+    <div class="modal-row"><span class="modal-label" data-en="Carrier" data-zh="快递公司">Carrier</span><select class="create-input" id="editOrderCarrier" style="width:100%;"><option value="">—</option><option value="顺丰速运">顺丰速运</option><option value="中通快递">中通快递</option><option value="圆通速递">圆通速递</option><option value="申通快递">申通快递</option><option value="韵达快递">韵达快递</option><option value="中国邮政">中国邮政</option><option value="EMS">EMS</option><option value="其他">其他</option></select></div>
     <button class="create-btn" onclick="saveEditOrder()" style="width:100%;margin-top:8px;"><span data-en="Save" data-zh="保存">Save</span></button>
     <button class="modal-close" onclick="document.getElementById('editOrderOverlay').classList.remove('open')" style="margin-top:8px;"><span data-en="Close" data-zh="关闭">Close</span></button>
+  </div>
+</div>
+
+<!-- Ship Order modal -->
+<div class="modal-overlay" id="shipModal" onclick="closeShipModal(event)">
+  <div class="modal">
+    <div class="modal-title"><span data-en="Ship Order" data-zh="发货">Ship Order</span></div>
+    <div class="modal-row">
+      <span class="modal-label" data-en="Carrier" data-zh="快递公司">Carrier</span>
+      <select class="create-input" id="shipCarrier" style="width:100%;">
+        <option value="">— <span data-en="Select" data-zh="请选择">Select</span> —</option>
+        <option value="顺丰速运">顺丰速运</option>
+        <option value="中通快递">中通快递</option>
+        <option value="圆通速递">圆通速递</option>
+        <option value="申通快递">申通快递</option>
+        <option value="韵达快递">韵达快递</option>
+        <option value="中国邮政">中国邮政</option>
+        <option value="EMS">EMS</option>
+        <option value="其他">其他</option>
+      </select>
+    </div>
+    <div class="modal-row">
+      <span class="modal-label" data-en="Tracking Number" data-zh="快递单号">Tracking Number</span>
+      <input class="create-input" id="shipTrackingNumber" style="width:100%;" placeholder="Tracking number">
+    </div>
+    <button class="create-btn" onclick="confirmShip()" style="width:100%;margin-top:8px;"><span data-en="Confirm Ship" data-zh="确认发货">Confirm Ship</span></button>
+    <button class="modal-close" onclick="document.getElementById('shipModal').classList.remove('open')" style="margin-top:8px;"><span data-en="Cancel" data-zh="取消">Cancel</span></button>
   </div>
 </div>
 
@@ -631,6 +670,7 @@
       loadProducts();
       loadOrders();
       loadShipping();
+      initExportDates();
     } catch (e) {
       document.getElementById('loginError').style.display = 'block';
       document.getElementById('loginError').textContent = 'Connection error. Try again.';
@@ -849,7 +889,7 @@
             📞 ${o.customerPhone || '—'} · 📍 ${o.customerAddress || '—'}<br>
             🚚 ${o.shippingRegion || '—'} · $${o.shippingCost || 0} <span data-en="shipping" data-zh="运费">shipping</span><br>
             Code: ${o.activationCode} · ${o.customerEmail} · ${new Date(o.createdAt).toLocaleDateString()}
-            ${o.isBundle ? ' · <span data-en="Bundle" data-zh="套装">Bundle</span>' : ''} ${o.shipped ? ' · ✓ <span data-en="Shipped" data-zh="已发货">Shipped</span>' : ' · <span data-en="Pending" data-zh="待处理">Pending</span>'}
+            ${o.isBundle ? ' · <span data-en="Bundle" data-zh="套装">Bundle</span>' : ''}${o.shipped ? ' · ✓ <span data-en="Shipped" data-zh="已发货">Shipped</span>' + (o.trackingCarrier || o.trackingNumber ? ' · ' + (o.trackingCarrier || '') + ' ' + (o.trackingNumber || '') + ' <button data-tracking="' + (o.trackingNumber || '') + '" onclick="copyTrackingClick(this)" style="background:none;border:1px solid var(--gold-light);border-radius:4px;cursor:pointer;font-size:10px;padding:1px 5px;color:var(--gold);" title="Copy">📋</button>' : '') : ' · <span data-en="Pending" data-zh="待处理">Pending</span>'}
           </div>
         </div>
         <div class="key-actions">
@@ -862,16 +902,41 @@
     updateAdminLang();
   }
 
-  async function markShipped(orderId) {
+  let pendingShipOrderId = null;
+  function markShipped(orderId) {
+    pendingShipOrderId = orderId;
+    document.getElementById('shipTrackingNumber').value = '';
+    document.getElementById('shipCarrier').value = '';
+    document.getElementById('shipModal').classList.add('open');
+  }
+  function closeShipModal(e) {
+    if (e && e.target !== document.getElementById('shipModal')) return;
+    document.getElementById('shipModal').classList.remove('open');
+    pendingShipOrderId = null;
+  }
+  async function confirmShip() {
+    const trackingNumber = document.getElementById('shipTrackingNumber').value.trim();
+    const trackingCarrier = document.getElementById('shipCarrier').value;
     try {
       const res = await fetch(`${API}/admin/ship`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: adminPassword, orderId })
+        body: JSON.stringify({ password: adminPassword, orderId: pendingShipOrderId, trackingNumber, trackingCarrier })
       });
       const data = await res.json();
-      if (data.success) { showToast('Order marked as shipped'); loadOrders(); }
+      if (data.success) {
+        showToast('Order shipped');
+        document.getElementById('shipModal').classList.remove('open');
+        pendingShipOrderId = null;
+        loadOrders();
+      }
     } catch (e) { showToast('Failed to update'); }
+  }
+
+  function copyTrackingClick(el) {
+    const num = el.dataset.tracking;
+    if (!num) return;
+    navigator.clipboard.writeText(num).then(() => showToast('Tracking copied')).catch(() => showToast('Copy failed'));
   }
 
   // ── Edit Order ──
@@ -884,6 +949,8 @@
     document.getElementById('editOrderEmail').value = o.customerEmail || '';
     document.getElementById('editOrderPhone').value = o.customerPhone || '';
     document.getElementById('editOrderAddress').value = o.customerAddress || '';
+    document.getElementById('editOrderTracking').value = o.trackingNumber || '';
+    document.getElementById('editOrderCarrier').value = o.trackingCarrier || '';
     document.getElementById('editOrderOverlay').classList.add('open');
   }
   function closeEditOrder(e) {
@@ -900,7 +967,9 @@
           customerName: document.getElementById('editOrderName').value.trim(),
           customerEmail: document.getElementById('editOrderEmail').value.trim(),
           customerPhone: document.getElementById('editOrderPhone').value.trim(),
-          customerAddress: document.getElementById('editOrderAddress').value.trim()
+          customerAddress: document.getElementById('editOrderAddress').value.trim(),
+          trackingNumber: document.getElementById('editOrderTracking').value.trim(),
+          trackingCarrier: document.getElementById('editOrderCarrier').value
         })
       });
       const data = await res.json();
@@ -920,6 +989,35 @@
       const data = await res.json();
       if (data.success) { showToast('Order deleted'); loadOrders(); }
     } catch (e) { showToast('Failed to delete'); }
+  }
+
+  // ── Export Orders ──
+  function initExportDates() {
+    const now = new Date();
+    const first = new Date(now.getFullYear(), now.getMonth(), 1);
+    document.getElementById('exportFrom').value = first.toISOString().slice(0, 10);
+    document.getElementById('exportTo').value = now.toISOString().slice(0, 10);
+  }
+  async function exportOrders() {
+    const from = document.getElementById('exportFrom').value;
+    const to = document.getElementById('exportTo').value;
+    if (!from || !to) { showToast('Select date range'); return; }
+    try {
+      const res = await fetch(`${API}/admin/export-orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, from, to })
+      });
+      if (!res.ok) { showToast('Export failed'); return; }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `orders-${from}-to-${to}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('CSV downloaded');
+    } catch (e) { showToast('Export failed'); }
   }
 
   // ── Products ──
