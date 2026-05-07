@@ -1771,10 +1771,10 @@
 
       if (q && filtered.length === 0) {
         status.className = 'search-status empty';
-        status.textContent = lang === 'zh' ? '没有找到匹配的产品' : 'No pieces match your search';
+        status.textContent = isZh ? '没有找到匹配的产品' : 'No pieces match your search';
       } else if (q && filtered.length > 0) {
         status.className = 'search-status';
-        status.textContent = lang === 'zh'
+        status.textContent = isZh
           ? '找到 ' + filtered.length + ' 件产品'
           : filtered.length + ' piece' + (filtered.length > 1 ? 's' : '') + ' found';
       } else {
