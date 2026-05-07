@@ -1951,7 +1951,7 @@
           await completeOrder(order.id);
         },
         onCancel: () => {
-          container.innerHTML = '';
+          setTimeout(renderPayPal, 200);
         },
         onError: (err) => {
           console.error('PayPal error:', err);
