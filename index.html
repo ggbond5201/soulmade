@@ -1000,6 +1000,16 @@
     }
     .shop-search:focus { border-color: var(--amber); }
     .shop-search::placeholder { color: rgba(26,22,18,0.3); }
+    .search-status {
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-light);
+      margin: -16px 0 24px;
+      min-height: 16px;
+      transition: color 0.2s;
+    }
+    .search-status.empty { color: var(--error); }
 
     /* BUNDLE BAR */
     .bundle-bar {
@@ -1330,7 +1340,8 @@
       <span class="shop-coming reveal" data-en="Handcrafted · Limited Pieces" data-zh="手工限量 · 每件独一无二">Handcrafted · Limited Pieces</span>
     </div>
     <div class="shop-search-wrap reveal">
-      <input type="text" class="shop-search" id="shopSearch" placeholder="Search pieces..." data-placeholder-en="Search pieces..." data-placeholder-zh="搜索产品..." oninput="renderShop()">
+      <input type="text" class="shop-search" id="shopSearch" placeholder="Search pieces..." data-placeholder-en="Search pieces..." data-placeholder-zh="搜索产品..." oninput="debounceShop()">
+      <div class="search-status" id="searchStatus"></div>
     </div>
     <!-- Bundle bar -->
     <div class="bundle-bar" id="bundleBar" style="display:none;">
@@ -1741,14 +1752,35 @@
       openBundleModal(selectedProducts);
     }
 
+    let _shopTimer = 0;
+    function debounceShop() {
+      clearTimeout(_shopTimer);
+      _shopTimer = setTimeout(renderShop, 150);
+    }
+
     function renderShop() {
       const grid = document.getElementById('shopGrid');
-      const q = (document.getElementById('shopSearch').value || '').toLowerCase();
+      const status = document.getElementById('searchStatus');
+      const q = (document.getElementById('shopSearch').value || '').trim().toLowerCase();
       const filtered = q ? products.filter(p =>
-        p.name.toLowerCase().includes(q) || p.nameZh.includes(q) ||
-        p.desc.toLowerCase().includes(q) || p.descZh.includes(q) ||
+        p.name.toLowerCase().includes(q) || p.nameZh.toLowerCase().includes(q) ||
+        p.desc.toLowerCase().includes(q) || p.descZh.toLowerCase().includes(q) ||
+        p.id.toLowerCase().includes(q) ||
         (p.bundleItems || '').toLowerCase().includes(q)
       ) : products;
+
+      if (q && filtered.length === 0) {
+        status.className = 'search-status empty';
+        status.textContent = lang === 'zh' ? '没有找到匹配的产品' : 'No pieces match your search';
+      } else if (q && filtered.length > 0) {
+        status.className = 'search-status';
+        status.textContent = lang === 'zh'
+          ? '找到 ' + filtered.length + ' 件产品'
+          : filtered.length + ' piece' + (filtered.length > 1 ? 's' : '') + ' found';
+      } else {
+        status.className = 'search-status';
+        status.textContent = '';
+      }
 
       grid.innerHTML = filtered.map(p => `
         <div class="product-card reveal ${p.customPrice ? 'card-custom' : ''}" style="position:relative;">
