@@ -450,30 +450,55 @@
     <!-- Products Management -->
     <div class="section-title"><span data-en="Products" data-zh="产品管理">Products</span></div>
     <div class="create-panel">
+      <!-- Row 1: Basic info -->
       <div class="create-row" style="flex-wrap:wrap;">
         <div class="create-group" style="min-width:110px;"><span class="create-label" data-en="Key (slug)*" data-zh="标识(slug)*">Key (slug)*</span><input type="text" class="create-input" id="prodKey" placeholder="moonlight"></div>
-        <div class="create-group" style="min-width:140px;"><span class="create-label" data-en="Name (EN)*" data-zh="名称(英文)*">Name (EN)*</span><input type="text" class="create-input" id="prodName" placeholder="Moonlight Pendant" oninput="autoFillKey()"></div>
-        <div class="create-group" style="min-width:140px;"><span class="create-label">Name (中文)*</span><input type="text" class="create-input" id="prodNameZh" placeholder="月光吊坠"></div>
-        <div class="create-group" style="min-width:130px;"><span class="create-label" data-en="Product ID*" data-zh="产品编号*">Product ID*</span><input type="text" class="create-input" id="prodId" placeholder="SOULMADE-007"></div>
+        <div class="create-group" style="min-width:130px;"><span class="create-label" data-en="Name (EN)*" data-zh="名称(英文)*">Name (EN)*</span><input type="text" class="create-input" id="prodName" placeholder="Moonlight Pendant" oninput="autoFillKey()"></div>
+        <div class="create-group" style="min-width:130px;"><span class="create-label">Name (中文)*</span><input type="text" class="create-input" id="prodNameZh" placeholder="月光吊坠"></div>
+        <div class="create-group" style="min-width:120px;"><span class="create-label" data-en="Category" data-zh="分类">Category</span><select class="create-input" id="prodCategory"><option value="">None</option><option value="jewelry">Jewelry</option><option value="bags">Bags</option><option value="home">Home</option><option value="fashion">Fashion</option><option value="tech">Tech</option><option value="other">Other</option></select></div>
       </div>
+      <!-- Row 2: ID + Pricing -->
       <div class="create-row" style="margin-top:12px;flex-wrap:wrap;">
-        <div class="create-group" style="min-width:80px;"><span class="create-label">Price ($)</span><input type="number" class="create-input" id="prodPrice" placeholder="24" min="0" step="1"></div>
-        <div class="create-group" style="min-width:110px;"><span class="create-label" data-en="Image File" data-zh="图片文件">Image File</span><input type="text" class="create-input" id="prodImg" placeholder="p1.png"></div>
+        <div class="create-group" style="min-width:130px;"><span class="create-label" data-en="Product ID*" data-zh="产品编号*">Product ID*</span><input type="text" class="create-input" id="prodId" placeholder="SOULMADE-007"></div>
+        <div class="create-group" style="min-width:80px;"><span class="create-label" data-en="Cost ($)" data-zh="成本($)">Cost ($)</span><input type="number" class="create-input" id="prodCost" placeholder="10" min="0" step="0.01" onchange="autoPrice()"></div>
+        <div class="create-group" style="min-width:80px;"><span class="create-label" data-en="Sell Price ($)" data-zh="售价($)">Sell Price ($)</span><input type="number" class="create-input" id="prodPrice" placeholder="30" min="0" step="1"></div>
+        <div class="create-group" style="min-width:140px;"><span class="create-label" data-en="Source URL" data-zh="来源链接">Source URL</span><input type="text" class="create-input" id="prodSource" placeholder="1688.com/item..."></div>
+      </div>
+      <!-- Row 3: Image upload -->
+      <div class="create-row" style="margin-top:12px;flex-wrap:wrap;align-items:flex-end;">
+        <div class="create-group" style="min-width:200px;">
+          <span class="create-label" data-en="Image (upload or type filename)" data-zh="图片（上传或输入文件名）">Image</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="file" id="prodImgFile" accept="image/*" onchange="handleImageUpload()" style="display:none;">
+            <button type="button" class="create-btn" onclick="document.getElementById('prodImgFile').click()" style="font-size:11px;padding:6px 12px;white-space:nowrap;background:var(--text-mid);" data-en="Upload Image" data-zh="上传图片">Upload Image</button>
+            <input type="text" class="create-input" id="prodImg" placeholder="or type filename..." style="flex:1;">
+            <div id="imgPreview" style="width:40px;height:40px;border-radius:8px;overflow:hidden;background:var(--cream);flex-shrink:0;display:none;"><img id="imgPreviewImg" src="" style="width:100%;height:100%;object-fit:cover;"></div>
+          </div>
+        </div>
         <div class="create-group" style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding-top:4px;">
-          <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodCustomPrice" onchange="document.getElementById('prodPrice').disabled=this.checked;if(this.checked)document.getElementById('prodPrice').value='0';"><span data-en="Custom Price" data-zh="自主定价">Custom Price</span></label>
+          <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodCustomPrice" onchange="document.getElementById('prodPrice').disabled=this.checked;if(this.checked){document.getElementById('prodPrice').value='0';document.getElementById('prodCost').disabled=true}else{document.getElementById('prodCost').disabled=false}"><span data-en="Custom Price" data-zh="自主定价">Custom Price</span></label>
           <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodBundle" onchange="toggleBundleFields()"><span data-en="Bundle" data-zh="套装">Bundle</span></label>
           <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodActive" checked><span data-en="Active" data-zh="上架">Active</span></label>
+          <span style="font-size:10px;color:var(--text-light);" id="priceHint">Cost × 3 = $0</span>
         </div>
       </div>
       <div class="create-row" id="bundleItemsRow" style="margin-top:12px;display:none;">
         <div class="create-group" style="flex:1;"><span class="create-label" data-en="Bundle Items (text)" data-zh="套装内容(文本)">Bundle Items (text)</span><input type="text" class="create-input" id="prodBundleItems" placeholder="Amber Drop + Forest Keychain"></div>
       </div>
+      <!-- Row 4: Descriptions -->
       <div class="create-row" style="margin-top:12px;">
-        <div class="create-group" style="flex:1;"><span class="create-label" data-en="Description (EN)" data-zh="描述(英文)">Description (EN)</span><textarea class="create-input" id="prodDesc" placeholder="Product description..." style="height:56px;resize:none;"></textarea></div>
-        <div class="create-group" style="flex:1;"><span class="create-label" data-en="Description (中文)" data-zh="描述(中文)">Description (中文)</span><textarea class="create-input" id="prodDescZh" placeholder="产品描述..." style="height:56px;resize:none;"></textarea></div>
+        <div class="create-group" style="flex:1;">
+          <span class="create-label" data-en="Description (EN)" data-zh="描述(英文)">Description (EN)</span>
+          <textarea class="create-input" id="prodDesc" placeholder="Product description..." style="height:56px;resize:none;"></textarea>
+          <button type="button" class="create-btn" onclick="generateDesc()" style="font-size:10px;padding:4px 10px;margin-top:4px;background:var(--text-light);" data-en="AI Generate EN Desc" data-zh="AI生成英文描述">AI Generate EN Desc</button>
+        </div>
+        <div class="create-group" style="flex:1;">
+          <span class="create-label" data-en="Description (中文)" data-zh="描述(中文)">Description (中文)</span>
+          <textarea class="create-input" id="prodDescZh" placeholder="产品描述..." style="height:56px;resize:none;"></textarea>
+          <button type="button" class="create-btn" onclick="generateDescZh()" style="font-size:10px;padding:4px 10px;margin-top:4px;background:var(--text-light);" data-en="AI Generate CN Desc" data-zh="AI生成中文描述">AI Generate CN Desc</button>
+        </div>
       </div>
       <button class="create-btn" onclick="createProduct()" style="margin-top:12px;" id="createProductBtn"><span data-en="Create Product" data-zh="创建产品">Create Product</span></button>
-      <button class="create-btn" onclick="seedProducts()" style="margin-top:12px;background:var(--text-mid);margin-left:8px;display:none;" id="seedProductsBtn"><span data-en="Initialize Default Products" data-zh="初始化默认产品">Initialize Default Products</span></button>
     </div>
 
     <!-- Product list -->
@@ -621,10 +646,18 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  const isLocal = location.protocol === 'file:' || location.hostname === 'localhost';
   const API = "https://soulmade-memory.2323371806.workers.dev";
   let adminPassword = "";
   let allKeys = [];
   let adminIsZh = false;
+
+  // ── Local mode: use localStorage instead of Worker API ──
+  const LOCAL_KEY = 'soulmade_local_products';
+  function localProducts() {
+    try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]'); } catch(e) { return []; }
+  }
+  function saveLocalProducts(arr) { localStorage.setItem(LOCAL_KEY, JSON.stringify(arr)); }
 
   function toggleAdminLang() {
     adminIsZh = !adminIsZh;
@@ -651,7 +684,24 @@
 
   async function login() {
     const pw = document.getElementById('passwordInput').value;
-    // Test password by making a real API call
+    if (!pw) return;
+
+    if (isLocal) {
+      // Local mode: any password works
+      adminPassword = pw;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      // Add local mode badge
+      var badge = document.createElement('div');
+      badge.id = 'localBadge';
+      badge.style.cssText = 'background:#7A9E7E;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;display:inline-block;margin-left:8px;';
+      badge.textContent = 'LOCAL MODE';
+      document.querySelector('.section-title')?.appendChild(badge);
+      loadProducts();
+      renderProducts();
+      return;
+    }
+
     try {
       const res = await fetch(`${API}/admin/list`, {
         method: 'POST',
@@ -683,6 +733,7 @@
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('dashboard').style.display = 'none';
     document.getElementById('passwordInput').value = '';
+    var b = document.getElementById('localBadge'); if (b) b.remove();
   }
 
   async function loadKeys() {
@@ -1040,6 +1091,11 @@
   let editingProductKey = null;
 
   async function loadProducts() {
+    if (isLocal) {
+      allProducts = localProducts();
+      renderProducts();
+      return;
+    }
     try {
       const res = await fetch(`${API}/admin/products`, {
         method: 'POST',
@@ -1049,11 +1105,6 @@
       const data = await res.json();
       allProducts = data.products || [];
       renderProducts();
-      if (allProducts.length === 0) {
-        document.getElementById('seedProductsBtn').style.display = 'inline-block';
-      } else {
-        document.getElementById('seedProductsBtn').style.display = 'none';
-      }
     } catch (e) {
       showToast('Failed to load products');
     }
@@ -1093,6 +1144,12 @@
     updateAdminLang();
   }
 
+  function autoPrice() {
+    const cost = parseFloat(document.getElementById('prodCost').value) || 0;
+    document.getElementById('prodPrice').value = cost > 0 ? Math.round(cost * 3) : '';
+    document.getElementById('priceHint').textContent = cost > 0 ? 'Cost × 3 = $' + Math.round(cost * 3) : 'Cost × 3 = $0';
+  }
+
   function autoFillKey() {
     const name = document.getElementById('prodName').value;
     if (!document.getElementById('prodKey').value) {
@@ -1100,9 +1157,78 @@
     }
   }
 
+  async function handleImageUpload() {
+    const file = document.getElementById('prodImgFile').files[0];
+    if (!file) return;
+    // Compress and convert to base64 for preview
+    try {
+      // Use browser-image-compression if available, otherwise just preview
+      var compressed = file;
+      if (typeof imageCompression !== 'undefined') {
+        compressed = await imageCompression(file, { maxSizeMB: 0.3, maxWidthOrHeight: 800, useWebWorker: true });
+      }
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('imgPreview').style.display = 'block';
+        document.getElementById('imgPreviewImg').src = e.target.result;
+      };
+      reader.readAsDataURL(compressed);
+      // Auto-generate filename based on product key
+      var key = document.getElementById('prodKey').value || file.name.split('.')[0];
+      var ext = file.name.split('.').pop();
+      document.getElementById('prodImg').value = key + '.' + ext;
+    } catch(e) {
+      document.getElementById('prodImg').value = file.name;
+    }
+  }
+
+  // Load image compression library
+  (function(){
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js';
+    document.head.appendChild(s);
+  })();
+
   function toggleBundleFields() {
-    const checked = document.getElementById('prodBundle').checked;
-    document.getElementById('bundleItemsRow').style.display = checked ? 'flex' : 'none';
+    document.getElementById('bundleItemsRow').style.display = document.getElementById('prodBundle').checked ? 'flex' : 'none';
+  }
+
+  async function generateDesc() {
+    showToast('Generating English description...');
+    try {
+      var name = document.getElementById('prodName').value;
+      var nameZh = document.getElementById('prodNameZh').value;
+      var resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer sk-847682ec2e7840c182feacebf8f6c795' },
+        body: JSON.stringify({ model: 'deepseek-chat', messages: [
+          { role: 'system', content: 'Write a 2-sentence product description in English. Elegant, minimalist tone. No bullet points.' },
+          { role: 'user', content: 'Product: ' + name + ' (' + nameZh + ')' }
+        ], max_tokens: 120, temperature: 0.7 })
+      });
+      var data = await resp.json();
+      document.getElementById('prodDesc').value = data.choices[0].message.content.trim();
+      showToast('Description generated!');
+    } catch(e) { showToast('AI generation failed'); }
+  }
+
+  async function generateDescZh() {
+    showToast('Generating Chinese description...');
+    try {
+      var name = document.getElementById('prodName').value;
+      var nameZh = document.getElementById('prodNameZh').value;
+      var resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer sk-847682ec2e7840c182feacebf8f6c795' },
+        body: JSON.stringify({ model: 'deepseek-chat', messages: [
+          { role: 'system', content: '写一句中文产品描述，优雅、极简风格。不超过30字。' },
+          { role: 'user', content: '产品：' + name + ' / ' + nameZh }
+        ], max_tokens: 80, temperature: 0.7 })
+      });
+      var data = await resp.json();
+      document.getElementById('prodDescZh').value = data.choices[0].message.content.trim();
+      showToast('中文描述已生成！');
+    } catch(e) { showToast('AI生成失败'); }
   }
 
   async function createProduct() {
@@ -1111,21 +1237,38 @@
     const nameZh = document.getElementById('prodNameZh').value.trim();
     const id = document.getElementById('prodId').value.trim();
     if (!key || !name || !nameZh || !id) { showToast('Key, name, nameZh, and ID are required'); return; }
+    const productData = {
+      key, name, nameZh, id,
+      price: parseInt(document.getElementById('prodPrice').value) || 0,
+      cost: parseFloat(document.getElementById('prodCost').value) || 0,
+      img: document.getElementById('prodImg').value.trim(),
+      category: document.getElementById('prodCategory').value,
+      source: document.getElementById('prodSource').value.trim(),
+      desc: document.getElementById('prodDesc').value.trim(),
+      descZh: document.getElementById('prodDescZh').value.trim(),
+      customPrice: document.getElementById('prodCustomPrice').checked,
+      bundle: document.getElementById('prodBundle').checked,
+      bundleItems: document.getElementById('prodBundleItems').value.trim(),
+      active: document.getElementById('prodActive').checked
+    };
+
+    if (isLocal) {
+      var products = localProducts();
+      if (products.find(function(p){return p.key === key})) { showToast('Product key already exists'); return; }
+      if (products.find(function(p){return p.id === id})) { showToast('Product ID already exists'); return; }
+      products.push(productData);
+      saveLocalProducts(products);
+      showToast('Product created! (local)');
+      clearProductForm();
+      loadProducts();
+      return;
+    }
+
     try {
       const res = await fetch(`${API}/admin/create-product`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          password: adminPassword, key, name, nameZh,
-          id, price: parseInt(document.getElementById('prodPrice').value) || 0,
-          img: document.getElementById('prodImg').value.trim(),
-          desc: document.getElementById('prodDesc').value.trim(),
-          descZh: document.getElementById('prodDescZh').value.trim(),
-          customPrice: document.getElementById('prodCustomPrice').checked,
-          bundle: document.getElementById('prodBundle').checked,
-          bundleItems: document.getElementById('prodBundleItems').value.trim(),
-          active: document.getElementById('prodActive').checked
-        })
+        body: JSON.stringify(Object.assign({ password: adminPassword }, productData))
       });
       const data = await res.json();
       if (data.success) {
@@ -1147,9 +1290,14 @@
     document.getElementById('prodName').value = '';
     document.getElementById('prodNameZh').value = '';
     document.getElementById('prodId').value = '';
+    document.getElementById('prodCost').value = '';
     document.getElementById('prodPrice').value = '';
     document.getElementById('prodPrice').disabled = false;
+    document.getElementById('prodCost').disabled = false;
     document.getElementById('prodImg').value = '';
+    document.getElementById('prodSource').value = '';
+    document.getElementById('prodCategory').value = '';
+    document.getElementById('imgPreview').style.display = 'none';
     document.getElementById('prodDesc').value = '';
     document.getElementById('prodDescZh').value = '';
     document.getElementById('prodCustomPrice').checked = false;
@@ -1224,8 +1372,26 @@
     } catch (e) { showToast('Connection error'); }
   }
 
+  async function toggleProductActive(key, active) {
+    if (isLocal) {
+      var products = localProducts();
+      var p = products.find(function(pr){return pr.key === key});
+      if (p) { p.active = active; saveLocalProducts(products); loadProducts(); }
+      return;
+    }
+    // ... existing Worker API call
+  }
+
   async function deleteProduct(key) {
     if (!confirm('Delete this product? This cannot be undone.')) return;
+    if (isLocal) {
+      var products = localProducts();
+      products = products.filter(function(p){return p.key !== key});
+      saveLocalProducts(products);
+      showToast('Product deleted (local)');
+      loadProducts();
+      return;
+    }
     try {
       const res = await fetch(`${API}/admin/delete-product`, {
         method: 'POST',
