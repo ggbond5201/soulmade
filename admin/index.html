@@ -565,6 +565,25 @@
     </div>
 
     <!-- Orders list -->
+    <!-- Pages Management -->
+    <div class="section-title" style="margin-top:40px;"><span data-en="Footer Pages" data-zh="页脚页面">Footer Pages</span></div>
+    <div class="create-panel">
+      <div style="display:flex;gap:10px;margin-bottom:10px;">
+        <select id="pageSelect" onchange="loadPageEditor()" class="create-input" style="width:200px;">
+          <option value="privacy">Privacy Policy</option>
+          <option value="terms">Terms of Service</option>
+          <option value="refund">Refund & Return</option>
+          <option value="shipping">Shipping Policy</option>
+        </select>
+      </div>
+      <div class="create-row"><div class="create-group" style="flex:1;"><span class="create-label">Title (EN)</span><input class="create-input" id="pageTitleEn"></div></div>
+      <div class="create-row"><div class="create-group" style="flex:1;"><span class="create-label">Title (中文)</span><input class="create-input" id="pageTitleZh"></div></div>
+      <div class="create-row"><div class="create-group" style="flex:1;"><span class="create-label">Content (EN)</span><textarea class="create-input" id="pageBodyEn" style="height:120px;resize:vertical;"></textarea></div></div>
+      <div class="create-row"><div class="create-group" style="flex:1;"><span class="create-label">Content (中文)</span><textarea class="create-input" id="pageBodyZh" style="height:120px;resize:vertical;"></textarea></div></div>
+      <button class="create-btn" onclick="savePage()" style="margin-top:8px;"><span data-en="Save Page" data-zh="保存页面">Save Page</span></button>
+      <button class="create-btn" onclick="loadPageEditor()" style="margin-top:8px;background:var(--text-mid);margin-left:8px;"><span data-en="Reload" data-zh="重新加载">Reload</span></button>
+    </div>
+
     <div class="section-title" style="margin-top:40px;"><span data-en="Orders" data-zh="订单管理">Orders</span></div>
     <div class="keys-panel">
       <div class="keys-header">
@@ -741,6 +760,42 @@
       document.getElementById('loginError').style.display = 'block';
       document.getElementById('loginError').textContent = 'Connection error. Try again.';
     }
+  }
+
+  // ═══ Pages Management ═══
+  var allPages = {};
+
+  async function loadPageEditor(){
+    var type = document.getElementById('pageSelect').value;
+    // Reload from KV
+    try {
+      var resp = await fetch(API + '/pages');
+      allPages = await resp.json();
+    } catch(e) { allPages = {}; }
+    var page = allPages[type] || {title:'',titleZh:'',body:'',bodyZh:''};
+    document.getElementById('pageTitleEn').value = page.title || '';
+    document.getElementById('pageTitleZh').value = page.titleZh || '';
+    document.getElementById('pageBodyEn').value = page.body || '';
+    document.getElementById('pageBodyZh').value = page.bodyZh || '';
+  }
+
+  async function savePage(){
+    var type = document.getElementById('pageSelect').value;
+    allPages[type] = {
+      title: document.getElementById('pageTitleEn').value.trim(),
+      titleZh: document.getElementById('pageTitleZh').value.trim(),
+      body: document.getElementById('pageBodyEn').value.trim(),
+      bodyZh: document.getElementById('pageBodyZh').value.trim()
+    };
+    try {
+      var resp = await fetch(API + '/admin/save-pages', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ password: adminPassword, pages: allPages })
+      });
+      var data = await resp.json();
+      showToast(data.success ? 'Page saved!' : 'Failed to save');
+    } catch(e) { showToast('Connection error'); }
   }
 
   function logout() {

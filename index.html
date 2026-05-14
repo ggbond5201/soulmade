@@ -1777,15 +1777,24 @@
       }
     };
 
-    function openLegal(type) {
-      const content = legalContent[type];
+    async function openLegal(type) {
+      var content = legalContent[type];
+      // Try Worker first
+      try {
+        var resp = await fetch(API + '/pages');
+        var pages = await resp.json();
+        if (pages && pages[type]) {
+          var p = pages[type];
+          content = { title: p.title, titleZh: p.titleZh, body: p.body, bodyZh: p.bodyZh, updated: 'Last updated: 2026' };
+        }
+      } catch(e) {}
       document.getElementById('legalTitle').textContent = isZh ? (content.titleZh || content.title) : content.title;
       document.getElementById('legalUpdated').textContent = content.updated;
-      document.getElementById('legalBody').innerHTML = content.body;
+      document.getElementById('legalBody').innerHTML = isZh ? (content.bodyZh || content.body) : content.body;
       document.getElementById('legalOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
       document.getElementById('legalOverlay')._legalType = type;
-      updateLang(); // translate the newly-injected body
+      updateLang();
     }
 
     function closeLegal() {
