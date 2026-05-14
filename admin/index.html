@@ -1170,24 +1170,37 @@
   async function handleImageUpload() {
     const file = document.getElementById('prodImgFile').files[0];
     if (!file) return;
-    // Compress and convert to base64 for preview
+    showToast('Uploading image...');
     try {
-      // Use browser-image-compression if available, otherwise just preview
+      // Compress first
       var compressed = file;
       if (typeof imageCompression !== 'undefined') {
-        compressed = await imageCompression(file, { maxSizeMB: 0.3, maxWidthOrHeight: 800, useWebWorker: true });
+        compressed = await imageCompression(file, { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true });
       }
+      // Show preview
       var reader = new FileReader();
       reader.onload = function(e) {
         document.getElementById('imgPreview').style.display = 'block';
         document.getElementById('imgPreviewImg').src = e.target.result;
       };
       reader.readAsDataURL(compressed);
-      // Auto-generate filename based on product key
-      var key = document.getElementById('prodKey').value || file.name.split('.')[0];
-      var ext = file.name.split('.').pop();
-      document.getElementById('prodImg').value = key + '.' + ext;
+
+      // Upload to ImgBB
+      var formData = new FormData();
+      formData.append('image', compressed);
+      var resp = await fetch('https://api.imgbb.com/1/upload?key=ade10554c9105502664dc74457beba4a', {
+        method: 'POST', body: formData
+      });
+      var data = await resp.json();
+      if (data.success) {
+        document.getElementById('prodImg').value = data.data.url;
+        showToast('Image uploaded! ' + data.data.url);
+      } else {
+        showToast('Upload failed, using local filename');
+        document.getElementById('prodImg').value = file.name;
+      }
     } catch(e) {
+      showToast('Upload error, using local filename');
       document.getElementById('prodImg').value = file.name;
     }
   }
