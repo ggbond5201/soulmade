@@ -66,11 +66,14 @@
       top: 0;
       width: 100%;
       z-index: 100;
-      padding: 24px 48px;
+      padding: 16px 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      mix-blend-mode: multiply;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(16px) saturate(1.5);
+      -webkit-backdrop-filter: blur(16px) saturate(1.5);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
     }
 
     .nav-logo {
@@ -1362,7 +1365,15 @@
       🛒
       <span class="cart-badge" id="cartBadge">0</span>
     </button>
-    <button class="lang-toggle" id="langToggle">中文</button>
+    <select class="lang-select" id="langSelect" onchange="switchLang(this.value)" style="background:rgba(255,255,255,0.6);border:1px solid rgba(0,0,0,0.15);border-radius:6px;padding:4px 8px;font-size:13px;cursor:pointer;font-family:DM Sans,sans-serif;">
+      <option value="en">EN</option>
+      <option value="zh">中文</option>
+      <option value="ja">日本語</option>
+      <option value="ko">한국어</option>
+      <option value="de">Deutsch</option>
+      <option value="fr">Français</option>
+      <option value="es">Español</option>
+    </select>
     <button class="hamburger" id="hamburger">
       <span></span><span></span><span></span>
     </button>
@@ -1666,18 +1677,18 @@
     }
     animRing();
 
-    // Language toggle
+    // Language system
     let isZh = false;
-    document.getElementById('langToggle').addEventListener('click', () => {
-      isZh = !isZh;
-      document.getElementById('langToggle').textContent = isZh ? 'EN' : '中文';
+    function switchLang(lang) {
+      if (lang === 'zh') { isZh = true; }
+      else { isZh = false; }
+      // For now: EN (default) or ZH. Other languages show EN text.
       updateLang();
-      // Refresh legal modal if open
       var lo = document.getElementById('legalOverlay');
       if (lo.classList.contains('open') && lo._legalType) {
         openLegal(lo._legalType);
       }
-    });
+    }
 
     // Keyboard: ESC to close modals
     document.addEventListener('keydown', e => {
