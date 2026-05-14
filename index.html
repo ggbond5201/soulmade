@@ -2275,13 +2275,23 @@
     function addShareButtons() {
       var container = document.getElementById('modalShare');
       if (!container || container.children.length > 0) return;
-      var url = encodeURIComponent(window.location.href);
-      var title = encodeURIComponent((currentProduct ? currentProduct.name : 'SOULMADE'));
-      container.innerHTML = [
-        '<a href=\"https://wa.me/?text='+title+'%20'+url+'\" target=\"_blank\" style=\"background:#25D366;color:#fff;padding:6px 14px;border-radius:20px;text-decoration:none;font-size:12px;margin:3px;display:inline-block;\">WhatsApp</a>',
-        '<a href=\"https://twitter.com/intent/tweet?text='+title+'&url='+url+'\" target=\"_blank\" style=\"background:#1DA1F2;color:#fff;padding:6px 14px;border-radius:20px;text-decoration:none;font-size:12px;margin:3px;display:inline-block;\">Twitter/X</a>',
-        '<button onclick=\"navigator.clipboard.writeText(window.location.href);showToast(\"Link copied!\")\" style=\"background:#333;color:#fff;border:none;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:12px;margin:3px;\">📋 Copy Link</button>'
-      ].join('');
+      var url = window.location.href;
+      var title = (currentProduct ? currentProduct.name : 'SOULMADE');
+
+      // Native share on mobile, custom on desktop
+      container.innerHTML = '<button onclick="shareProduct()" style="background:var(--cream);border:1px solid rgba(0,0,0,0.15);border-radius:24px;padding:8px 20px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;font-family:DM Sans,sans-serif;">'
+        + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>'
+        + '<span data-en="Share" data-zh="分享">Share</span></button>';
+    }
+    function shareProduct() {
+      var url = window.location.href;
+      var title = (currentProduct ? 'SOULMADE · ' + currentProduct.name : 'SOULMADE');
+      if (navigator.share) {
+        navigator.share({ title: title, url: url }).catch(function(){});
+      } else {
+        // Desktop fallback: copy link + show toast
+        navigator.clipboard.writeText(url).then(function(){ showToast('Link copied! Share it anywhere.'); });
+      }
     }
     setTimeout(addShareButtons, 200);
   </script>
