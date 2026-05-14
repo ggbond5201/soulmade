@@ -473,7 +473,8 @@
           <div style="display:flex;gap:8px;align-items:center;">
             <input type="file" id="prodImgFile" accept="image/*" onchange="handleImageUpload()" style="display:none;">
             <button type="button" class="create-btn" onclick="document.getElementById('prodImgFile').click()" style="font-size:11px;padding:6px 12px;white-space:nowrap;background:var(--text-mid);" data-en="Upload Image" data-zh="上传图片">Upload Image</button>
-            <input type="text" class="create-input" id="prodImg" placeholder="or type filename..." style="flex:1;">
+            <input type="text" class="create-input" id="prodImg" placeholder="or type URL..." style="flex:1;">
+            <input type="hidden" id="prodImgDelete">
             <div id="imgPreview" style="width:40px;height:40px;border-radius:8px;overflow:hidden;background:var(--cream);flex-shrink:0;display:none;"><img id="imgPreviewImg" src="" style="width:100%;height:100%;object-fit:cover;"></div>
           </div>
         </div>
@@ -1194,6 +1195,7 @@
       var data = await resp.json();
       if (data.success) {
         document.getElementById('prodImg').value = data.data.url;
+        document.getElementById('prodImgDelete').value = data.data.delete_url || '';
         showToast('Image uploaded! ' + data.data.url);
       } else {
         showToast('Upload failed, using local filename');
@@ -1267,6 +1269,7 @@
       stock: parseInt(document.getElementById('prodStock').value) || 0,
       stockType: document.getElementById('prodStockType').value,
       img: document.getElementById('prodImg').value.trim(),
+      imgDelete: document.getElementById('prodImgDelete').value.trim(),
       category: document.getElementById('prodCategory').value,
       source: document.getElementById('prodSource').value.trim(),
       desc: document.getElementById('prodDesc').value.trim(),
@@ -1410,6 +1413,11 @@
 
   async function deleteProduct(key) {
     if (!confirm('Delete this product? This cannot be undone.')) return;
+    // Delete image from ImgBB if we have delete URL
+    var product = allProducts.find(function(p){return p.key === key});
+    if (product && product.imgDelete) {
+      try { await fetch(product.imgDelete); } catch(e) {}
+    }
     if (isLocal) {
       var products = localProducts();
       products = products.filter(function(p){return p.key !== key});
