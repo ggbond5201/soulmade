@@ -1323,7 +1323,7 @@
     if (!key || !name || !nameZh || !id) { showToast('Key, name, nameZh, and ID are required'); return; }
     const productData = {
       key, name, nameZh, id,
-      price: parseInt(document.getElementById('prodPrice').value) || 0,
+      price: parseFloat(document.getElementById('prodPrice').value) || 0,
       cost: parseFloat(document.getElementById('prodCost').value) || 0,
       stock: parseInt(document.getElementById('prodStock').value) || 0,
       stockType: document.getElementById('prodStockType').value,
@@ -1434,7 +1434,7 @@
           name: document.getElementById('editProdName').value.trim(),
           nameZh: document.getElementById('editProdNameZh').value.trim(),
           id: document.getElementById('editProdId').value.trim(),
-          price: parseInt(document.getElementById('editProdPrice').value) || 0,
+          price: parseFloat(document.getElementById('editProdPrice').value) || 0,
           cost: parseFloat(document.getElementById('editProdCost').value) || 0,
           stock: parseInt(document.getElementById('editProdStock').value) || 0,
           stockType: document.getElementById('editProdStockType').value,
