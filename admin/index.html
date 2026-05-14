@@ -1140,7 +1140,7 @@
       <div class="key-item">
         <div class="key-status ${p.active !== false ? 'activated' : 'pending'}"></div>
         <div class="key-info">
-          <div class="key-id">${p.key} · ${p.name} · $${p.price}</div>
+          <div class="key-id">${p.key} · <span data-en="${p.name}" data-zh="${p.nameZh}">${adminIsZh ? p.nameZh : p.name}</span> · $${p.price}</div>
           <div class="key-meta">
             ${p.id}${p.customPrice ? ' · <span data-en="Custom Price" data-zh="自主定价">Custom Price</span>' : ''}${p.bundle ? ' · <span data-en="Bundle" data-zh="套装">Bundle</span>: ' + (p.bundleItems || '') : ''} ${p.active === false ? ' · <span data-en="Inactive" data-zh="已下架">Inactive</span>' : ''}
           </div>
