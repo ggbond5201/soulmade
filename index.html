@@ -1989,7 +1989,7 @@
           <div class="product-info" onclick="openModal('${p.key}')">
             <div>
               <div class="product-name" data-en="${p.name}" data-zh="${p.nameZh}">${p.name}</div>
-              <div class="product-id">${p.id}${p.bundle ? ' · Bundle' : ''}</div>
+              <div class="product-id">${p.id}${p.bundle ? ' · Bundle' : ''}${p.stockType ? ' · <span style="color:'+(p.stockType==='现货'?'#7A9E7E':'#c8a96e')+'">'+p.stockType+'</span>' : ''}${p.stock > 0 ? ' · '+p.stock+' in stock' : ''}</div>
             </div>
             <div class="product-price">${p.customPrice ? 'Set Price' : '$'+p.price}</div>
           </div>

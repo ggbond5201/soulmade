@@ -462,6 +462,8 @@
         <div class="create-group" style="min-width:130px;"><span class="create-label" data-en="Product ID*" data-zh="产品编号*">Product ID*</span><input type="text" class="create-input" id="prodId" placeholder="SOULMADE-007"></div>
         <div class="create-group" style="min-width:80px;"><span class="create-label" data-en="Cost ($)" data-zh="成本($)">Cost ($)</span><input type="number" class="create-input" id="prodCost" placeholder="10" min="0" step="0.01" onchange="autoPrice()"></div>
         <div class="create-group" style="min-width:80px;"><span class="create-label" data-en="Sell Price ($)" data-zh="售价($)">Sell Price ($)</span><input type="number" class="create-input" id="prodPrice" placeholder="30" min="0" step="1"></div>
+        <div class="create-group" style="min-width:70px;"><span class="create-label" data-en="Stock" data-zh="库存">Stock</span><input type="number" class="create-input" id="prodStock" placeholder="0" min="0" step="1"></div>
+        <div class="create-group" style="min-width:100px;"><span class="create-label" data-en="Stock Type" data-zh="库存类型">Stock Type</span><select class="create-input" id="prodStockType"><option value="现货">现货 In Stock</option><option value="代发">代发 Dropshipping</option><option value="预售">预售 Pre-order</option></select></div>
         <div class="create-group" style="min-width:140px;"><span class="create-label" data-en="Source URL" data-zh="来源链接">Source URL</span><input type="text" class="create-input" id="prodSource" placeholder="1688.com/item..."></div>
       </div>
       <!-- Row 3: Image upload -->
@@ -1241,6 +1243,8 @@
       key, name, nameZh, id,
       price: parseInt(document.getElementById('prodPrice').value) || 0,
       cost: parseFloat(document.getElementById('prodCost').value) || 0,
+      stock: parseInt(document.getElementById('prodStock').value) || 0,
+      stockType: document.getElementById('prodStockType').value,
       img: document.getElementById('prodImg').value.trim(),
       category: document.getElementById('prodCategory').value,
       source: document.getElementById('prodSource').value.trim(),
@@ -1294,6 +1298,7 @@
     document.getElementById('prodPrice').value = '';
     document.getElementById('prodPrice').disabled = false;
     document.getElementById('prodCost').disabled = false;
+    document.getElementById('prodStock').value = '0';
     document.getElementById('prodImg').value = '';
     document.getElementById('prodSource').value = '';
     document.getElementById('prodCategory').value = '';
