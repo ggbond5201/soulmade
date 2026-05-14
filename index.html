@@ -2034,8 +2034,13 @@
       // Update URL hash for sharing
       window.location.hash = 'product=' + productKey;
 
-      document.getElementById('modalImg').src = currentProduct.img || 'p1.png';
-      document.getElementById('modalImgWrap').onclick = function(e){ e.stopPropagation(); openLightbox(currentProduct.img || 'p1.png'); };
+      if (currentProduct.customPrice) {
+        document.getElementById('modalImgWrap').style.display = 'none';
+      } else {
+        document.getElementById('modalImgWrap').style.display = '';
+        document.getElementById('modalImg').src = currentProduct.img || 'p1.png';
+        document.getElementById('modalImgWrap').onclick = function(e){ e.stopPropagation(); openLightbox(currentProduct.img || 'p1.png'); };
+      }
       document.getElementById('modalName').textContent = isZh ? currentProduct.nameZh : currentProduct.name;
       document.getElementById('modalId').textContent = currentProduct.id;
       document.getElementById('modalDesc').textContent = isZh ? currentProduct.descZh : currentProduct.desc;
