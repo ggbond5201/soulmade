@@ -504,8 +504,16 @@
     </div>
 
     <!-- Product list -->
-    <div style="margin-bottom:12px;margin-top:20px;">
-      <input type="text" class="create-input" id="productSearch" data-placeholder-en="Search products..." data-placeholder-zh="搜索产品..." placeholder="Search products..." oninput="renderProducts()" style="max-width:400px;">
+    <div style="margin-bottom:12px;margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <input type="text" class="create-input" id="productSearch" data-placeholder-en="Search products..." data-placeholder-zh="搜索产品..." placeholder="Search products..." oninput="renderProducts()" style="max-width:300px;">
+      <select class="create-input" id="productFilter" onchange="renderProducts()" style="max-width:150px;">
+        <option value="all" data-en="All" data-zh="全部">All</option>
+        <option value="active" data-en="Active" data-zh="上架中">Active</option>
+        <option value="inactive" data-en="Inactive" data-zh="已下架">Inactive</option>
+        <option value="soldout" data-en="Sold Out" data-zh="售罄">Sold Out</option>
+        <option value="现货" data-en="In Stock" data-zh="现货">现货</option>
+        <option value="代发" data-en="Dropshipping" data-zh="代发">代发</option>
+      </select>
     </div>
     <div class="keys-panel">
       <div class="keys-header">

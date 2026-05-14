@@ -2020,6 +2020,8 @@
     function openModal(productKey) {
       currentProduct = products.find(p => p.key === productKey);
       if (!currentProduct) return;
+      // Update URL hash for sharing
+      window.location.hash = 'product=' + productKey;
 
       document.getElementById('modalImg').src = currentProduct.img || 'p1.png';
       document.getElementById('modalImgWrap').onclick = function(e){ e.stopPropagation(); openLightbox(currentProduct.img || 'p1.png'); };
@@ -2262,6 +2264,23 @@
     renderShop();
     loadProducts();
     updateCartBadge();
+    // Open product from URL hash (e.g. #product=amber)
+    if (window.location.hash && window.location.hash.startsWith('#product=')) {
+      var key = window.location.hash.replace('#product=', '');
+      setTimeout(function(){ openModal(key); }, 800);
+    }
+    // Copy link button
+    setTimeout(function(){
+      var btn = document.createElement('button');
+      btn.textContent = '🔗 Copy Link';
+      btn.style.cssText = 'background:none;border:1px solid rgba(0,0,0,0.15);border-radius:6px;padding:6px 12px;cursor:pointer;font-size:11px;margin-top:8px;font-family:DM Mono,monospace;';
+      btn.onclick = function(){
+        navigator.clipboard.writeText(window.location.href);
+        showToast('Link copied!');
+      };
+      var target = document.getElementById('modalId');
+      if (target) target.parentNode.insertBefore(btn, target.nextSibling);
+    }, 100);
   </script>
 
   <!-- CART OVERLAY -->
