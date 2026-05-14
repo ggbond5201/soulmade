@@ -601,13 +601,15 @@
     <div class="modal-row"><span class="modal-label" data-en="Stock" data-zh="库存">Stock</span><input type="number" class="create-input" id="editProdStock" min="0" step="1"></div>
     <div class="modal-row"><span class="modal-label" data-en="Stock Type" data-zh="类型">Stock Type</span><select class="create-input" id="editProdStockType"><option value="现货">现货</option><option value="代发">代发</option><option value="预售">预售</option></select></div>
     <div class="modal-row"><span class="modal-label" data-en="Category" data-zh="分类">Category</span><select class="create-input" id="editProdCategory"><option value="">None</option><option value="jewelry">Jewelry</option><option value="bags">Bags</option><option value="home">Home</option><option value="fashion">Fashion</option><option value="tech">Tech</option><option value="other">Other</option></select></div>
+    <div class="modal-row"><span class="modal-label" data-en="Image" data-zh="图片">Image</span><input class="create-input" id="editProdImg"></div>
     <div class="modal-row"><span class="modal-label" data-en="Description (EN)" data-zh="描述(英文)">Description (EN)</span><textarea class="create-input" id="editProdDesc" style="height:56px;resize:none;"></textarea></div>
     <div class="modal-row"><span class="modal-label" data-en="Description (中文)" data-zh="描述(中文)">Description (中文)</span><textarea class="create-input" id="editProdDescZh" style="height:56px;resize:none;"></textarea></div>
     <div class="modal-row" style="display:flex;gap:20px;">
       <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdCustomPrice"><span data-en="Custom Price" data-zh="自主定价">Custom Price</span></label>
-      <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdBundle"><span data-en="Bundle" data-zh="套装">Bundle</span></label>
+      <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdBundle" onchange="document.getElementById('editBundleRow').style.display=this.checked?'block':'none'"><span data-en="Bundle" data-zh="套装">Bundle</span></label>
       <label style="font-size:12px;cursor:pointer;"><input type="checkbox" id="editProdActive"><span data-en="Active" data-zh="上架">Active</span></label>
     </div>
+    <div class="modal-row" id="editBundleRow" style="display:none;"><span class="modal-label" data-en="Bundle Items" data-zh="套装内容">Bundle Items</span><input class="create-input" id="editProdBundleItems"></div>
     <button class="create-btn" onclick="saveEditProduct()" style="width:100%;margin-top:12px;"><span data-en="Save" data-zh="保存">Save</span></button>
     <button class="modal-close" onclick="document.getElementById('editProductOverlay').classList.remove('open')" style="margin-top:8px;"><span data-en="Close" data-zh="关闭">Close</span></button>
   </div>
@@ -1357,6 +1359,7 @@
     document.getElementById('editProdCustomPrice').checked = !!p.customPrice;
     document.getElementById('editProdBundle').checked = !!p.bundle;
     document.getElementById('editProdBundleItems').value = p.bundleItems || '';
+    document.getElementById('editBundleRow').style.display = p.bundle ? 'block' : 'none';
     document.getElementById('editProdActive').checked = p.active !== false;
     document.getElementById('editProductOverlay').classList.add('open');
   }
