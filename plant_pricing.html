@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="植物定价">
+<link rel="manifest" href="/plant-manifest.json">
+<title>植物拍卖定价器 · Palmstreet</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Microsoft YaHei',sans-serif;background:#0a0a0a;color:#ddd;padding:20px;display:flex;justify-content:center}
+.calc{max-width:680px;width:100%}
+h1{color:#4caf50;text-align:center;margin-bottom:2px;font-size:22px}
+.sub{color:#666;text-align:center;font-size:12px;margin-bottom:20px}
+.card{background:#141414;border:1px solid #222;border-radius:12px;padding:18px;margin-bottom:12px}
+.card h3{color:#4caf50;font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.row{display:flex;gap:10px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.row label{min-width:85px;font-size:12px;color:#999}
+input,select{background:#1a1a1a;border:1px solid #333;color:#eee;border-radius:6px;font-size:13px;padding:7px 10px}
+input{width:130px} select{width:170px}
+.note{font-size:10px;color:#666}
+.warn{background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);border-radius:6px;padding:8px 12px;margin-bottom:10px;color:#f44336;font-size:11px;line-height:1.6}
+.info{background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);border-radius:6px;padding:8px 12px;margin-bottom:10px;color:#64B5F6;font-size:11px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.price-box{padding:10px;border-radius:8px;text-align:center}
+.price-box .lbl{font-size:10px;color:#888}
+.price-box .val{font-size:18px;font-weight:bold;margin:2px 0}
+.price-box .sub{font-size:10px;color:#666}
+.breakdown{font-size:11px;color:#888;line-height:1.8}
+.preset-btns{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.preset-btns button{padding:5px 12px;background:#1a1a1a;color:#888;border:1px solid #333;border-radius:16px;cursor:pointer;font-size:11px}
+.preset-btns button:hover{background:#2a2a2a;color:#4caf50;border-color:#4caf50}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;margin:2px}
+.tag.hot{background:rgba(244,67,54,0.2);color:#f44336}
+.tag.rare{background:rgba(156,39,176,0.2);color:#CE93D8}
+.tag.safe{background:rgba(76,175,80,0.2);color:#81C784}
+.tag.warn{background:rgba(255,152,0,0.2);color:#FFB74D}
+</style>
+</head>
+<body>
+<div class="calc">
+<h1>🪴 植物拍卖定价器</h1>
+<div class="sub">Palmstreet 平台 · 美国市场 · 完整闭环 · 全品类</div>
+
+<!-- 拍照识别 -->
+<div class="card" style="border:1px solid rgba(76,175,80,0.3);">
+  <h3>📸 拍照识植物</h3>
+  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+    <input type="file" id="plantPhoto" accept="image/*" capture="environment" onchange="identifyPlant()" style="display:none;">
+    <button onclick="document.getElementById('plantPhoto').click()" style="background:#4caf50;color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold;">
+      📷 拍照/选择图片
+    </button>
+    <span style="font-size:11px;color:#888;">或拖拽图片到这里</span>
+    <div id="photoPreview" style="width:60px;height:60px;border-radius:8px;overflow:hidden;background:#1a1a1a;display:none;">
+      <img id="photoImg" src="" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+  </div>
+  <div id="identifyResult" style="margin-top:10px;font-size:13px;color:#888;"></div>
+</div>
+
+<!-- 植物选择 -->
+<div class="card">
+  <h3>📋 植物信息</h3>
+  <div class="row">
+    <label>植物品类</label>
+    <select id="plantCategory" onchange="updateCategory()" style="width:170px;">
+      <option value="aroids">天南星科（Aroids）</option>
+      <option value="hoyas">球兰属（Hoya）</option>
+      <option value="philodendrons">蔓绿绒属（Philodendron）</option>
+      <option value="anthuriums">花烛属（Anthurium）</option>
+      <option value="monstera">龟背竹属（Monstera）</option>
+      <option value="alocasia">海芋属（Alocasia）</option>
+      <option value="begonias">秋海棠属（Begonia）</option>
+      <option value="succulents">多肉/块根</option>
+      <option value="carnivorous">食虫植物</option>
+      <option value="orchids">兰花</option>
+      <option value="custom">自定义</option>
+    </select>
+  </div>
+  <div class="row">
+    <label>具体品种</label>
+    <select id="plantType" onchange="updatePlant()" style="width:280px;">
+    </select>
+  </div>
+  <div class="row">
+    <label>规格/大小</label>
+    <select id="plantSize" onchange="calcPlant()" style="width:170px;">
+      <option value="cutting">插穗/Cutting（1-2节）</option>
+      <option value="seedling" selected>小苗/Seedling（2-4叶）</option>
+      <option value="medium">中株/Medium（5-8叶）</option>
+      <option value="established">大株/Established（9-15叶）</option>
+      <option value="rare_size">稀有规格/XL（15+叶）</option>
+    </select>
+  </div>
+  <div class="row">
+    <label>叶数</label>
+    <input type="number" id="leafCount" value="3" min="0" max="100" oninput="calcPlant()" style="width:80px;">
+    <span class="note">片</span>
+  </div>
+  <div class="row">
+    <label>锦化品质</label>
+    <select id="variegation" onchange="calcPlant()" style="width:170px;">
+      <option value="none">无锦/绿叶</option>
+      <option value="low">低级锦（&lt;20%锦斑）</option>
+      <option value="medium" selected>中级锦（20-50%锦斑）</option>
+      <option value="high">高级锦（50-80%锦斑）</option>
+      <option value="marble">极品锦（大理石/星空锦）</option>
+    </select>
+  </div>
+  <div class="row">
+    <label>健康状态</label>
+    <select id="health" onchange="calcPlant()" style="width:170px;">
+      <option value="excellent" selected>优秀 — 叶片完美无损伤</option>
+      <option value="good">良好 — 轻微瑕疵</option>
+      <option value="fair">一般 — 少量黄叶/焦边</option>
+      <option value="poor">较差 — 需恢复/瑕疵明显</option>
+    </select>
+  </div>
+  <div class="row">
+    <label>根系情况</label>
+    <select id="rootSystem" onchange="calcPlant()" style="width:170px;">
+      <option value="established" selected>定植盆栽（根系发达）</option>
+      <option value="plug">穴盘苗/Plug</option>
+      <option value="bare_root">裸根（Bare Root）</option>
+      <option value="unrooted">未发根插穗</option>
+    </select>
+  </div>
+  <div class="row">
+    <label>市场参考价 ($)</label>
+    <input type="number" id="plantMarketPrice" value="80" min="0" step="0.01" oninput="calcPlant()">
+    <span style="font-size:11px;color:#4caf50" id="plantPriceNote"></span>
+  </div>
+  <div class="row">
+    <label>成本 (¥)</label>
+    <input type="number" id="plantCostCNY" value="150" min="0" step="0.01" oninput="calcPlant()">
+    <span class="note">进货+养护+包装</span>
+  </div>
+  <div class="row">
+    <label>植物死亡率</label>
+    <select id="plantRisk" onchange="calcPlant()">
+      <option value="3">3% — 极耐操</option>
+      <option value="5">5% — 球兰/多肉</option>
+      <option value="10" selected>10% — 普通室内植物</option>
+      <option value="15">15% — 花烛/娇气</option>
+      <option value="20">20% — 海芋（易黄叶）</option>
+      <option value="30">30% — 极高风险/裸根</option>
+    </select>
+  </div>
+  <div class="row">
+    <label>海关风险</label>
+    <select id="customsRisk" onchange="calcPlant()">
+      <option value="0" selected>0% — 有植物检疫证</option>
+      <option value="5">5% — 无证/灰色清关</option>
+      <option value="15">15% — CITES 濒危物种</option>
+    </select>
+  </div>
+  <div class="row">
+    <label>运费 ($)</label>
+    <input type="number" id="plantShippingCost" value="15" min="0" step="0.01" oninput="calcPlant()">
+    <span class="note">USPS Priority 2-3天</span>
+  </div>
+  <div class="row">
+    <label>汇率</label>
+    <input type="number" id="exchangeRate" value="6.80" min="5" max="10" step="0.01" oninput="calcPlant()" style="width:90px;">
+    <span class="note">USD→CNY</span>
+  </div>
+</div>
+
+<!-- 风险提示 + 费率 -->
+<div class="card">
+  <div class="breakdown">
+    <strong style="color:#4caf50">💰 费用链路</strong><br>
+    Palmstreet <strong>6.9%</strong> → PayPal <strong>3.49%+$0.49</strong> → 万里汇 <strong>0.3%</strong> → 中国银行卡
+    <span id="rateDisplay"></span>
+  </div>
+</div>
+
+<!-- 定价结果 -->
+<div class="card">
+  <h3>🔢 定价建议</h3>
+  <div id="plantResults"></div>
+</div>
+
+<!-- 品类说明 -->
+<div class="card">
+  <h3>📖 市场行情</h3>
+  <div id="marketInfo" class="breakdown"></div>
+</div>
+
+<!-- 市场洞察 -->
+<div class="card" style="background:rgba(76,175,80,0.03);">
+  <h3>🧠 Palmstreet 市场洞察</h3>
+  <div class="breakdown">
+    <strong style="color:#4caf50">为什么有些植物那么贵？</strong><br>
+    🔬 <strong>锦化稀有度</strong>：自然突变率极低（&lt;0.1%）→ 人工选育3-5年才稳定 → 极品孤品可上万<br>
+    🧬 <strong>组培时间差</strong>：新突变体从发现到组培量产需2-3年 → 窗口期价格暴利 → 量产后果断离场<br>
+    🎯 <strong>品相决定价格</strong>：同一品种，锦斑分布完美 vs 普通 → 差价可达10-100倍<br>
+    <br>
+    <strong style="color:#ff9800">2026 趋势预警</strong><br>
+    🔥 海芋（Alocasia）— 搜索量 +376%，今年最火品类<br>
+    🔥 组培苗（TC）— +250%增长，稀有基因平民化入口<br>
+    📉 普通锦龟背竹（洒金等）— 3年跌99%，组培量产已烂大街<br>
+    📉 普通秋海棠 — 一年内从几千跌到几十块，别囤货<br>
+    💎 锦化花烛 — 走向超高端，$10,000+ 成交屡见不鲜<br>
+    <br>
+    <strong style="color:#2196F3">给你的建议</strong><br>
+    ✅ 主攻「中等价位稀有品种」($30-200)：利润高、受众广、风险可控<br>
+    ✅ 提前布局组培苗（TC）：低成本试水，组培出苗后溢价空间大<br>
+    ⚠️ 远离已量产的普货（普通锦龟、普通秋海棠）：利润几乎为零<br>
+    ⚠️ 超高单价（$1000+）谨慎：买家极其挑剔品相，退货/纠纷风险高<br>
+    💡 海芋属 Cupprea 搜索 +1379% — 强烈关注！
+  </div>
+</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// 完整植物数据库
+// ═══════════════════════════════════════
+var PLANT_DB = {
+  aroids: {
+    name:'天南星科（Aroids）',
+    info:'最热门品类。Palmstreet上成交最活跃。喜温暖湿润，运输需保湿。部分稀有品种价格波动大。',
+    plants: {
+      monstera_albo:     {n:'龟背竹 白锦',       e:'Monstera Albo Variegata',  p:{cutting:45,seedling:80,medium:150,established:300,rare_size:600},    c:{cutting:60,seedling:150,medium:300,established:600,rare_size:1200},   r:10,tags:'hot'},
+      monstera_thai:     {n:'龟背竹 泰国斑',      e:'Monstera Thai Constellation',p:{cutting:30,seedling:55,medium:100,established:200,rare_size:400}, c:{cutting:50,seedling:100,medium:200,established:400,rare_size:800},  r:8, tags:'hot'},
+      monstera_mint:     {n:'龟背竹 薄荷锦',      e:'Monstera Mint',          p:{cutting:150,seedling:250,medium:450,established:900,rare_size:1800},c:{cutting:300,seedling:500,medium:900,established:1800,rare_size:3600},r:12,tags:'hot,rare'},
+      monstera_aurea:    {n:'龟背竹 黄锦',        e:'Monstera Aurea',        p:{cutting:80,seedling:150,medium:280,established:500,rare_size:1000}, c:{cutting:150,seedling:300,medium:550,established:1000,rare_size:2000},r:10,tags:'hot'},
+      rhaphidophora_tet:{n:'四籽崖角藤',         e:'Rhaphidophora Tetrasperma',p:{cutting:8,seedling:18,medium:35,established:65,rare_size:120},  c:{cutting:10,seedling:25,medium:45,established:80,rare_size:150},     r:5, tags:''},
+      epipremnum_pinnatum:{n:'花叶绿萝',          e:'Epipremnum Pinnatum Albo',p:{cutting:6,seedling:15,medium:30,established:55,rare_size:100}, c:{cutting:8,seedling:20,medium:40,established:70,rare_size:130},    r:5, tags:''},
+    }
+  },
+  hoyas: {
+    name:'球兰属（Hoya）',
+    info:'耐运输、耐旱、病虫害少——死亡率最低的品类。适合新手卖家。价格稳定，拍卖竞价活跃。',
+    plants: {
+      hoya_compacta:     {n:'卷叶球兰',           e:'Hoya Compacta',         p:{cutting:8,seedling:18,medium:35,established:65,rare_size:120},     c:{cutting:5,seedling:20,medium:40,established:70,rare_size:130},    r:3, tags:'safe'},
+      hoya_kerrii:       {n:'心叶球兰',           e:'Hoya Kerrii',           p:{cutting:5,seedling:15,medium:30,established:55,rare_size:100},    c:{cutting:3,seedling:15,medium:30,established:55,rare_size:100},   r:3, tags:'safe'},
+      hoya_polyneura:    {n:'鱼尾球兰',           e:'Hoya Polyneura',       p:{cutting:10,seedling:22,medium:45,established:80,rare_size:150},    c:{cutting:8,seedling:25,medium:50,established:90,rare_size:160},   r:5, tags:'safe'},
+      hoya_calli:        {n:'美叶球兰',           e:'Hoya Callistophylla',  p:{cutting:15,seedling:30,medium:55,established:100,rare_size:180},   c:{cutting:15,seedling:35,medium:60,established:110,rare_size:190},  r:5, tags:''},
+      hoya_linearis:     {n:'线性球兰',           e:'Hoya Linearis',        p:{cutting:10,seedling:20,medium:40,established:70,rare_size:130},    c:{cutting:8,seedling:22,medium:45,established:75,rare_size:140},   r:5, tags:''},
+      hoya_sigillatis:   {n:'印章球兰（稀有）',    e:'Hoya Sigillatis',       p:{cutting:20,seedling:40,medium:80,established:150,rare_size:280},   c:{cutting:25,seedling:50,medium:100,established:180,rare_size:300}, r:5, tags:'rare'},
+    }
+  },
+  philodendrons: {
+    name:'蔓绿绒属（Philodendron）',
+    info:'Palmstreet上最火品类之一。品种极多，从$5到$5000都有。注意区分普通品种和锦化品种，后者溢价极高。',
+    plants: {
+      philodendron_pink: {n:'粉红公主蔓绿绒',     e:'Philodendron Pink Princess',p:{cutting:12,seedling:28,medium:55,established:100,rare_size:200}, c:{cutting:15,seedling:40,medium:70,established:130,rare_size:250},  r:8, tags:'hot'},
+      philodendron_white: {n:'白骑士蔓绿绒',       e:'Philodendron White Knight', p:{cutting:15,seedling:35,medium:65,established:120,rare_size:250},c:{cutting:20,seedling:50,medium:85,established:150,rare_size:300}, r:8, tags:'hot'},
+      philodendron_birkin:{n:'铂金蔓绿绒',         e:'Philodendron Birkin',    p:{cutting:5,seedling:12,medium:25,established:45,rare_size:80},     c:{cutting:5,seedling:15,medium:30,established:50,rare_size:90},    r:5, tags:''},
+      philodendron_melano:{n:'黑金蔓绿绒',         e:'Philodendron Melanochrysum',p:{cutting:15,seedling:35,medium:70,established:140,rare_size:280},c:{cutting:20,seedling:50,medium:90,established:170,rare_size:320},r:10,tags:''},
+      philodendron_gloriosum:{n:'荣耀蔓绿绒',      e:'Philodendron Gloriosum', p:{cutting:12,seedling:28,medium:55,established:110,rare_size:220},c:{cutting:15,seedling:40,medium:70,established:140,rare_size:260},r:10,tags:''},
+      philodendron_jose:  {n:'约瑟皇后（稀有锦）',  e:'Philodendron Jose Buono',p:{cutting:30,seedling:65,medium:130,established:250,rare_size:500},c:{cutting:40,seedling:85,medium:170,established:320,rare_size:600},r:10,tags:'rare'},
+    }
+  },
+  anthuriums: {
+    name:'花烛属（Anthurium）',
+    info:'高端品类。运输风险较高（叶片易损），但单价高利润大。需专业包装。Palmstreet上花烛拍卖溢价明显。',
+    plants: {
+      anthurium_crystal: {n:'水晶花烛',           e:'Anthurium Crystallinum',p:{cutting:15,seedling:35,medium:65,established:130,rare_size:260},c:{cutting:20,seedling:45,medium:80,established:160,rare_size:300}, r:15,tags:''},
+      anthurium_clari:   {n:'碧浪花烛',           e:'Anthurium Clarinervium',p:{cutting:12,seedling:28,medium:55,established:110,rare_size:220},c:{cutting:15,seedling:35,medium:70,established:135,rare_size:250},r:15,tags:''},
+      anthurium_waroc:   {n:'女王花烛',           e:'Anthurium Warocqueanum',p:{cutting:25,seedling:55,medium:110,established:220,rare_size:450},c:{cutting:35,seedling:75,medium:150,established:280,rare_size:550},r:18,tags:'rare'},
+      anthurium_forgetti: {n:'白色花烛（忘忧）',   e:'Anthurium Forgetii',    p:{cutting:20,seedling:45,medium:85,established:170,rare_size:350},  c:{cutting:25,seedling:60,medium:110,established:220,rare_size:420},r:15,tags:''},
+      anthurium_veitchii: {n:'国王花烛',           e:'Anthurium Veitchii',    p:{cutting:18,seedling:40,medium:75,established:150,rare_size:300},  c:{cutting:22,seedling:55,medium:100,established:190,rare_size:350},r:15,tags:'warn'},
+      anthurium_regale:  {n:'皇家花烛',           e:'Anthurium Regale',      p:{cutting:25,seedling:60,medium:120,established:250,rare_size:500},  c:{cutting:35,seedling:80,medium:160,established:320,rare_size:600},r:18,tags:'rare,warn'},
+    }
+  },
+  monstera: {
+    name:'龟背竹属（Monstera）',
+    info:'Palmstreet第一大品类。锦化品种竞价激烈。普通绿叶品种走量为主。注意：裸根运输死亡率高于带盆。',
+    plants: {
+      monstera_deli:     {n:'龟背竹（普通）',      e:'Monstera Deliciosa',    p:{cutting:5,seedling:15,medium:35,established:70,rare_size:140},     c:{cutting:3,seedling:12,medium:30,established:60,rare_size:120},    r:5, tags:''},
+      monstera_albo2:    {n:'龟背竹 白锦',         e:'Monstera Albo',         p:{cutting:45,seedling:80,medium:150,established:300,rare_size:600},  c:{cutting:60,seedling:150,medium:300,established:600,rare_size:1200},r:10,tags:'hot'},
+      monstera_mint2:    {n:'龟背竹 薄荷锦',       e:'Monstera Mint',         p:{cutting:150,seedling:250,medium:450,established:900,rare_size:1800},c:{cutting:300,seedling:500,medium:900,established:1800,rare_size:3600},r:12,tags:'hot,rare'},
+      monstera_aurea2:   {n:'龟背竹 黄锦',         e:'Monstera Aurea',       p:{cutting:80,seedling:150,medium:280,established:500,rare_size:1000},c:{cutting:150,seedling:300,medium:550,established:1000,rare_size:2000},r:10,tags:'hot'},
+      monstera_peru:     {n:'秘鲁龟背竹',          e:'Monstera Peru',         p:{cutting:8,seedling:20,medium:40,established:75,rare_size:150},     c:{cutting:8,seedling:25,medium:50,established:90,rare_size:170},    r:8, tags:''},
+      monstera_esqueleto:{n:'骨架龟背竹（稀有）',   e:'Monstera Esqueleto',    p:{cutting:20,seedling:45,medium:90,established:180,rare_size:360},   c:{cutting:30,seedling:70,medium:130,established:250,rare_size:450}, r:12,tags:'rare'},
+      monstera_white:    {n:'白怪兽龟背竹',         e:'Monstera White Monster', p:{cutting:60,seedling:120,medium:250,established:450,rare_size:900},c:{cutting:80,seedling:180,medium:350,established:600,rare_size:1200},r:10,tags:'rare,hot'},
+      monstera_bulbasaur:{n:'妙蛙种子龟背竹',       e:'Monstera Bulbasaur',    p:{cutting:200,seedling:400,medium:800,established:1600,rare_size:5000},c:{cutting:300,seedling:600,medium:1200,established:2500,rare_size:8000},r:12,tags:'rare,hot'},
+    }
+  },
+  alocasia: {
+    name:'海芋属（Alocasia）',
+    info:'观叶效果好但运输风险最高——极易黄叶落叶。建议只卖小苗或插穗（恢复快）。大株运输投诉率20%+。',
+    plants: {
+      alocasia_frydek:   {n:'绿天鹅绒海芋',       e:'Alocasia Frydek',       p:{cutting:10,seedling:22,medium:42,established:80,rare_size:160},    c:{cutting:8,seedling:25,medium:50,established:95,rare_size:180},    r:20,tags:'warn'},
+      alocasia_silver:   {n:'银龙海芋',           e:'Alocasia Silver Dragon',p:{cutting:12,seedling:25,medium:48,established:90,rare_size:180},    c:{cutting:10,seedling:30,medium:58,established:105,rare_size:200},  r:18,tags:'warn'},
+      alocasia_black:    {n:'黑天鹅绒海芋',        e:'Alocasia Black Velvet', p:{cutting:8,seedling:18,medium:35,established:70,rare_size:140},     c:{cutting:6,seedling:20,medium:42,established:80,rare_size:160},    r:18,tags:'warn'},
+      alocasia_jacklyn:  {n:'杰克林海芋',          e:'Alocasia Jacklyn',      p:{cutting:10,seedling:22,medium:45,established:85,rare_size:170},    c:{cutting:10,seedling:28,medium:55,established:100,rare_size:200},  r:20,tags:'warn'},
+      alocasia_cuprea:   {n:'铜叶海芋',           e:'Alocasia Cuprea',       p:{cutting:15,seedling:30,medium:55,established:110,rare_size:220},   c:{cutting:15,seedling:38,medium:70,established:130,rare_size:250},  r:20,tags:'warn'},
+      alocasia_black_amy: {n:'黑魔法海芋（Black Amy）',e:'Alocasia Black Amy',    p:{cutting:500,seedling:1200,medium:2500,established:5000,rare_size:10000},c:{cutting:800,seedling:2000,medium:4000,established:8000,rare_size:15000},r:20,tags:'rare,hot,warn'},
+      alocasia_infernalis:{n:'地狱火海芋（粉锦）',   e:'Alocasia Infernalis Pink',p:{cutting:300,seedling:700,medium:1500,established:3000,rare_size:6000},c:{cutting:500,seedling:1200,medium:2500,established:5000,rare_size:10000},r:20,tags:'rare,hot,warn'},
+    }
+  },
+  succulents: {
+    name:'多肉/块根植物',
+    info:'耐运输、利润高、养护简单。块根植物在日本/美国市场需求旺盛。注意：部分块根为CITES管制。',
+    plants: {
+      stephania_erecta:  {n:'山乌龟（素可泰）',    e:'Stephania Erecta',      p:{cutting:0,seedling:15,medium:30,established:60,rare_size:120},     c:{cutting:0,seedling:10,medium:25,established:50,rare_size:100},    r:3, tags:'safe'},
+      pachypodium_lamerei:{n:'非洲霸王树',         e:'Pachypodium Lamerei',   p:{cutting:0,seedling:12,medium:25,established:50,rare_size:100},     c:{cutting:0,seedling:8,medium:18,established:35,rare_size:70},      r:3, tags:'safe'},
+      dioscorea_elephant:{n:'龟甲龙',             e:'Dioscorea Elephantipes',p:{cutting:0,seedling:20,medium:45,established:90,rare_size:180},     c:{cutting:0,seedling:15,medium:35,established:70,rare_size:140},    r:5, tags:'safe'},
+      adenium_obesum:    {n:'沙漠玫瑰',           e:'Adenium Obesum',        p:{cutting:0,seedling:10,medium:25,established:55,rare_size:120},     c:{cutting:0,seedling:8,medium:18,established:40,rare_size:90},      r:3, tags:'safe'},
+      pachypodium_brevi: {n:'惠比须笑',           e:'Pachypodium Brevicaule',p:{cutting:0,seedling:25,medium:55,established:120,rare_size:250},   c:{cutting:0,seedling:20,medium:45,established:100,rare_size:200},   r:5, tags:'rare'},
+    }
+  },
+  carnivorous: {
+    name:'食虫植物',
+    info:'小众但忠实客户群。运输需保湿密封。利润率高（成本低售价高）。美国市场对食虫植物接受度高。',
+    plants: {
+      nepenthes_ventrata:{n:'猪笼草 花市红',       e:'Nepenthes Ventrata',    p:{cutting:8,seedling:18,medium:35,established:65,rare_size:130},     c:{cutting:5,seedling:12,medium:25,established:45,rare_size:90},     r:8, tags:''},
+      nepenthes_hamata:  {n:'猪笼草 哈马塔（稀有）',e:'Nepenthes Hamata',      p:{cutting:25,seedling:55,medium:110,established:220,rare_size:450},  c:{cutting:30,seedling:70,medium:140,established:280,rare_size:550}, r:12,tags:'rare'},
+      dionaea_muscipula: {n:'捕蝇草',             e:'Dionaea Muscipula',     p:{cutting:5,seedling:12,medium:25,established:45,rare_size:90},      c:{cutting:2,seedling:6,medium:12,established:22,rare_size:45},      r:5, tags:''},
+      sarracenia_purp:   {n:'瓶子草 紫花',         e:'Sarracenia Purpurea',   p:{cutting:8,seedling:18,medium:35,established:65,rare_size:130},     c:{cutting:5,seedling:12,medium:22,established:42,rare_size:85},     r:5, tags:''},
+      drosera_capensis:  {n:'好望角毛毡苔',        e:'Drosera Capensis',      p:{cutting:5,seedling:12,medium:25,established:48,rare_size:90},      c:{cutting:3,seedling:6,medium:12,established:25,rare_size:50},      r:5, tags:''},
+    }
+  },
+  orchids: {
+    name:'兰花',
+    info:'高端市场。Palmstreet兰花拍卖竞争小、溢价高。但运输要求极高，需专业包装。建议只做美国本土发货。',
+    plants: {
+      phalaenopsis_var:  {n:'蝴蝶兰 花叶',         e:'Phalaenopsis Variegated',p:{cutting:0,seedling:25,medium:50,established:100,rare_size:200},   c:{cutting:0,seedling:20,medium:45,established:90,rare_size:180},    r:12,tags:''},
+      jewel_orchid:      {n:'宝石兰',             e:'Jewel Orchid (Ludisia)',p:{cutting:8,seedling:18,medium:35,established:65,rare_size:130},     c:{cutting:5,seedling:15,medium:28,established:55,rare_size:110},    r:8, tags:''},
+      cattleya:          {n:'卡特兰',             e:'Cattleya Hybrid',       p:{cutting:0,seedling:20,medium:45,established:90,rare_size:180},     c:{cutting:0,seedling:18,medium:40,established:80,rare_size:160},    r:10,tags:''},
+      paphiopedilum:     {n:'兜兰（CITES管制）',    e:'Paphiopedilum',         p:{cutting:0,seedling:30,medium:65,established:130,rare_size:260},    c:{cutting:0,seedling:35,medium:80,established:160,rare_size:300},   r:15,tags:'rare,warn'},
+    }
+  },
+  begonias: {
+    name:'秋海棠属（Begonia）',
+    info:'价格波动最大的品类——一年内从几千跌到几十元是常态。组培技术普及后普通品种迅速平民化。但稀有锦化品种（如伊丽莎白）仍可上万。',
+    plants: {
+      begonia_maculata:  {n:'鳟鱼秋海棠',          e:'Begonia Maculata',      p:{cutting:5,seedling:12,medium:25,established:48,rare_size:90},      c:{cutting:3,seedling:8,medium:15,established:30,rare_size:60},      r:8, tags:''},
+      begonia_elizabeth: {n:'伊丽莎白锦秋海棠',     e:'Begonia Elizabeth',     p:{cutting:100,seedling:200,medium:400,established:800,rare_size:1600},c:{cutting:150,seedling:300,medium:600,established:1200,rare_size:2400},r:15,tags:'rare,hot'},
+      begonia_amphioxus: {n:'天使之翼秋海棠',       e:'Begonia Amphioxus',     p:{cutting:10,seedling:22,medium:45,established:85,rare_size:170},    c:{cutting:8,seedling:18,medium:35,established:70,rare_size:140},    r:12,tags:''},
+      begonia_lucerna:   {n:'灯心秋海棠',           e:'Begonia Lucerna',       p:{cutting:6,seedling:15,medium:30,established:55,rare_size:110},     c:{cutting:4,seedling:10,medium:20,established:40,rare_size:80},     r:8, tags:''},
+      begonia_pavonina:  {n:'孔雀秋海棠（蓝光）',    e:'Begonia Pavonina',      p:{cutting:12,seedling:28,medium:55,established:110,rare_size:220},   c:{cutting:10,seedling:25,medium:50,established:100,rare_size:200},  r:12,tags:''},
+      begonia_darth:     {n:'达斯维达秋海棠',       e:'Begonia Darthvaderiana',p:{cutting:15,seedling:35,medium:70,established:140,rare_size:280},  c:{cutting:15,seedling:35,medium:70,established:140,rare_size:280},  r:15,tags:'rare'},
+    }
+  },
+};
+
+// ═══════════════════════════════════════
+// 规格倍数
+// ═══════════════════════════════════════
+var SIZE_MULTIPLIER = {
+  cutting:      {lbl:'插穗/Cutting',      priceMul:0.4, costMul:0.4,  riskAdj:0},
+  seedling:     {lbl:'小苗/Seedling',     priceMul:0.6, costMul:0.6,  riskAdj:0},
+  medium:       {lbl:'中株/Medium',       priceMul:1.0, costMul:1.0,  riskAdj:0},
+  established:  {lbl:'大株/Established',  priceMul:1.8, costMul:1.8,  riskAdj:5},
+  rare_size:    {lbl:'稀有规格/XL',       priceMul:3.5, costMul:3.5,  riskAdj:8},
+};
+
+// ═══════════════════════════════════════
+// 数据初始化
+// ═══════════════════════════════════════
+var currentPlants = [];
+
+function updateCategory(){
+  var cat = document.getElementById('plantCategory').value;
+  currentPlants = [];
+  var sel = document.getElementById('plantType');
+  sel.innerHTML = '';
+
+  if (cat === 'custom') {
+    sel.innerHTML = '<option value="custom">自定义</option>';
+    document.getElementById('plantPriceNote').textContent = '';
+    document.getElementById('marketInfo').innerHTML = '手动输入市场价和成本';
+    calcPlant();
+    return;
+  }
+
+  var data = PLANT_DB[cat];
+  if (!data) return;
+
+  document.getElementById('marketInfo').innerHTML = '<strong>' + data.name + '</strong>: ' + data.info;
+
+  // Sort plants by price (high to low)
+  var entries = Object.entries(data.plants);
+  entries.sort(function(a,b){
+    return b[1].p.medium - a[1].p.medium;
+  });
+
+  entries.forEach(function(e){
+    var k = e[0], v = e[1];
+    var p = v.p.medium;
+    var priceLabel = p < 30 ? '$' : (p < 80 ? '$$' : (p < 200 ? '$$$' : '$$$$'));
+    var tags = (v.tags || '').split(',').filter(Boolean);
+    var tagHtml = tags.map(function(t){
+      return '<span class="tag '+t.trim()+'">'+({'hot':'🔥热门','rare':'💎稀有','safe':'✅耐运输','warn':'⚠️高风险'}[t.trim()]||t)+'</span>';
+    }).join('');
+    sel.innerHTML += '<option value="'+cat+':'+k+'">'+v.n+' · '+priceLabel+' '+tagHtml+'</option>';
+    currentPlants.push({key:k, data:v, cat:cat});
+  });
+
+  // Select first plant
+  if (currentPlants.length > 0) {
+    document.getElementById('plantType').value = cat+':'+currentPlants[0].key;
+  }
+  updatePlant();
+}
+
+function updatePlant(){
+  var val = document.getElementById('plantType').value;
+  if (val === 'custom') {
+    document.getElementById('plantPriceNote').textContent = '';
+    document.getElementById('plantRisk').value = 10;
+    document.getElementById('customsRisk').value = 0;
+    document.getElementById('plantCostCNY').value = '';
+    calcPlant();
+    return;
+  }
+
+  var parts = val.split(':');
+  var cat = parts[0], key = parts[1];
+  var data = PLANT_DB[cat];
+  if (!data || !data.plants[key]) return;
+
+  var plant = data.plants[key];
+  var size = document.getElementById('plantSize').value;
+  var sm = SIZE_MULTIPLIER[size];
+
+  var basePrice = plant.p[size] || plant.p.medium;
+  var baseCost = plant.c[size] || plant.c.medium;
+
+  document.getElementById('plantMarketPrice').value = basePrice;
+  document.getElementById('plantMarketPrice').dataset.basePrice = basePrice; // store for condition calc
+  document.getElementById('plantCostCNY').value = baseCost;
+  document.getElementById('plantRisk').value = plant.r + (sm.riskAdj || 0);
+
+  // Note
+  var tags = (plant.tags || '').split(',').filter(Boolean);
+  var note = plant.e + ' · ';
+  if (tags.includes('hot')) note += '热门 · ';
+  if (tags.includes('rare')) note += '稀有 · ';
+  if (tags.includes('safe')) note += '耐运输 · ';
+  note += sizeMap(size) + '规格';
+  document.getElementById('plantPriceNote').textContent = note;
+
+  // Customs risk for CITES
+  if (tags.includes('rare') || cat === 'orchids') {
+    document.getElementById('customsRisk').value = 5;
+  } else {
+    document.getElementById('customsRisk').value = 0;
+  }
+
+  calcPlant();
+}
+
+function sizeMap(s){
+  return {cutting:'插穗',seedling:'小苗',medium:'中株',established:'大株',rare_size:'XL'}[s]||s;
+}
+
+function calcPlant(){
+  var marketPrice = parseFloat(document.getElementById('plantMarketPrice').value)||0;
+  var costCNY = parseFloat(document.getElementById('plantCostCNY').value)||0;
+  var mortality = parseInt(document.getElementById('plantRisk').value)/100;
+  var customsRisk = parseInt(document.getElementById('customsRisk').value)/100;
+  var shipping = parseFloat(document.getElementById('plantShippingCost').value)||0;
+  var exchangeRate = parseFloat(document.getElementById('exchangeRate').value)||6.80;
+
+  // Condition multipliers
+  var variegationMul = {'none':0.3,'low':0.6,'medium':1.0,'high':2.5,'marble':5.0}[document.getElementById('variegation').value]||1;
+  var healthMul = {'excellent':1.0,'good':0.85,'fair':0.6,'poor':0.4}[document.getElementById('health').value]||1;
+  var rootMul = {'established':1.0,'plug':0.7,'bare_root':0.5,'unrooted':0.35}[document.getElementById('rootSystem').value]||1;
+  var leafCount = parseInt(document.getElementById('leafCount').value)||1;
+  var leafMul = leafCount > 1 ? 0.8 + (leafCount * 0.07) : 0.5; // more leaves = more value, capped
+  if (leafMul > 3) leafMul = 3;
+
+  // Combined condition score — use stored base price to avoid compounding
+  var storedBase = parseFloat(document.getElementById('plantMarketPrice').dataset.basePrice) || marketPrice;
+  if (!document.getElementById('plantMarketPrice').dataset.basePrice) {
+    document.getElementById('plantMarketPrice').dataset.basePrice = marketPrice;
+    storedBase = marketPrice;
+  }
+  var conditionMul = variegationMul * healthMul * rootMul * Math.min(leafMul, 2.5);
+  document.getElementById('plantMarketPrice').value = Math.round(storedBase * conditionMul);
+
+  // Risk adjustment for condition: bare root crops = higher mortality
+  if (rootMul < 0.5) mortality += 0.05;
+  if (healthMul < 0.7) mortality += 0.03;
+
+  var totalRisk = mortality + customsRisk;
+
+  // Fees
+  var palmstreetPct = 0.069;
+  var paypalPct = 0.0349;
+  var paypalFixed = 0.49;
+  var worldfirstPct = 0.003;
+
+  var riskMultiplier = 1 / (1 - totalRisk);
+  var costUSD = costCNY / exchangeRate;
+  var baseCostAfterRisk = (costUSD + shipping) * riskMultiplier;
+  var totalFeePct = palmstreetPct + paypalPct;
+  var denominator = 1 - totalFeePct;
+
+  function priceForProfit(profitTarget) {
+    return Math.ceil((baseCostAfterRisk + paypalFixed + profitTarget) / denominator * 100) / 100 - 0.01;
+  }
+
+  var breakEven = Math.max(priceForProfit(0), 4.99);
+  var profit20 = priceForProfit(baseCostAfterRisk * 0.20);
+  var profit30 = priceForProfit(baseCostAfterRisk * 0.30);
+  var profit50 = priceForProfit(baseCostAfterRisk * 0.50);
+
+  var auctionStart = Math.max(costUSD, (breakEven * 0.70));
+  auctionStart = Math.round(auctionStart * 2) / 2; // round to nearest $0.50
+  var auctionReserve = Math.max(breakEven * 1.05, 9.99);
+  var buyItNow = profit30;
+
+  // Revenue breakdown
+  var revenue = marketPrice;
+  var palmstreetFee = revenue * palmstreetPct;
+  var paypalFee = (revenue + shipping) * paypalPct + paypalFixed;
+  var totalFees = palmstreetFee + paypalFee;
+  var profitBeforeWF = revenue - costUSD - shipping - totalFees;
+  var worldfirstFee = Math.max(0, profitBeforeWF) * worldfirstPct;
+  var profitCNY = (profitBeforeWF - worldfirstFee) * exchangeRate;
+  var netMargin = profitBeforeWF > 0 ? (profitCNY / (revenue * exchangeRate) * 100) : 0;
+
+  var html = '';
+
+  // Combined risk warning
+  if (totalRisk >= 0.15) {
+    html += '<div class="warn">⚠️ 综合风险 <strong>'+(totalRisk*100).toFixed(0)+'%</strong>（植物死亡 '+(mortality*100)+'% + 海关 '+(customsRisk*100)+'%）— 保本价已包含风险调整</div>';
+  } else if (totalRisk > 0) {
+    html += '<div class="info">📊 综合风险 '+(totalRisk*100).toFixed(0)+'%（植物死亡 '+(mortality*100)+'% + 海关 '+(customsRisk*100)+'%）</div>';
+  }
+
+  // Price boxes
+  html += '<div class="grid3">';
+  html += '<div class="price-box" style="background:rgba(200,169,110,0.08)"><div class="lbl">💰 保本价</div><div class="val" style="color:#c8a96e">$'+breakEven.toFixed(2)+'</div><div class="sub">≈ ¥'+(breakEven*exchangeRate).toFixed(0)+'</div></div>';
+  html += '<div class="price-box" style="background:rgba(76,175,80,0.08)"><div class="lbl">🎯 建议价（30%）</div><div class="val" style="color:#4caf50">$'+buyItNow.toFixed(2)+'</div><div class="sub">≈ ¥'+(buyItNow*exchangeRate).toFixed(0)+'</div></div>';
+  html += '<div class="price-box" style="background:rgba(156,39,176,0.08)"><div class="lbl">💎 高端价（50%）</div><div class="val" style="color:#CE93D8">$'+profit50.toFixed(2)+'</div><div class="sub">≈ ¥'+(profit50*exchangeRate).toFixed(0)+'</div></div>';
+  html += '</div>';
+
+  // Auction strategy
+  html += '<div style="background:rgba(33,150,243,0.08);border-radius:8px;padding:10px;margin-bottom:10px;">';
+  html += '<div style="font-size:12px;color:#64B5F6;font-weight:bold;">🔨 拍卖策略</div>';
+  html += '<div class="breakdown">';
+  html += '起拍价: <strong>$'+auctionStart.toFixed(2)+'</strong> · 底价: <strong>$'+auctionReserve.toFixed(2)+'</strong> · 一口价: <strong style="color:#4caf50">$'+buyItNow.toFixed(2)+'</strong>';
+  html += '</div></div>';
+
+  // Full breakdown
+  html += '<div class="breakdown">';
+  html += '按市场价 <strong>$'+marketPrice.toFixed(2)+'</strong> 卖出：<br>';
+  html += '成本 $'+costUSD.toFixed(2)+' + 运费 $'+shipping.toFixed(2)+' = <strong>$'+(costUSD+shipping).toFixed(2)+'</strong><br>';
+  html += 'Palmstreet 6.9%: -$'+palmstreetFee.toFixed(2)+'<br>';
+  html += 'PayPal 3.49%+$0.49: -$'+paypalFee.toFixed(2)+'<br>';
+  html += '万里汇 0.3%: -$'+worldfirstFee.toFixed(2)+'<br>';
+  html += '综合风险('+(totalRisk*100).toFixed(0)+'%): -$'+((costUSD+shipping)*totalRisk).toFixed(2)+'<br>';
+  html += '<strong style="color:'+(profitCNY>0?'#4caf50':'#f44336')+';font-size:16px;">💰 到手: ¥'+profitCNY.toFixed(2)+'</strong>';
+  html += ' <span style="font-size:10px">净利率 '+netMargin.toFixed(1)+'%</span>';
+  html += '</div>';
+
+  document.getElementById('plantResults').innerHTML = html;
+  document.getElementById('rateDisplay').textContent = '（汇率 '+exchangeRate.toFixed(2)+'）';
+}
+
+// Init
+updateCategory();
+
+// ═══════════════════════════════════════
+// Gemini + PlantNet 双重识别
+// ═══════════════════════════════════════
+var PLANTNET_KEY = '2b10MdsMM4y5kMMRsao5ZdXp';
+var GEMINI_KEY = 'AIzaSyD0JuczVBKoW2iHJBEbhycZ8fTOXZbNQno';
+
+async function identifyPlant(){
+  var file = document.getElementById('plantPhoto').files[0];
+  if (!file) return;
+
+  // Preview
+  var reader = new FileReader();
+  reader.onload = function(e){
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('photoImg').src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+
+  var resultDiv = document.getElementById('identifyResult');
+  resultDiv.innerHTML = '<span style="color:#c8a96e;">🔍 AI 分析中（约5秒）...</span>';
+
+  // Step 1: Gemini analyzes the photo for condition + species
+  var base64 = await new Promise(function(resolve){
+    var r = new FileReader();
+    r.onload = function(e){ resolve(e.target.result.split(',')[1]); };
+    r.readAsDataURL(file);
+  });
+
+  var geminiData = null;
+  try {
+    var geminiResp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + GEMINI_KEY, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            {text: 'Analyze this plant photo for a plant auction listing. Return ONLY valid JSON, no markdown, no explanation:\n{\n  "species_cn": "中文名",\n  "species_en": "English common name",\n  "scientific_name": "Scientific name",\n  "leaf_count": number,\n  "size": "cutting|seedling|medium|established|rare_size",\n  "variegation": "none|low|medium|high|marble",\n  "health": "excellent|good|fair|poor",\n  "root": "established|plug|bare_root|unrooted",\n  "notes": "brief condition assessment for pricing"\n}'},
+            {inlineData: {mimeType: file.type, data: base64}}
+          ]
+        }]
+      })
+    });
+    var geminiJson = await geminiResp.json();
+    var text = geminiJson.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    // Extract JSON from response
+    var jsonStart = text.indexOf('{');
+    var jsonEnd = text.lastIndexOf('}') + 1;
+    if (jsonStart >= 0 && jsonEnd > jsonStart) {
+      geminiData = JSON.parse(text.substring(jsonStart, jsonEnd));
+    }
+  } catch(e) {
+    console.log('Gemini error:', e);
+  }
+
+  // Step 2: PlantNet for species verification
+  var plantnetResults = [];
+  try {
+    var formData = new FormData();
+    formData.append('images', file);
+    formData.append('organs', 'auto');
+    var pnResp = await fetch('https://my-api.plantnet.org/v2/identify/all?api-key=' + PLANTNET_KEY, {
+      method: 'POST', body: formData
+    });
+    var pnData = await pnResp.json();
+    plantnetResults = (pnData.results || []).slice(0, 3);
+  } catch(e) {}
+
+  // Build result HTML
+  var html = '';
+
+  // Gemini analysis
+  if (geminiData) {
+    html += '<div style="font-size:12px;color:#2196F3;font-weight:bold;">🤖 AI 自动分析</div>';
+    html += '<div style="font-size:12px;margin:6px 0;line-height:1.8;">';
+    html += '品种: <strong>' + (geminiData.species_cn||'?') + '</strong> (' + (geminiData.species_en||'?') + ')<br>';
+    html += '叶数: <strong>' + (geminiData.leaf_count||'?') + '片</strong> · ';
+    html += '锦化: <strong>' + ({none:'无',low:'低级',medium:'中级',high:'高级',marble:'极品'}[geminiData.variegation]||'?') + '</strong> · ';
+    html += '健康: <strong>' + ({excellent:'优秀',good:'良好',fair:'一般',poor:'较差'}[geminiData.health]||'?') + '</strong> · ';
+    html += '根系: <strong>' + ({established:'定植',plug:'穴盘',bare_root:'裸根',unrooted:'未发根'}[geminiData.root]||'?') + '</strong>';
+    html += '</div>';
+    if (geminiData.notes) {
+      html += '<div style="font-size:11px;color:#ffa;margin:4px 0;">💡 ' + geminiData.notes + '</div>';
+    }
+
+    // Auto-apply button
+    html += '<button onclick="applyGeminiAnalysis(' + JSON.stringify(JSON.stringify(geminiData)) + ')" style="background:#2196F3;color:#fff;border:none;border-radius:6px;padding:6px 16px;cursor:pointer;font-size:12px;margin-top:4px;">✅ 一键填入分析结果</button>';
+  }
+
+  // PlantNet results
+  if (plantnetResults.length > 0) {
+    html += '<div style="font-size:12px;color:#4caf50;font-weight:bold;margin-top:10px;">🌿 PlantNet 参考</div>';
+    var bestMatch = null;
+    for (var i = 0; i < plantnetResults.length; i++) {
+      var r = plantnetResults[i];
+      var species = r.species || {};
+      var score = (r.score * 100).toFixed(1);
+      var name = (species.commonNames || []).join(', ') || species.scientificNameWithoutAuthor || '?';
+      html += '<div style="font-size:11px;padding:2px 0;color:#888;">' + name + ' <span style="color:' + (score > 50 ? '#4caf50' : '#888') + '">' + score + '%</span></div>';
+      if (!bestMatch) {
+        var match = findPlantMatch(name, species.scientificNameWithoutAuthor || '');
+        if (match && score > 30) bestMatch = match;
+      }
+    }
+    if (bestMatch) {
+      html += '<button onclick="applyMatch(\'' + bestMatch.cat + '\',\'' + bestMatch.key + '\')" style="background:#4caf50;color:#000;border:none;border-radius:4px;padding:2px 10px;cursor:pointer;font-size:11px;">🎯 匹配: ' + bestMatch.name + '</button>';
+    }
+  }
+
+  if (!geminiData && plantnetResults.length === 0) {
+    html = '<span style="color:#f44336;">❌ 识别失败，请换一张清晰照片</span>';
+  }
+
+  resultDiv.innerHTML = html;
+}
+
+function applyGeminiAnalysis(jsonStr){
+  var d = JSON.parse(jsonStr);
+  // Apply condition fields
+  if (d.leaf_count) document.getElementById('leafCount').value = d.leaf_count;
+  if (d.size) document.getElementById('plantSize').value = d.size;
+  if (d.variegation) document.getElementById('variegation').value = d.variegation;
+  if (d.health) document.getElementById('health').value = d.health;
+  if (d.root) document.getElementById('rootSystem').value = d.root;
+  // Reset base price so condition multipliers take effect
+  document.getElementById('plantMarketPrice').dataset.basePrice = '';
+  calcPlant();
+  document.getElementById('identifyResult').innerHTML += '<div style="color:#4caf50;font-size:12px;margin-top:4px;">✅ 已应用AI分析结果！</div>';
+}
+
+function findPlantMatch(commonName, sciName){
+  var search = (commonName + ' ' + sciName).toLowerCase();
+  search = search.replace(/[^a-z\s]/g, '');
+  var bestScore = 0, bestMatch = null;
+
+  for (var cat in PLANT_DB) {
+    var data = PLANT_DB[cat];
+    for (var key in data.plants) {
+      var p = data.plants[key];
+      var target = (p.n + ' ' + p.e).toLowerCase().replace(/[^a-z\s]/g, '');
+
+      // Simple word overlap scoring
+      var targetWords = target.split(/\s+/);
+      var searchWords = search.split(/\s+/);
+      var matches = 0;
+      for (var i = 0; i < targetWords.length; i++) {
+        if (targetWords[i].length < 3) continue;
+        if (search.indexOf(targetWords[i]) >= 0) matches++;
+      }
+      var score = matches / Math.max(targetWords.length, 1);
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = {cat:cat, key:key, name:p.n, price:p.p.medium};
+      }
+    }
+  }
+  return bestScore > 0.3 ? bestMatch : null;
+}
+
+function applyMatch(cat, key){
+  document.getElementById('plantCategory').value = cat;
+  updateCategory();
+  document.getElementById('plantType').value = cat + ':' + key;
+  updatePlant();
+}
+
+// Drag & drop support
+document.addEventListener('DOMContentLoaded', function(){
+  document.body.addEventListener('dragover', function(e){ e.preventDefault(); });
+  document.body.addEventListener('drop', function(e){
+    e.preventDefault();
+    var file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      document.getElementById('plantPhoto').files = e.dataTransfer.files;
+      identifyPlant();
+    }
+  });
+});
+</script>
+</body>
+</html>
