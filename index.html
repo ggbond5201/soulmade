@@ -1487,14 +1487,9 @@
   <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
     <div class="modal" id="modal">
       <button class="modal-close" onclick="closeModal()">CLOSE ✕</button>
-      <div style="position:relative;margin-bottom:24px;">
-        <div class="modal-img-wrap" id="modalImgWrap" style="width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:12px;background:#e8e2d8;cursor:zoom-in;position:relative;">
-          <img id="modalImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s;">
-          <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;border-radius:4px;padding:2px 8px;font-size:10px;pointer-events:none;">🔍 Click to zoom</div>
-        </div>
-        <button id="galleryPrev" onclick="navigateGallery(-1)" style="display:none;position:absolute;top:50%;left:8px;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;z-index:2;">❮</button>
-        <button id="galleryNext" onclick="navigateGallery(1)" style="display:none;position:absolute;top:50%;right:8px;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;z-index:2;">❯</button>
-        <div id="galleryNav" style="display:none;justify-content:center;gap:6px;margin-top:8px;"></div>
+      <div class="modal-img-wrap" id="modalImgWrap" style="width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:12px;margin-bottom:24px;background:#e8e2d8;cursor:zoom-in;position:relative;">
+        <img id="modalImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s;">
+        <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;border-radius:4px;padding:2px 8px;font-size:10px;pointer-events:none;">🔍 Click to zoom</div>
       </div>
       <div class="modal-product-name" id="modalName"></div>
       <div class="modal-product-id" id="modalId"></div>
@@ -1569,10 +1564,7 @@
   <!-- IMAGE LIGHTBOX -->
   <div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
     <button class="lightbox-close" onclick="closeLightbox()">CLOSE ✕</button>
-    <button onclick="lightboxPrev(event)" style="position:absolute;left:24px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer;z-index:2;">❮</button>
-    <button onclick="lightboxNext(event)" style="position:absolute;right:24px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer;z-index:2;">❯</button>
     <img id="lightboxImg" src="" alt="" onclick="event.stopPropagation()">
-    <div id="lightboxCount" style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.6);font-family:DM Mono,monospace;font-size:12px;"></div>
   </div>
 
   <!-- IDENTITY SYSTEM -->
@@ -1698,12 +1690,10 @@
     // Keyboard: ESC to close modals
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
-        closeModal(); closeLegal(); closeLightbox();
+        closeModal();
+        closeLegal();
+        closeLightbox();
       }
-      if (e.key === 'ArrowLeft' && document.getElementById('lightboxOverlay').classList.contains('open')) lightboxPrev(e);
-      if (e.key === 'ArrowRight' && document.getElementById('lightboxOverlay').classList.contains('open')) lightboxNext(e);
-      if (e.key === 'ArrowLeft' && document.getElementById('modalOverlay').classList.contains('open') && galleryImages.length>1) { e.preventDefault(); navigateGallery(-1); }
-      if (e.key === 'ArrowRight' && document.getElementById('modalOverlay').classList.contains('open') && galleryImages.length>1) { e.preventDefault(); navigateGallery(1); }
     });
 
     // Mobile menu
@@ -1809,15 +1799,15 @@
 
     // ── Products Data (fallback if Worker unreachable) ──
     const DEFAULT_PRODUCTS = [
-      { key:'custom',   name:'Custom Commission',  nameZh:'定制作品',   id:'SOULMADE-CUSTOM', price:0, img:'', images:[], customPrice:true, desc:'Have your own idea? Describe what you want and name your price. We will handcraft a one-of-a-kind piece just for you.', descZh:'有自己的想法？描述你想要的，自定价格。我们将为你手工打造一件独一无二的作品。', active:true },
-      { key:'amber',    name:'Amber Drop',        nameZh:'琥珀吊坠',   id:'SOULMADE-001', price:24, img:'p1.png', images:['p1.png'], desc:'A warm golden pendant capturing the light of a late afternoon in Nanchang. Poured by hand, polished to crystal clarity.', descZh:'一枚温暖的金色吊坠，封存了南昌某个午后的光线。手工注胶，打磨至晶莹剔透。', active:true },
-      { key:'forest',   name:'Forest Keychain',   nameZh:'森林钥匙扣', id:'SOULMADE-002', price:18, img:'p2.png', images:['p2.png'], desc:'Deep green botanicals suspended in resin — a miniature forest you can carry. Each one unique.', descZh:'深绿色植物标本悬浮于树脂中，一片可以随身携带的微型森林。每一件都独一无二。', active:true },
-      { key:'twilight', name:'Twilight Orb',      nameZh:'暮色摆件',   id:'SOULMADE-003', price:32, img:'p3.png', images:['p3.png'], desc:'A sphere of deep purple resin holding the last light before nightfall. Display it where light touches.', descZh:'深紫色树脂球体，封存了夜幕降临前最后的光芒。放在光线能触碰的地方展示。', active:true },
-      { key:'ocean',    name:'Ocean Pendant',     nameZh:'海洋之心吊坠',id:'SOULMADE-004', price:28, img:'p4.png', images:['p4.png'], desc:'Layers of blue and white capturing the rhythm of waves. A piece of the sea, worn close to your heart.', descZh:'蓝白分层交叠，捕捉海浪的韵律。一片海洋，贴近心跳。', active:true },
-      { key:'cherry',   name:'Cherry Blossom',    nameZh:'樱花耳饰',   id:'SOULMADE-005', price:22, img:'p5.png', images:['p5.png'], desc:'Delicate pink petals forever suspended mid-fall. Light as a spring breeze, elegant on any ear.', descZh:'粉色花瓣永久定格在飘落瞬间。如春日微风，轻盈优雅。', active:true },
-      { key:'galaxy',   name:'Galaxy Sphere',     nameZh:'银河摆件',   id:'SOULMADE-006', price:36, img:'p6.png', images:['p6.png'], desc:'A cosmos of swirling stars captured in crystal-clear resin. No two galaxies are the same.', descZh:'旋转星海被封装在水晶般透明的树脂中。每片银河都独一无二。', active:true },
-      { key:'bundle1',  name:'Pendant + Keychain Set', nameZh:'吊坠+钥匙扣套装', id:'SOULMADE-BUNDLE-1', price:35, img:'p1.png', images:['p1.png'], bundle:true, bundleItems:'Amber Drop + Forest Keychain', desc:'Our most popular combo: a warm amber pendant paired with a forest keychain. Save $7.', descZh:'最受欢迎的搭配：琥珀吊坠 + 森林钥匙扣，立省 $7。', active:true },
-      { key:'bundle2',  name:'Full Collection Set',   nameZh:'全套收藏', id:'SOULMADE-BUNDLE-2', price:120, img:'p6.png', images:['p6.png'], bundle:true, bundleItems:'All 6 standard pieces', desc:'Own the entire collection. All 6 standard pieces at a special bundle price. Save $40.', descZh:'拥有全套。6 件标准作品打包特价，立省 $40。', active:true }
+      { key:'custom',   name:'Custom Commission',  nameZh:'定制作品',   id:'SOULMADE-CUSTOM', price:0, img:'', customPrice:true, desc:'Have your own idea? Describe what you want and name your price. We will handcraft a one-of-a-kind piece just for you.', descZh:'有自己的想法？描述你想要的，自定价格。我们将为你手工打造一件独一无二的作品。', active:true },
+      { key:'amber',    name:'Amber Drop',        nameZh:'琥珀吊坠',   id:'SOULMADE-001', price:24, img:'p1.png', desc:'A warm golden pendant capturing the light of a late afternoon in Nanchang. Poured by hand, polished to crystal clarity.', descZh:'一枚温暖的金色吊坠，封存了南昌某个午后的光线。手工注胶，打磨至晶莹剔透。', active:true },
+      { key:'forest',   name:'Forest Keychain',   nameZh:'森林钥匙扣', id:'SOULMADE-002', price:18, img:'p2.png', desc:'Deep green botanicals suspended in resin — a miniature forest you can carry. Each one unique.', descZh:'深绿色植物标本悬浮于树脂中，一片可以随身携带的微型森林。每一件都独一无二。', active:true },
+      { key:'twilight', name:'Twilight Orb',      nameZh:'暮色摆件',   id:'SOULMADE-003', price:32, img:'p3.png', desc:'A sphere of deep purple resin holding the last light before nightfall. Display it where light touches.', descZh:'深紫色树脂球体，封存了夜幕降临前最后的光芒。放在光线能触碰的地方展示。', active:true },
+      { key:'ocean',    name:'Ocean Pendant',     nameZh:'海洋之心吊坠',id:'SOULMADE-004', price:28, img:'p4.png', desc:'Layers of blue and white capturing the rhythm of waves. A piece of the sea, worn close to your heart.', descZh:'蓝白分层交叠，捕捉海浪的韵律。一片海洋，贴近心跳。', active:true },
+      { key:'cherry',   name:'Cherry Blossom',    nameZh:'樱花耳饰',   id:'SOULMADE-005', price:22, img:'p5.png', desc:'Delicate pink petals forever suspended mid-fall. Light as a spring breeze, elegant on any ear.', descZh:'粉色花瓣永久定格在飘落瞬间。如春日微风，轻盈优雅。', active:true },
+      { key:'galaxy',   name:'Galaxy Sphere',     nameZh:'银河摆件',   id:'SOULMADE-006', price:36, img:'p6.png', desc:'A cosmos of swirling stars captured in crystal-clear resin. No two galaxies are the same.', descZh:'旋转星海被封装在水晶般透明的树脂中。每片银河都独一无二。', active:true },
+      { key:'bundle1',  name:'Pendant + Keychain Set', nameZh:'吊坠+钥匙扣套装', id:'SOULMADE-BUNDLE-1', price:35, img:'p1.png', bundle:true, bundleItems:'Amber Drop + Forest Keychain', desc:'Our most popular combo: a warm amber pendant paired with a forest keychain. Save $7.', descZh:'最受欢迎的搭配：琥珀吊坠 + 森林钥匙扣，立省 $7。', active:true },
+      { key:'bundle2',  name:'Full Collection Set',   nameZh:'全套收藏', id:'SOULMADE-BUNDLE-2', price:120, img:'p6.png', bundle:true, bundleItems:'All 6 standard pieces', desc:'Own the entire collection. All 6 standard pieces at a special bundle price. Save $40.', descZh:'拥有全套。6 件标准作品打包特价，立省 $40。', active:true }
     ];
 
     let products = [...DEFAULT_PRODUCTS];
@@ -1833,11 +1823,7 @@
             products = data;
             productsLoaded = true;
             renderShop();
-          } else {
-            console.warn('Products API returned empty or invalid data:', data);
           }
-        } else {
-          console.warn('Products API error:', res.status, res.statusText);
         }
       } catch (e) { console.warn('Products API unreachable:', e.message); }
     }
@@ -1958,8 +1944,8 @@
       document.getElementById('orderSuccess').style.display = 'none';
       document.getElementById('orderName').value = '';
       document.getElementById('orderEmail').value = '';
-      document.getElementById('orderRegion').value = '';
       document.getElementById('orderNotes').value = '';
+      document.getElementById('orderRegion').value = '';
       document.getElementById('priceSummary').style.display = 'none';
       document.getElementById('paypal-button-container').innerHTML = '';
       document.getElementById('modalOverlay').classList.add('open');
@@ -2002,7 +1988,6 @@
           <button class="product-check" onclick="event.stopPropagation();addToCart('${p.key}')" style="border:none;background:var(--amber);color:#fff;border-radius:20px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:DM Mono,monospace;">+</button>
           <div class="img-wrap" onclick="openModal('${p.key}')" style="${p.customPrice ? 'background:linear-gradient(135deg, #fdf6f0 0%, #f5ecdd 50%, #fdf3ef 100%);' : ''}">
             ${p.customPrice ? '' : `<img src="${(p.images && p.images[0]) || p.img || 'p1.png'}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.background='radial-gradient(circle at 35% 35%, rgba(255,240,200,0.9) 0%, rgba(200,169,110,0.6) 40%, rgba(100,60,20,0.4) 100%)';this.style.display='none';">`}
-            ${p.images && p.images.length > 1 ? `<span style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.6);color:#fff;border-radius:10px;padding:2px 8px;font-size:10px;font-family:DM Mono,monospace;z-index:2;pointer-events:none;">${p.images.length} img</span>` : ''}
             <div class="product-overlay">
               <span data-en="View Details" data-zh="查看详情">View Details</span>
               <div class="overlay-price">${p.customPrice ? 'You Set' : '$'+p.price}</div>
@@ -2023,32 +2008,6 @@
 
     // ── Product Modal ──
     let currentProduct = null;
-    let galleryImages = [];
-    let galleryIndex = 0;
-
-    function updateGallery() {
-      var hasMultiple = galleryImages.length > 1;
-      document.getElementById('galleryPrev').style.display = hasMultiple ? 'block' : 'none';
-      document.getElementById('galleryNext').style.display = hasMultiple ? 'block' : 'none';
-      if (galleryImages.length > 0) {
-        document.getElementById('modalImg').src = galleryImages[galleryIndex];
-        document.getElementById('modalImgWrap').onclick = function(e) {
-          e.stopPropagation(); openLightbox(galleryImages, galleryIndex);
-        };
-      }
-      var dots = document.getElementById('galleryNav');
-      if (hasMultiple) {
-        dots.style.display = 'flex';
-        dots.innerHTML = galleryImages.map(function(_, i){
-          return '<span style="width:8px;height:8px;border-radius:50%;background:' + (i === galleryIndex ? 'var(--amber)' : 'rgba(0,0,0,0.15)') + ';cursor:pointer;" onclick="galleryIndex='+i+';updateGallery();"></span>';
-        }).join('');
-      } else { dots.style.display = 'none'; dots.innerHTML = ''; }
-    }
-
-    function navigateGallery(dir) {
-      galleryIndex = (galleryIndex + dir + galleryImages.length) % galleryImages.length;
-      updateGallery();
-    }
 
     const API = "https://soulmade-memory.2323371806.workers.dev";
 
@@ -2073,14 +2032,11 @@
 
       if (currentProduct.customPrice) {
         document.getElementById('modalImgWrap').style.display = 'none';
-        document.getElementById('galleryPrev').style.display = 'none';
-        document.getElementById('galleryNext').style.display = 'none';
-        document.getElementById('galleryNav').style.display = 'none';
       } else {
         document.getElementById('modalImgWrap').style.display = '';
-        galleryImages = currentProduct.images || (currentProduct.img ? [currentProduct.img] : []);
-        galleryIndex = 0;
-        updateGallery();
+        var imgSrc = (currentProduct.images && currentProduct.images[0]) || currentProduct.img || 'p1.png';
+        document.getElementById('modalImg').src = imgSrc;
+        document.getElementById('modalImgWrap').onclick = function(e){ e.stopPropagation(); openLightbox(imgSrc); };
       }
       document.getElementById('modalName').textContent = isZh ? currentProduct.nameZh : currentProduct.name;
       document.getElementById('modalId').textContent = currentProduct.id;
@@ -2092,9 +2048,9 @@
       document.getElementById('orderSuccess').style.display = 'none';
       document.getElementById('orderName').value = '';
       document.getElementById('orderEmail').value = '';
+      document.getElementById('orderNotes').value = '';
       document.getElementById('orderRegion').value = '';
       document.getElementById('orderCustomPrice').value = '';
-      document.getElementById('orderNotes').value = '';
       document.getElementById('customPriceField').style.display = currentProduct.customPrice ? 'block' : 'none';
       document.getElementById('priceSummary').style.display = 'none';
       document.getElementById('paypal-button-container').innerHTML = '';
@@ -2275,23 +2231,11 @@
     }
 
     // ── Image Lightbox ──
-    let lightboxImages = [];
-    let lightboxIndex = 0;
-
-    function openLightbox(images, index) {
-      if (typeof images === 'string') { lightboxImages = [images]; lightboxIndex = 0; }
-      else { lightboxImages = images || []; lightboxIndex = index || 0; }
-      updateLightboxImage();
+    function openLightbox(src) {
+      document.getElementById('lightboxImg').src = src;
       document.getElementById('lightboxOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
-    function updateLightboxImage() {
-      document.getElementById('lightboxImg').src = lightboxImages[lightboxIndex] || '';
-      var cnt = document.getElementById('lightboxCount');
-      cnt.textContent = lightboxImages.length > 1 ? (lightboxIndex+1)+' / '+lightboxImages.length : '';
-    }
-    function lightboxPrev(e) { e.stopPropagation(); if (lightboxImages.length>1){lightboxIndex=(lightboxIndex-1+lightboxImages.length)%lightboxImages.length;updateLightboxImage();} }
-    function lightboxNext(e) { e.stopPropagation(); if (lightboxImages.length>1){lightboxIndex=(lightboxIndex+1)%lightboxImages.length;updateLightboxImage();} }
     function closeLightbox() {
       document.getElementById('lightboxOverlay').classList.remove('open');
       document.body.style.overflow = '';
