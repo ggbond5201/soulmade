@@ -9,6 +9,9 @@
   <meta property="og:description" content="Timeless pieces, each with a digital time capsule. A moment frozen forever.">
   <meta property="og:type" content="website">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23c8a96e'/><circle cx='12' cy='11' r='4' fill='%23f5f0e8' opacity='0.6'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Bebas+Neue&display=swap" rel="stylesheet" />
   <script src="https://www.paypal.com/sdk/js?client-id=AWZfpa3qdNiMenhzpHvWnyN1osNxZ8nN3LQo-sGNtD6jm5ji3Ls2a4YNwr_JOvC-JWw6qQEMzyHd_1e7&currency=USD" async></script>
   <style>
     :root {
@@ -1513,9 +1516,6 @@
         <div class="order-field">
           <textarea class="order-input" id="orderAddress" placeholder="Shipping address" data-placeholder-en="Shipping address" data-placeholder-zh="收货地址" style="height:64px;resize:none;"></textarea>
         </div>
-        <div class="order-field">
-          <textarea class="order-input" id="orderNotes" placeholder="Order notes (optional)" data-placeholder-en="Order notes (optional)" data-placeholder-zh="订单备注（选填）" style="height:50px;resize:none;"></textarea>
-        </div>
         <div class="order-field" id="customPriceField" style="display:none;">
           <label style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;display:block;" data-en="Your Price (USD)" data-zh="你的价格 (美元)">Your Price (USD)</label>
           <input type="number" class="order-input" id="orderCustomPrice" placeholder="Enter your price (min $1)" min="1" step="1" oninput="updateShippingCost();renderPayPal();">
@@ -1825,7 +1825,7 @@
             renderShop();
           }
         }
-      } catch (e) { console.warn('Products API unreachable:', e.message); }
+      } catch (e) { /* silent fallback — DEFAULT_PRODUCTS already rendered */ }
     }
 
     // ── Cart System ──
@@ -1888,7 +1888,7 @@
         container.innerHTML = cart.map(function(i){
           var p = products.find(function(pr){return pr.key === i.key}) || {};
           return '<div class="cart-item">'
-            + '<img class="cart-item-img" src="'+((p.images && p.images[0]) || p.img || 'p1.png')+'" onerror="this.style.background=\'var(--cream)\'">'
+            + '<img class="cart-item-img" src="'+(p.img||'p1.png')+'" onerror="this.style.background=\'var(--cream)\'">'
             + '<div class="cart-item-info"><div class="cart-item-name">'+(p.name||i.key)+'</div>'
             + '<div class="cart-item-price">' + (i.customPrice ? '$'+i.customPrice+' (you set)' : '$'+(p.price||0)+' each') + '</div></div>'
             + '<div class="cart-qty"><button onclick="updateQty(\''+i.key+'\',-1)">−</button><span>'+i.qty+'</span><button onclick="updateQty(\''+i.key+'\',1)">+</button></div>'
@@ -1944,7 +1944,6 @@
       document.getElementById('orderSuccess').style.display = 'none';
       document.getElementById('orderName').value = '';
       document.getElementById('orderEmail').value = '';
-      document.getElementById('orderNotes').value = '';
       document.getElementById('orderRegion').value = '';
       document.getElementById('priceSummary').style.display = 'none';
       document.getElementById('paypal-button-container').innerHTML = '';
@@ -1987,7 +1986,7 @@
         <div class="product-card reveal ${p.customPrice ? 'card-custom' : ''}" style="position:relative;">
           <button class="product-check" onclick="event.stopPropagation();addToCart('${p.key}')" style="border:none;background:var(--amber);color:#fff;border-radius:20px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:DM Mono,monospace;">+</button>
           <div class="img-wrap" onclick="openModal('${p.key}')" style="${p.customPrice ? 'background:linear-gradient(135deg, #fdf6f0 0%, #f5ecdd 50%, #fdf3ef 100%);' : ''}">
-            ${p.customPrice ? '' : `<img src="${(p.images && p.images[0]) || p.img || 'p1.png'}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.background='radial-gradient(circle at 35% 35%, rgba(255,240,200,0.9) 0%, rgba(200,169,110,0.6) 40%, rgba(100,60,20,0.4) 100%)';this.style.display='none';">`}
+            ${p.customPrice ? '' : `<img src="${p.img || 'p1.png'}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.background='radial-gradient(circle at 35% 35%, rgba(255,240,200,0.9) 0%, rgba(200,169,110,0.6) 40%, rgba(100,60,20,0.4) 100%)';this.style.display='none';">`}
             <div class="product-overlay">
               <span data-en="View Details" data-zh="查看详情">View Details</span>
               <div class="overlay-price">${p.customPrice ? 'You Set' : '$'+p.price}</div>
@@ -2034,9 +2033,8 @@
         document.getElementById('modalImgWrap').style.display = 'none';
       } else {
         document.getElementById('modalImgWrap').style.display = '';
-        var imgSrc = (currentProduct.images && currentProduct.images[0]) || currentProduct.img || 'p1.png';
-        document.getElementById('modalImg').src = imgSrc;
-        document.getElementById('modalImgWrap').onclick = function(e){ e.stopPropagation(); openLightbox(imgSrc); };
+        document.getElementById('modalImg').src = currentProduct.img || 'p1.png';
+        document.getElementById('modalImgWrap').onclick = function(e){ e.stopPropagation(); openLightbox(currentProduct.img || 'p1.png'); };
       }
       document.getElementById('modalName').textContent = isZh ? currentProduct.nameZh : currentProduct.name;
       document.getElementById('modalId').textContent = currentProduct.id;
@@ -2048,7 +2046,6 @@
       document.getElementById('orderSuccess').style.display = 'none';
       document.getElementById('orderName').value = '';
       document.getElementById('orderEmail').value = '';
-      document.getElementById('orderNotes').value = '';
       document.getElementById('orderRegion').value = '';
       document.getElementById('orderCustomPrice').value = '';
       document.getElementById('customPriceField').style.display = currentProduct.customPrice ? 'block' : 'none';
@@ -2101,7 +2098,6 @@
             shippingRegion: region, shippingCost: shipping,
             isBundle: !!currentProduct.bundleIds,
             bundleIds: currentProduct.bundleIds || [],
-            customerNotes: document.getElementById('orderNotes').value.trim(),
             paypalOrderId
           })
         });
@@ -2195,7 +2191,6 @@
             shippingRegion: region, shippingCost: shipping,
             isBundle: !!currentProduct.bundleIds,
             bundleIds: currentProduct.bundleIds || [],
-            customerNotes: document.getElementById('orderNotes').value.trim(),
             paypalOrderId: 'TEST-' + Date.now()
           })
         });
