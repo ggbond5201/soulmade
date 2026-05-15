@@ -9,8 +9,6 @@
   <meta property="og:description" content="Timeless pieces, each with a digital time capsule. A moment frozen forever.">
   <meta property="og:type" content="website">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23c8a96e'/><circle cx='12' cy='11' r='4' fill='%23f5f0e8' opacity='0.6'/></svg>">
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <script src="https://www.paypal.com/sdk/js?client-id=AWZfpa3qdNiMenhzpHvWnyN1osNxZ8nN3LQo-sGNtD6jm5ji3Ls2a4YNwr_JOvC-JWw6qQEMzyHd_1e7&currency=USD" async></script>
   <style>
     :root {
@@ -1835,9 +1833,13 @@
             products = data;
             productsLoaded = true;
             renderShop();
+          } else {
+            console.warn('Products API returned empty or invalid data:', data);
           }
+        } else {
+          console.warn('Products API error:', res.status, res.statusText);
         }
-      } catch (e) { /* silent fallback — DEFAULT_PRODUCTS already rendered */ }
+      } catch (e) { console.warn('Products API unreachable:', e.message); }
     }
 
     // ── Cart System ──
