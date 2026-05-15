@@ -720,30 +720,34 @@
     if (!pw) return;
 
     if (isLocal) {
-      // Local mode: any password works
       adminPassword = pw;
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';
-      // Add local mode badge
-      var badge = document.createElement('div');
-      badge.id = 'localBadge';
-      badge.style.cssText = 'background:#7A9E7E;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;display:inline-block;margin-left:8px;';
-      badge.textContent = 'LOCAL MODE';
-      document.querySelector('.section-title')?.appendChild(badge);
       loadProducts();
       renderProducts();
       return;
     }
 
+    const btn = document.querySelector('.login-btn');
+    btn.textContent = 'Connecting...';
+    btn.disabled = true;
+    document.getElementById('loginError').style.display = 'none';
+
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(function(){ controller.abort(); }, 10000);
       const res = await fetch(`${API}/admin/list`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: pw })
+        body: JSON.stringify({ password: pw }),
+        signal: controller.signal
       });
+      clearTimeout(timeout);
       const data = await res.json();
       if (data.error === 'unauthorized') {
         document.getElementById('loginError').style.display = 'block';
+        btn.textContent = 'Enter';
+        btn.disabled = false;
         return;
       }
       adminPassword = pw;
@@ -757,7 +761,9 @@
       initExportDates();
     } catch (e) {
       document.getElementById('loginError').style.display = 'block';
-      document.getElementById('loginError').textContent = 'Connection error. Try again.';
+      document.getElementById('loginError').textContent = e.name === 'AbortError' ? 'Connection timed out. Check your network or try VPN.' : 'Connection error. Try again.';
+      btn.textContent = 'Enter';
+      btn.disabled = false;
     }
   }
 
