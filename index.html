@@ -1891,7 +1891,7 @@
         container.innerHTML = cart.map(function(i){
           var p = products.find(function(pr){return pr.key === i.key}) || {};
           return '<div class="cart-item">'
-            + '<img class="cart-item-img" src="'+(p.img||'p1.png')+'" onerror="this.style.background=\'var(--cream)\'">'
+            + '<img class="cart-item-img" src="'+((p.images && p.images[0]) || p.img || 'p1.png')+'" onerror="this.style.background=\'var(--cream)\'">'
             + '<div class="cart-item-info"><div class="cart-item-name">'+(p.name||i.key)+'</div>'
             + '<div class="cart-item-price">' + (i.customPrice ? '$'+i.customPrice+' (you set)' : '$'+(p.price||0)+' each') + '</div></div>'
             + '<div class="cart-qty"><button onclick="updateQty(\''+i.key+'\',-1)">−</button><span>'+i.qty+'</span><button onclick="updateQty(\''+i.key+'\',1)">+</button></div>'
@@ -1990,7 +1990,7 @@
         <div class="product-card reveal ${p.customPrice ? 'card-custom' : ''}" style="position:relative;">
           <button class="product-check" onclick="event.stopPropagation();addToCart('${p.key}')" style="border:none;background:var(--amber);color:#fff;border-radius:20px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:DM Mono,monospace;">+</button>
           <div class="img-wrap" onclick="openModal('${p.key}')" style="${p.customPrice ? 'background:linear-gradient(135deg, #fdf6f0 0%, #f5ecdd 50%, #fdf3ef 100%);' : ''}">
-            ${p.customPrice ? '' : `<img src="${p.img || 'p1.png'}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.background='radial-gradient(circle at 35% 35%, rgba(255,240,200,0.9) 0%, rgba(200,169,110,0.6) 40%, rgba(100,60,20,0.4) 100%)';this.style.display='none';">`}
+            ${p.customPrice ? '' : `<img src="${(p.images && p.images[0]) || p.img || 'p1.png'}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.background='radial-gradient(circle at 35% 35%, rgba(255,240,200,0.9) 0%, rgba(200,169,110,0.6) 40%, rgba(100,60,20,0.4) 100%)';this.style.display='none';">`}
             <div class="product-overlay">
               <span data-en="View Details" data-zh="查看详情">View Details</span>
               <div class="overlay-price">${p.customPrice ? 'You Set' : '$'+p.price}</div>
@@ -2037,8 +2037,9 @@
         document.getElementById('modalImgWrap').style.display = 'none';
       } else {
         document.getElementById('modalImgWrap').style.display = '';
-        document.getElementById('modalImg').src = currentProduct.img || 'p1.png';
-        document.getElementById('modalImgWrap').onclick = function(e){ e.stopPropagation(); openLightbox(currentProduct.img || 'p1.png'); };
+        var imgSrc = (currentProduct.images && currentProduct.images[0]) || currentProduct.img || 'p1.png';
+        document.getElementById('modalImg').src = imgSrc;
+        document.getElementById('modalImgWrap').onclick = function(e){ e.stopPropagation(); openLightbox(imgSrc); };
       }
       document.getElementById('modalName').textContent = isZh ? currentProduct.nameZh : currentProduct.name;
       document.getElementById('modalId').textContent = currentProduct.id;

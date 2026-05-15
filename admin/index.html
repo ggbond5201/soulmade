@@ -19,6 +19,38 @@
     --success: #7A9E7E;
     --sidebar: #2C2417;
   }
+  .drop-zone {
+    border: 2px dashed var(--gold-light);
+    border-radius: 8px;
+    text-align: center;
+    background: rgba(201,169,110,0.04);
+    transition: all 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .drop-zone.dragover {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+  }
+  .drop-zone-text {
+    font-size: 11px;
+    color: var(--text-light);
+    pointer-events: none;
+  }
+  .thumb-wrap {
+    position: relative; width: 50px; height: 50px;
+    border-radius: 6px; overflow: hidden;
+    border: 1px solid rgba(201,169,110,0.2);
+  }
+  .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb-remove {
+    position: absolute; top: -4px; right: -4px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--error); color: #fff;
+    border: none; font-size: 9px; line-height: 1; cursor: pointer;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
@@ -475,6 +507,17 @@
             <input type="text" class="create-input" id="prodImg" placeholder="or type URL..." style="flex:1;">
             <input type="hidden" id="prodImgDelete">
             <div id="imgPreview" style="width:40px;height:40px;border-radius:8px;overflow:hidden;background:var(--cream);flex-shrink:0;display:none;"><img id="imgPreviewImg" src="" style="width:100%;height:100%;object-fit:cover;"></div>
+          </div>
+        </div>
+        <!-- Row 3b: Multi-image drop zone (optional) -->
+        <div class="create-row" style="margin-top:8px;">
+          <div class="create-group" style="min-width:300px;flex:1;">
+            <span class="create-label" data-en="More Images (drag & drop, optional)" data-zh="更多图片（拖拽上传，可选）">More Images (drag & drop, optional)</span>
+            <div class="drop-zone" id="extraImageDrop" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleExtraDrop(event)" style="min-height:50px;padding:12px;">
+              <span class="drop-zone-text" data-en="Drop additional images here" data-zh="拖拽更多图片到此处">Drop additional images here</span>
+              <input type="file" id="extraImgFile" accept="image/*" multiple onchange="handleExtraFileSelect(event)" style="display:none;">
+            </div>
+            <div id="extraUploadedImages" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;"></div>
           </div>
         </div>
         <div class="create-group" style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding-top:4px;">
@@ -1275,6 +1318,48 @@
     }
   }
 
+  // ── Extra images (multi-image via drag & drop) ──
+  let extraImages = [];
+  document.addEventListener('DOMContentLoaded', function(){
+    var dz = document.getElementById('extraImageDrop');
+    if (dz) dz.addEventListener('click', function(e){
+      if (e.target.tagName === 'BUTTON') return;
+      document.getElementById('extraImgFile').click();
+    });
+  });
+  function handleExtraDrop(e) { e.preventDefault(); e.target.classList.remove('dragover'); extraProcess(Array.from(e.dataTransfer.files).filter(function(f){return f.type.startsWith('image/')})); }
+  function handleExtraFileSelect(e) { extraProcess(Array.from(e.target.files)); e.target.value = ''; }
+  async function extraProcess(files) {
+    for (var i = 0; i < files.length; i++) {
+      var f = files[i];
+      var reader = new FileReader();
+      var preview = await new Promise(function(r){ reader.onload = function(e){ r(e.target.result); }; reader.readAsDataURL(f); });
+      var entry = { preview: preview, file: f, url: null, deleteUrl: null };
+      extraImages.push(entry);
+      extraRender();
+      uploadExtra(entry);
+    }
+  }
+  async function uploadExtra(entry) {
+    try {
+      var c = entry.file;
+      if (typeof imageCompression !== 'undefined') { c = await imageCompression(entry.file, { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true }); }
+      var fd = new FormData(); fd.append('image', c);
+      var r = await fetch('https://api.imgbb.com/1/upload?key=ade10554c9105502664dc74457beba4a', { method: 'POST', body: fd });
+      var d = await r.json();
+      if (d.success) { entry.url = d.data.url; entry.deleteUrl = d.data.delete_url || ''; }
+      else { entry.url = entry.file.name; entry.deleteUrl = ''; }
+    } catch(e) { entry.url = entry.file.name; entry.deleteUrl = ''; }
+    extraRender();
+  }
+  function extraRemove(i) { extraImages.splice(i, 1); extraRender(); }
+  function extraRender() {
+    var c = document.getElementById('extraUploadedImages');
+    c.innerHTML = extraImages.map(function(p, i){
+      return '<div class="thumb-wrap"><img src="'+(p.url||p.preview)+'"><button class="thumb-remove" onclick="extraRemove('+i+');event.stopPropagation();">x</button></div>';
+    }).join('');
+  }
+
   // Load image compression library
   (function(){
     var s = document.createElement('script');
@@ -1338,6 +1423,16 @@
       stockType: document.getElementById('prodStockType').value,
       img: document.getElementById('prodImg').value.trim(),
       imgDelete: document.getElementById('prodImgDelete').value.trim(),
+      images: function(){
+        var main = document.getElementById('prodImg').value.trim();
+        var extra = extraImages.map(function(p){return p.url}).filter(Boolean);
+        return main ? [main].concat(extra) : extra;
+      }(),
+      imagesDelete: function(){
+        var main = document.getElementById('prodImgDelete').value.trim();
+        var extra = extraImages.map(function(p){return p.deleteUrl}).filter(Boolean);
+        return main ? [main].concat(extra) : extra;
+      }(),
       category: document.getElementById('prodCategory').value,
       source: document.getElementById('prodSource').value.trim(),
       desc: document.getElementById('prodDesc').value.trim(),
@@ -1395,6 +1490,7 @@
     document.getElementById('prodSource').value = '';
     document.getElementById('prodCategory').value = '';
     document.getElementById('imgPreview').style.display = 'none';
+    extraImages = []; extraRender();
     document.getElementById('prodDesc').value = '';
     document.getElementById('prodDescZh').value = '';
     document.getElementById('prodCustomPrice').checked = false;
