@@ -1448,12 +1448,7 @@
     }).join('');
   }
 
-  // Load image compression library
-  (function(){
-    var s = document.createElement('script');
-    s.src = 'https://unpkg.com/browser-image-compression@2.0.2/dist/browser-image-compression.js';
-    document.head.appendChild(s);
-  })();
+  // Image compression: loaded inline (no external CDN needed)
 
   function toggleBundleFields() {
     document.getElementById('bundleItemsRow').style.display = document.getElementById('prodBundle').checked ? 'flex' : 'none';
