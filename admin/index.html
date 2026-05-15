@@ -18,6 +18,51 @@
     --blush: #F2D5CC;
     --error: #C0665A;
     --success: #7A9E7E;
+    --drop-bg: rgba(201,169,110,0.06);
+  }
+  .drop-zone {
+    border: 2px dashed var(--gold-light);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    background: var(--drop-bg);
+    transition: all 0.2s;
+    cursor: pointer;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .drop-zone.dragover {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+    box-shadow: 0 0 0 4px rgba(201,169,110,0.15);
+  }
+  .drop-zone-text {
+    font-size: 12px;
+    color: var(--text-light);
+    letter-spacing: 0.05em;
+    pointer-events: none;
+  }
+  .thumb-wrap {
+    position: relative;
+    width: 60px; height: 60px;
+    border-radius: 8px; overflow: hidden;
+    border: 1px solid rgba(201,169,110,0.2);
+  }
+  .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb-remove {
+    position: absolute;
+    top: -4px; right: -4px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--error);
+    color: #fff;
+    border: none;
+    font-size: 9px;
+    line-height: 1;
+    cursor: pointer;
+  }
     --sidebar: #2C2417;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -468,15 +513,15 @@
       </div>
       <!-- Row 3: Image upload -->
       <div class="create-row" style="margin-top:12px;flex-wrap:wrap;align-items:flex-end;">
-        <div class="create-group" style="min-width:200px;">
-          <span class="create-label" data-en="Image (upload or type filename)" data-zh="图片（上传或输入文件名）">Image</span>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <input type="file" id="prodImgFile" accept="image/*" onchange="handleImageUpload()" style="display:none;">
-            <button type="button" class="create-btn" onclick="document.getElementById('prodImgFile').click()" style="font-size:11px;padding:6px 12px;white-space:nowrap;background:var(--text-mid);" data-en="Upload Image" data-zh="上传图片">Upload Image</button>
-            <input type="text" class="create-input" id="prodImg" placeholder="or type URL..." style="flex:1;">
-            <input type="hidden" id="prodImgDelete">
-            <div id="imgPreview" style="width:40px;height:40px;border-radius:8px;overflow:hidden;background:var(--cream);flex-shrink:0;display:none;"><img id="imgPreviewImg" src="" style="width:100%;height:100%;object-fit:cover;"></div>
+        <div class="create-group" style="min-width:300px;flex:1;">
+          <span class="create-label" data-en="Images (drag & drop)" data-zh="图片（拖拽上传）">Images</span>
+          <div class="drop-zone" id="imageDropZone" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
+            <span class="drop-zone-text" data-en="Drop images here or click" data-zh="拖拽图片到此处或点击上传">Drop images here or click</span>
+            <input type="file" id="prodImgFile" accept="image/*" multiple onchange="handleFileSelect(event)" style="display:none;">
           </div>
+          <div id="uploadedImages" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;"></div>
+          <input type="hidden" id="prodImg">
+          <input type="hidden" id="prodImgDelete">
         </div>
         <div class="create-group" style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding-top:4px;">
           <label style="font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="prodCustomPrice" onchange="document.getElementById('prodPrice').disabled=this.checked;if(this.checked){document.getElementById('prodPrice').value='0';document.getElementById('prodCost').disabled=true}else{document.getElementById('prodCost').disabled=false}"><span data-en="Custom Price" data-zh="自主定价">Custom Price</span></label>
@@ -620,7 +665,14 @@
     <div class="modal-row"><span class="modal-label" data-en="Stock" data-zh="库存">Stock</span><input type="number" class="create-input" id="editProdStock" min="0" step="1"></div>
     <div class="modal-row"><span class="modal-label" data-en="Stock Type" data-zh="类型">Stock Type</span><select class="create-input" id="editProdStockType"><option value="现货">现货</option><option value="代发">代发</option><option value="预售">预售</option></select></div>
     <div class="modal-row"><span class="modal-label" data-en="Category" data-zh="分类">Category</span><select class="create-input" id="editProdCategory"><option value="">None</option><option value="jewelry">Jewelry</option><option value="bags">Bags</option><option value="home">Home</option><option value="fashion">Fashion</option><option value="tech">Tech</option><option value="other">Other</option></select></div>
-    <div class="modal-row"><span class="modal-label" data-en="Image" data-zh="图片">Image</span><input class="create-input" id="editProdImg"></div>
+    <div class="modal-row"><span class="modal-label" data-en="Images" data-zh="图片">Images</span>
+      <div class="drop-zone" id="editImageDropZone" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="editHandleDrop(event)" style="min-height:50px;padding:12px;">
+        <span class="drop-zone-text" data-en="Drop images here" data-zh="拖拽图片到此处">Drop images here</span>
+        <input type="file" id="editImgFile" accept="image/*" multiple onchange="editHandleFileSelect(event)" style="display:none;">
+      </div>
+      <div id="editUploadedImages" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;"></div>
+      <input type="hidden" id="editProdImg">
+    </div>
     <div class="modal-row"><span class="modal-label" data-en="Description (EN)" data-zh="描述(英文)">Description (EN)</span><textarea class="create-input" id="editProdDesc" style="height:56px;resize:none;"></textarea></div>
     <div class="modal-row"><span class="modal-label" data-en="Description (中文)" data-zh="描述(中文)">Description (中文)</span><textarea class="create-input" id="editProdDescZh" style="height:56px;resize:none;"></textarea></div>
     <div class="modal-row" style="display:flex;gap:20px;">
@@ -642,6 +694,7 @@
     <div class="modal-row"><span class="modal-label" data-en="Email" data-zh="邮箱">Email</span><input class="create-input" id="editOrderEmail" style="width:100%;"></div>
     <div class="modal-row"><span class="modal-label" data-en="Phone" data-zh="电话">Phone</span><input class="create-input" id="editOrderPhone" style="width:100%;"></div>
     <div class="modal-row"><span class="modal-label" data-en="Address" data-zh="地址">Address</span><textarea class="create-input" id="editOrderAddress" style="width:100%;height:60px;resize:none;"></textarea></div>
+    <div class="modal-row"><span class="modal-label" data-en="Customer Notes" data-zh="客户备注">Notes</span><textarea class="create-input" id="editOrderNotes" style="width:100%;height:50px;resize:none;"></textarea></div>
     <div class="modal-row"><span class="modal-label" data-en="Tracking Number" data-zh="快递单号">Tracking Number</span><input class="create-input" id="editOrderTracking" style="width:100%;"></div>
     <div class="modal-row"><span class="modal-label" data-en="Carrier" data-zh="快递公司">Carrier</span><select class="create-input" id="editOrderCarrier" style="width:100%;"><option value="">—</option><option value="顺丰速运">顺丰速运</option><option value="中通快递">中通快递</option><option value="圆通速递">圆通速递</option><option value="申通快递">申通快递</option><option value="韵达快递">韵达快递</option><option value="中国邮政">中国邮政</option><option value="EMS">EMS</option><option value="其他">其他</option></select></div>
     <button class="create-btn" onclick="saveEditOrder()" style="width:100%;margin-top:8px;"><span data-en="Save" data-zh="保存">Save</span></button>
@@ -1025,6 +1078,7 @@
             📞 ${o.customerPhone || '—'} · 📍 ${o.customerAddress || '—'}<br>
             🚚 ${o.shippingRegion || '—'} · $${o.shippingCost || 0} <span data-en="shipping" data-zh="运费">shipping</span><br>
             Code: ${o.activationCode} · ${o.customerEmail} · ${new Date(o.createdAt).toLocaleDateString()}
+            ${o.customerNotes ? '<br>📝 ' + o.customerNotes : ''}
             ${o.isBundle ? ' · <span data-en="Bundle" data-zh="套装">Bundle</span>' : ''}${o.shipped ? ' · ✓ <span data-en="Shipped" data-zh="已发货">Shipped</span>' + (o.trackingCarrier || o.trackingNumber ? ' · ' + (o.trackingCarrier || '') + ' ' + (o.trackingNumber || '') + ' <button data-tracking="' + (o.trackingNumber || '') + '" onclick="copyTrackingClick(this)" style="background:none;border:1px solid var(--gold-light);border-radius:4px;cursor:pointer;font-size:10px;padding:1px 5px;color:var(--gold);" title="Copy">📋</button>' : '') : ' · <span data-en="Pending" data-zh="待处理">Pending</span>'}
           </div>
         </div>
@@ -1085,6 +1139,7 @@
     document.getElementById('editOrderEmail').value = o.customerEmail || '';
     document.getElementById('editOrderPhone').value = o.customerPhone || '';
     document.getElementById('editOrderAddress').value = o.customerAddress || '';
+    document.getElementById('editOrderNotes').value = o.customerNotes || '';
     document.getElementById('editOrderTracking').value = o.trackingNumber || '';
     document.getElementById('editOrderCarrier').value = o.trackingCarrier || '';
     document.getElementById('editOrderOverlay').classList.add('open');
@@ -1105,7 +1160,8 @@
           customerPhone: document.getElementById('editOrderPhone').value.trim(),
           customerAddress: document.getElementById('editOrderAddress').value.trim(),
           trackingNumber: document.getElementById('editOrderTracking').value.trim(),
-          trackingCarrier: document.getElementById('editOrderCarrier').value
+          trackingCarrier: document.getElementById('editOrderCarrier').value,
+          customerNotes: document.getElementById('editOrderNotes').value.trim()
         })
       });
       const data = await res.json();
@@ -1227,25 +1283,52 @@
     }
   }
 
-  async function handleImageUpload() {
-    const file = document.getElementById('prodImgFile').files[0];
-    if (!file) return;
-    showToast('Uploading image...');
-    try {
-      // Compress first
-      var compressed = file;
-      if (typeof imageCompression !== 'undefined') {
-        compressed = await imageCompression(file, { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true });
-      }
-      // Show preview
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('imgPreview').style.display = 'block';
-        document.getElementById('imgPreviewImg').src = e.target.result;
-      };
-      reader.readAsDataURL(compressed);
+  // ── Multi-image upload system ──
+  let pendingImages = [];
+  let uploadingCount = 0;
 
-      // Upload to ImgBB
+  // Click to open file picker
+  document.addEventListener('DOMContentLoaded', function(){
+    var dz = document.getElementById('imageDropZone');
+    if (dz) dz.addEventListener('click', function(e){
+      if (e.target.tagName === 'BUTTON') return;
+      document.getElementById('prodImgFile').click();
+    });
+  });
+
+  function handleDrop(e) {
+    e.preventDefault();
+    e.target.classList.remove('dragover');
+    processFiles(Array.from(e.dataTransfer.files).filter(function(f){return f.type.startsWith('image/')}));
+  }
+
+  function handleFileSelect(e) {
+    processFiles(Array.from(e.target.files));
+    e.target.value = '';
+  }
+
+  async function processFiles(files) {
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      var reader = new FileReader();
+      var previewUrl = await new Promise(function(resolve){
+        reader.onload = function(ev){ resolve(ev.target.result); };
+        reader.readAsDataURL(file);
+      });
+      var entry = { previewUrl: previewUrl, file: file, url: null, deleteUrl: null };
+      pendingImages.push(entry);
+      renderImageThumbs();
+      uploadSingleImage(entry);
+    }
+  }
+
+  async function uploadSingleImage(entry) {
+    uploadingCount++;
+    try {
+      var compressed = entry.file;
+      if (typeof imageCompression !== 'undefined') {
+        compressed = await imageCompression(entry.file, { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true });
+      }
       var formData = new FormData();
       formData.append('image', compressed);
       var resp = await fetch('https://api.imgbb.com/1/upload?key=ade10554c9105502664dc74457beba4a', {
@@ -1253,17 +1336,117 @@
       });
       var data = await resp.json();
       if (data.success) {
-        document.getElementById('prodImg').value = data.data.url;
-        document.getElementById('prodImgDelete').value = data.data.delete_url || '';
-        showToast('Image uploaded! ' + data.data.url);
+        entry.url = data.data.url;
+        entry.deleteUrl = data.data.delete_url || '';
       } else {
-        showToast('Upload failed, using local filename');
-        document.getElementById('prodImg').value = file.name;
+        entry.url = entry.file.name;
+        entry.deleteUrl = '';
       }
     } catch(e) {
-      showToast('Upload error, using local filename');
-      document.getElementById('prodImg').value = file.name;
+      entry.url = entry.file.name;
+      entry.deleteUrl = '';
     }
+    uploadingCount--;
+    renderImageThumbs();
+  }
+
+  function removeImage(index) {
+    pendingImages.splice(index, 1);
+    renderImageThumbs();
+  }
+
+  function renderImageThumbs() {
+    var container = document.getElementById('uploadedImages');
+    container.innerHTML = pendingImages.map(function(p, i){
+      var src = p.url || p.previewUrl;
+      var status = (!p.url && uploadingCount > 0) ? '<span style="position:absolute;bottom:2px;left:2px;font-size:8px;color:var(--text-light);background:rgba(255,255,255,0.8);padding:1px 3px;border-radius:3px;">...</span>' : '';
+      return '<div class="thumb-wrap"><img src="'+src+'"><button class="thumb-remove" onclick="removeImage('+i+');event.stopPropagation();">x</button>'+status+'</div>';
+    }).join('');
+  }
+
+  function syncImagesToHiddenFields() {
+    var urls = pendingImages.map(function(p){return p.url}).filter(Boolean);
+    var deletes = pendingImages.map(function(p){return p.deleteUrl}).filter(Boolean);
+    document.getElementById('prodImg').value = urls.join(',');
+    document.getElementById('prodImgDelete').value = deletes.join(',');
+  }
+
+  // Keep old handleImageUpload for backward compat (unused, but safe)
+
+  // ── Edit-mode image system ──
+  let editPendingImages = [];
+
+  document.addEventListener('DOMContentLoaded', function(){
+    var edz = document.getElementById('editImageDropZone');
+    if (edz) edz.addEventListener('click', function(e){
+      if (e.target.tagName === 'BUTTON') return;
+      document.getElementById('editImgFile').click();
+    });
+  });
+
+  function editHandleDrop(e) {
+    e.preventDefault();
+    e.target.classList.remove('dragover');
+    editProcessFiles(Array.from(e.dataTransfer.files).filter(function(f){return f.type.startsWith('image/')}));
+  }
+
+  function editHandleFileSelect(e) {
+    editProcessFiles(Array.from(e.target.files));
+    e.target.value = '';
+  }
+
+  async function editProcessFiles(files) {
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      var reader = new FileReader();
+      var previewUrl = await new Promise(function(resolve){
+        reader.onload = function(ev){ resolve(ev.target.result); };
+        reader.readAsDataURL(file);
+      });
+      var entry = { previewUrl: previewUrl, file: file, url: null, deleteUrl: null };
+      editPendingImages.push(entry);
+      editRenderThumbs();
+      editUploadSingle(entry);
+    }
+  }
+
+  async function editUploadSingle(entry) {
+    try {
+      var compressed = entry.file;
+      if (typeof imageCompression !== 'undefined') {
+        compressed = await imageCompression(entry.file, { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true });
+      }
+      var formData = new FormData();
+      formData.append('image', compressed);
+      var resp = await fetch('https://api.imgbb.com/1/upload?key=ade10554c9105502664dc74457beba4a', { method: 'POST', body: formData });
+      var data = await resp.json();
+      if (data.success) {
+        entry.url = data.data.url;
+        entry.deleteUrl = data.data.delete_url || '';
+      } else {
+        entry.url = entry.file.name;
+        entry.deleteUrl = '';
+      }
+    } catch(e) {
+      entry.url = entry.file.name;
+      entry.deleteUrl = '';
+    }
+    editRenderThumbs();
+  }
+
+  function editRemoveImage(index) {
+    editPendingImages.splice(index, 1);
+    editRenderThumbs();
+  }
+
+  function editRenderThumbs() {
+    var container = document.getElementById('editUploadedImages');
+    if (!container) return;
+    container.innerHTML = editPendingImages.map(function(p, i){
+      var src = p.url || p.previewUrl;
+      var status = (!p.url) ? '<span style="position:absolute;bottom:2px;left:2px;font-size:8px;color:var(--text-light);background:rgba(255,255,255,0.8);padding:1px 3px;border-radius:3px;">...</span>' : '';
+      return '<div class="thumb-wrap"><img src="'+src+'"><button class="thumb-remove" onclick="editRemoveImage('+i+');event.stopPropagation();">x</button>'+status+'</div>';
+    }).join('');
   }
 
   // Load image compression library
@@ -1321,14 +1504,19 @@
     const nameZh = document.getElementById('prodNameZh').value.trim();
     const id = document.getElementById('prodId').value.trim();
     if (!key || !name || !nameZh || !id) { showToast('Key, name, nameZh, and ID are required'); return; }
+    syncImagesToHiddenFields();
+    var imageUrls = pendingImages.map(function(p){return p.url}).filter(Boolean);
+    var imageDeletes = pendingImages.map(function(p){return p.deleteUrl}).filter(Boolean);
     const productData = {
       key, name, nameZh, id,
       price: parseFloat(document.getElementById('prodPrice').value) || 0,
       cost: parseFloat(document.getElementById('prodCost').value) || 0,
       stock: parseInt(document.getElementById('prodStock').value) || 0,
       stockType: document.getElementById('prodStockType').value,
-      img: document.getElementById('prodImg').value.trim(),
-      imgDelete: document.getElementById('prodImgDelete').value.trim(),
+      img: imageUrls[0] || document.getElementById('prodImg').value.trim(),
+      images: imageUrls.length ? imageUrls : (document.getElementById('prodImg').value.trim() ? [document.getElementById('prodImg').value.trim()] : []),
+      imgDelete: imageDeletes[0] || '',
+      imagesDelete: imageDeletes.length ? imageDeletes : [],
       category: document.getElementById('prodCategory').value,
       source: document.getElementById('prodSource').value.trim(),
       desc: document.getElementById('prodDesc').value.trim(),
@@ -1385,7 +1573,8 @@
     document.getElementById('prodImg').value = '';
     document.getElementById('prodSource').value = '';
     document.getElementById('prodCategory').value = '';
-    document.getElementById('imgPreview').style.display = 'none';
+    pendingImages = [];
+    renderImageThumbs();
     document.getElementById('prodDesc').value = '';
     document.getElementById('prodDescZh').value = '';
     document.getElementById('prodCustomPrice').checked = false;
@@ -1409,6 +1598,9 @@
     document.getElementById('editProdStockType').value = p.stockType || '现货';
     document.getElementById('editProdCategory').value = p.category || '';
     document.getElementById('editProdImg').value = p.img || '';
+    var imgs = p.images || (p.img ? [p.img] : []);
+    editPendingImages = imgs.map(function(url){ return { previewUrl: url, url: url, deleteUrl: '', file: null }; });
+    editRenderThumbs();
     document.getElementById('editProdDesc').value = p.desc || '';
     document.getElementById('editProdDescZh').value = p.descZh || '';
     document.getElementById('editProdCustomPrice').checked = !!p.customPrice;
@@ -1426,6 +1618,8 @@
 
   async function saveEditProduct() {
     try {
+      var editImageUrls = editPendingImages.map(function(p){return p.url}).filter(Boolean);
+      var editImageDeletes = editPendingImages.map(function(p){return p.deleteUrl}).filter(Boolean);
       const res = await fetch(`${API}/admin/edit-product`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1439,7 +1633,9 @@
           stock: parseInt(document.getElementById('editProdStock').value) || 0,
           stockType: document.getElementById('editProdStockType').value,
           category: document.getElementById('editProdCategory').value,
-          img: document.getElementById('editProdImg').value.trim(),
+          img: editImageUrls[0] || document.getElementById('editProdImg').value.trim(),
+          images: editImageUrls.length ? editImageUrls : (document.getElementById('editProdImg').value.trim() ? [document.getElementById('editProdImg').value.trim()] : []),
+          imagesDelete: editImageDeletes.length ? editImageDeletes : [],
           desc: document.getElementById('editProdDesc').value.trim(),
           descZh: document.getElementById('editProdDescZh').value.trim(),
           customPrice: document.getElementById('editProdCustomPrice').checked,
