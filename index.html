@@ -1516,6 +1516,9 @@
         <div class="order-field">
           <textarea class="order-input" id="orderAddress" placeholder="Shipping address" data-placeholder-en="Shipping address" data-placeholder-zh="收货地址" style="height:64px;resize:none;"></textarea>
         </div>
+        <div class="order-field">
+          <textarea class="order-input" id="orderNotes" placeholder="Order notes (optional)" data-placeholder-en="Order notes (optional)" data-placeholder-zh="订单备注（选填）" style="height:50px;resize:none;"></textarea>
+        </div>
         <div class="order-field" id="customPriceField" style="display:none;">
           <label style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;display:block;" data-en="Your Price (USD)" data-zh="你的价格 (美元)">Your Price (USD)</label>
           <input type="number" class="order-input" id="orderCustomPrice" placeholder="Enter your price (min $1)" min="1" step="1" oninput="updateShippingCost();renderPayPal();">
@@ -1944,6 +1947,7 @@
       document.getElementById('orderSuccess').style.display = 'none';
       document.getElementById('orderName').value = '';
       document.getElementById('orderEmail').value = '';
+      document.getElementById('orderNotes').value = '';
       document.getElementById('orderRegion').value = '';
       document.getElementById('priceSummary').style.display = 'none';
       document.getElementById('paypal-button-container').innerHTML = '';
@@ -2046,7 +2050,9 @@
       document.getElementById('orderSuccess').style.display = 'none';
       document.getElementById('orderName').value = '';
       document.getElementById('orderEmail').value = '';
+      document.getElementById('orderNotes').value = '';
       document.getElementById('orderRegion').value = '';
+      document.getElementById('orderNotes').value = '';
       document.getElementById('orderCustomPrice').value = '';
       document.getElementById('customPriceField').style.display = currentProduct.customPrice ? 'block' : 'none';
       document.getElementById('priceSummary').style.display = 'none';
@@ -2098,6 +2104,7 @@
             shippingRegion: region, shippingCost: shipping,
             isBundle: !!currentProduct.bundleIds,
             bundleIds: currentProduct.bundleIds || [],
+            customerNotes: document.getElementById('orderNotes').value.trim(),
             paypalOrderId
           })
         });
@@ -2191,6 +2198,7 @@
             shippingRegion: region, shippingCost: shipping,
             isBundle: !!currentProduct.bundleIds,
             bundleIds: currentProduct.bundleIds || [],
+            customerNotes: document.getElementById('orderNotes').value.trim(),
             paypalOrderId: 'TEST-' + Date.now()
           })
         });
