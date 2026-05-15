@@ -735,6 +735,8 @@
   const isLocal = location.protocol === 'file:' || location.hostname === 'localhost';
   const API = "https://soulmade-memory.2323371806.workers.dev";
   let adminPassword = "";
+  if (isLocal) { console.warn('ADMIN MODE: Local (products saved to browser localStorage, NOT visible on live site)'); }
+  else { console.log('ADMIN MODE: API (' + API + ')'); }
   let allKeys = [];
   let adminIsZh = false;
 
@@ -1541,7 +1543,7 @@
       });
       const data = await res.json();
       if (data.success) {
-        showToast('Product created!');
+        showToast('Product created! ID: ' + data.product.id);
         clearProductForm();
         loadProducts();
       } else if (data.error === 'duplicate_key') {
@@ -1549,9 +1551,10 @@
       } else if (data.error === 'duplicate_id') {
         showToast('Product ID already exists');
       } else {
-        showToast('Failed to create product');
+        showToast('Failed: ' + (data.error || 'unknown'));
+        console.error('Create product failed:', data);
       }
-    } catch (e) { showToast('Connection error'); }
+    } catch (e) { showToast('Connection error: ' + e.message); console.error(e); }
   }
 
   function clearProductForm() {
