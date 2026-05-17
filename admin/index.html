@@ -484,8 +484,8 @@
       <!-- Row 1: Basic info -->
       <div class="create-row" style="flex-wrap:wrap;">
         <div class="create-group" style="min-width:110px;"><span class="create-label" data-en="Key (slug)*" data-zh="标识(slug)*">Key (slug)*</span><input type="text" class="create-input" id="prodKey" placeholder="moonlight"></div>
-        <div class="create-group" style="min-width:130px;"><span class="create-label" data-en="Name (EN)*" data-zh="名称(英文)*">Name (EN)*</span><input type="text" class="create-input" id="prodName" placeholder="Moonlight Pendant" oninput="autoFillKey()"></div>
-        <div class="create-group" style="min-width:130px;"><span class="create-label">Name (中文)*</span><input type="text" class="create-input" id="prodNameZh" placeholder="月光吊坠"></div>
+        <div class="create-group" style="min-width:130px;"><span class="create-label" data-en="Name (EN)*" data-zh="名称(英文)*">Name (EN)*</span><input type="text" class="create-input" id="prodName" placeholder="Moonlight Pendant" oninput="autoFillKey();debounceTranslate()"></div>
+        <div class="create-group" style="min-width:130px;"><span class="create-label">Name (中文)*</span><input type="text" class="create-input" id="prodNameZh" placeholder="自动翻译中..." style="flex:1;"><span id="translateHint" style="font-size:10px;color:var(--text-light);"></span></div>
         <div class="create-group" style="min-width:120px;"><span class="create-label" data-en="Category" data-zh="分类">Category</span><select class="create-input" id="prodCategory"><option value="">None</option><option value="jewelry">Jewelry</option><option value="bags">Bags</option><option value="home">Home</option><option value="fashion">Fashion</option><option value="tech">Tech</option><option value="other">Other</option></select></div>
       </div>
       <!-- Row 2: ID + Pricing -->
@@ -1278,6 +1278,43 @@
       document.getElementById('prodKey').value = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     }
   }
+
+  var _translateTimer = null;
+  function debounceTranslate() {
+    clearTimeout(_translateTimer);
+    _translateTimer = setTimeout(autoTranslateName, 1000);
+  }
+
+  async function autoTranslateName() {
+    const enName = document.getElementById('prodName').value.trim();
+    if (!enName) return;
+    const zhField = document.getElementById('prodNameZh');
+    // Don't overwrite if user already edited Chinese name manually
+    if (zhField.dataset.manual) return;
+    const hint = document.getElementById('translateHint');
+    hint.textContent = '...';
+    try {
+      const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer sk-847682ec2e7840c182feacebf8f6c795' },
+        body: JSON.stringify({ model: 'deepseek-chat', messages: [
+          { role: 'system', content: '你是一个产品名称翻译专家。将英文产品名翻译为优雅的中文名。只输出中文名，不要解释。例如：Moonlight Pendant → 月光吊坠，Amber Drop Earrings → 琥珀水滴耳环，Crystal Butterfly Ring → 水晶蝴蝶戒指' },
+          { role: 'user', content: enName }
+        ], max_tokens: 30, temperature: 0.3 })
+      });
+      const data = await resp.json();
+      const zhName = data.choices[0].message.content.trim().replace(/^["']|["']$/g, '');
+      zhField.value = zhName;
+      hint.textContent = '✓';
+    } catch(e) { hint.textContent = ''; }
+  }
+
+  // Mark manual edit so auto-translate won't overwrite
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('prodNameZh').addEventListener('input', function() {
+      this.dataset.manual = '1';
+    });
+  });
 
   async function handleImageUpload() {
     const file = document.getElementById('prodImgFile').files[0];
