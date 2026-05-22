@@ -663,6 +663,7 @@
     <div class="modal-row"><span class="modal-label" data-en="Stock Type" data-zh="类型">Stock Type</span><select class="create-input" id="editProdStockType"><option value="现货">现货</option><option value="代发">代发</option><option value="预售">预售</option></select></div>
     <div class="modal-row"><span class="modal-label" data-en="Category" data-zh="分类">Category</span><select class="create-input" id="editProdCategory"><option value="">None</option><option value="jewelry">Jewelry</option><option value="bags">Bags</option><option value="home">Home</option><option value="fashion">Fashion</option><option value="tech">Tech</option><option value="other">Other</option></select></div>
     <div class="modal-row"><span class="modal-label" data-en="Image" data-zh="图片">Image</span><input class="create-input" id="editProdImg"></div>
+    <div class="modal-row"><span class="modal-label" data-en="Source URL" data-zh="来源链接">Source URL</span><input class="create-input" id="editProdSource" placeholder="1688.com/item..."></div>
     <div class="modal-row"><span class="modal-label" data-en="Description (EN)" data-zh="描述(英文)">Description (EN)</span><textarea class="create-input" id="editProdDesc" style="height:56px;resize:none;"></textarea></div>
     <div class="modal-row"><span class="modal-label" data-en="Description (中文)" data-zh="描述(中文)">Description (中文)</span><textarea class="create-input" id="editProdDescZh" style="height:56px;resize:none;"></textarea></div>
     <div class="modal-row" style="display:flex;gap:20px;">
@@ -1254,6 +1255,7 @@
           <div class="key-id">${p.key} · <span data-en="${p.name}" data-zh="${p.nameZh}">${adminIsZh ? p.nameZh : p.name}</span> · $${p.price}</div>
           <div class="key-meta">
             ${p.id}${p.customPrice ? ' · <span data-en="Custom Price" data-zh="自主定价">Custom Price</span>' : ''}${p.bundle ? ' · <span data-en="Bundle" data-zh="套装">Bundle</span>: ' + (p.bundleItems || '') : ''} ${p.active === false ? ' · <span data-en="Inactive" data-zh="已下架">Inactive</span>' : ''}
+            ${p.source ? '<br><a href=\"' + p.source + '\" target=\"_blank\" style=\"font-size:10px;color:var(--accent)\">' + p.source.substring(0, 50) + (p.source.length > 50 ? '...' : '') + '</a>' : ''}
           </div>
         </div>
         <div class="key-actions">
@@ -1551,6 +1553,7 @@
     document.getElementById('editProdStockType').value = p.stockType || '现货';
     document.getElementById('editProdCategory').value = p.category || '';
     document.getElementById('editProdImg').value = p.img || '';
+    document.getElementById('editProdSource').value = p.source || '';
     document.getElementById('editProdDesc').value = p.desc || '';
     document.getElementById('editProdDescZh').value = p.descZh || '';
     document.getElementById('editProdCustomPrice').checked = !!p.customPrice;
@@ -1582,6 +1585,7 @@
           stockType: document.getElementById('editProdStockType').value,
           category: document.getElementById('editProdCategory').value,
           img: document.getElementById('editProdImg').value.trim(),
+          source: document.getElementById('editProdSource').value.trim(),
           desc: document.getElementById('editProdDesc').value.trim(),
           descZh: document.getElementById('editProdDescZh').value.trim(),
           customPrice: document.getElementById('editProdCustomPrice').checked,
