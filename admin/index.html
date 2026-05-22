@@ -593,7 +593,11 @@
         <div class="create-group" style="min-width:100px;"><span class="create-label">Other ($)</span><input type="number" class="create-input" id="shipOther" step="0.01" min="0"></div>
         <div class="create-group" style="min-width:120px;"><span class="create-label">Free Over ($)</span><input type="number" class="create-input" id="shipFree" step="0.01" min="0"></div>
       </div>
-      <button class="create-btn" onclick="saveShipping()" style="margin-top:12px;"><span data-en="Save Rates" data-zh="保存运费">Save Rates</span></button>
+      <div style="display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-top:12px;">
+        <div class="create-group" style="min-width:100px;"><span class="create-label">2件折扣 %</span><input type="number" class="create-input" id="bundleDiscount2" min="0" max="100" step="1" value="10"></div>
+        <div class="create-group" style="min-width:100px;"><span class="create-label">3件+折扣 %</span><input type="number" class="create-input" id="bundleDiscount3" min="0" max="100" step="1" value="15"></div>
+        <button class="create-btn" onclick="saveShipping()"><span data-en="Save All" data-zh="保存">Save All</span></button>
+      </div>
     </div>
 
     <!-- Coupon Management -->
@@ -1049,8 +1053,17 @@
           freeThreshold: parseInt(document.getElementById('shipFree').value) || 50
         })
       });
-      const data = await res.json();
-      if (data.success) showToast('Shipping rates saved');
+      if ((await res.json()).success) showToast('Shipping saved');
+      // Also save bundle discounts
+      await fetch(`${API}/admin/settings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password: adminPassword,
+          bundleDiscount2: parseInt(document.getElementById('bundleDiscount2').value) || 10,
+          bundleDiscount3: parseInt(document.getElementById('bundleDiscount3').value) || 15,
+        })
+      });
     } catch (e) { showToast('Failed to save'); }
   }
 

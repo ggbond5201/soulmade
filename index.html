@@ -1945,7 +1945,7 @@
     function openBundleModal(items, finalPriceOverride) {
       var hasCustom = items.some(function(p){return p.customPrice});
       var total = items.reduce(function(s,p){return s + p.price}, 0);
-      var discount = items.length >= 3 ? 0.15 : 0.10;
+      var discount = items.length >= 3 ? (bundleSettings.bundleDiscount3 / 100) : (bundleSettings.bundleDiscount2 / 100);
       var finalPrice = finalPriceOverride || (hasCustom ? total : Math.round(total * (1 - discount)));
       currentProduct = { key:'cart-bundle', id:'CART-BUNDLE', bundleItems: items, price: finalPrice, bundleNames: items.map(function(p){return p.name}).join(' + '), bundleIds: items.map(function(p){return p.id}), bundleTotal: total, bundleDiscount: discount, customPrice: hasCustom };
       document.getElementById('modalImgWrap').innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--cream);font-size:40px;">📦</div>';
@@ -2057,6 +2057,14 @@
     let paypalSdkReady = false;
     let paypalRendered = false;
     let shippingRates = { China: 0, US: 5, Europe: 8, Other: 12, freeThreshold: 50 };
+    let bundleSettings = { bundleDiscount2: 10, bundleDiscount3: 15 };
+    (async function loadSettings() {
+      try {
+        const r = await fetch(API + '/admin/settings');
+        const s = await r.json();
+        if (s.bundleDiscount2 !== undefined) bundleSettings = s;
+      } catch(e) {}
+    })();
 
     async function loadShippingRates() {
       try {
