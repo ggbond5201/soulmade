@@ -596,6 +596,23 @@
       <button class="create-btn" onclick="saveShipping()" style="margin-top:12px;"><span data-en="Save Rates" data-zh="保存运费">Save Rates</span></button>
     </div>
 
+    <!-- Coupon Management -->
+    <div class="section-title" style="margin-top:40px;"><span data-en="Coupons" data-zh="优惠券">Coupons</span></div>
+    <div class="create-panel">
+      <div class="create-row" style="flex-wrap:wrap;align-items:end;gap:8px;">
+        <div class="create-group" style="min-width:80px;"><span class="create-label">Code*</span><input type="text" class="create-input" id="couponCode" placeholder="SAVE10"></div>
+        <div class="create-group" style="min-width:80px;"><span class="create-label">Type</span><select class="create-input" id="couponType" onchange="document.getElementById('couponMaxRow').style.display=this.value==='percentage'?'block':'none'"><option value="percentage">Percentage</option><option value="fixed">Fixed Amount</option></select></div>
+        <div class="create-group" style="min-width:60px;"><span class="create-label">Value</span><input type="number" class="create-input" id="couponValue" placeholder="10" min="0" step="1"></div>
+        <div class="create-group" style="min-width:70px;" id="couponMaxRow"><span class="create-label">Max Discount ($)</span><input type="number" class="create-input" id="couponMaxDiscount" placeholder="15" min="0" step="1"></div>
+        <div class="create-group" style="min-width:70px;"><span class="create-label">Min Purchase ($)</span><input type="number" class="create-input" id="couponMinPurchase" placeholder="0" min="0" step="1"></div>
+        <div class="create-group" style="min-width:60px;"><span class="create-label">Max Uses</span><input type="number" class="create-input" id="couponMaxUses" placeholder="0=unlimited" min="0" step="1"></div>
+        <div class="create-group" style="min-width:90px;"><span class="create-label">Expires</span><input type="date" class="create-input" id="couponExpires"></div>
+        <div class="create-group" style="min-width:50px;"><span class="create-label">Active</span><input type="checkbox" id="couponActive" checked style="width:18px;height:18px;margin-top:22px;"></div>
+        <button class="create-btn" onclick="createCoupon()" style="height:38px;margin-top:16px;">Create</button>
+      </div>
+    </div>
+    <div id="couponsList" style="margin-top:12px;"></div>
+
     <!-- Export Orders -->
     <div class="section-title" style="margin-top:40px;"><span data-en="Export Orders" data-zh="导出账单">Export Orders</span></div>
     <div class="create-panel">
@@ -1702,6 +1719,54 @@
   document.getElementById('passwordInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') login();
   });
+  // ── Coupons ──
+  async function createCoupon() {
+    const code = document.getElementById('couponCode').value.trim();
+    if (!code) { showToast('Code is required'); return; }
+    const coupon = {
+      password: adminPassword, code,
+      type: document.getElementById('couponType').value,
+      value: parseFloat(document.getElementById('couponValue').value) || 0,
+      minPurchase: parseFloat(document.getElementById('couponMinPurchase').value) || 0,
+      maxDiscount: parseFloat(document.getElementById('couponMaxDiscount').value) || 0,
+      maxUses: parseInt(document.getElementById('couponMaxUses').value) || 0,
+      expiresAt: document.getElementById('couponExpires').value,
+      active: document.getElementById('couponActive').checked,
+    };
+    try {
+      const res = await fetch(API + '/admin/coupons', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(coupon) });
+      const d = await res.json();
+      if (d.success) { showToast('Coupon saved!'); document.getElementById('couponCode').value = ''; loadCoupons(); }
+      else showToast('Error: ' + (d.error || 'unknown'));
+    } catch(e) { showToast('Network error'); }
+  }
+  async function loadCoupons() {
+    try {
+      const res = await fetch(API + '/admin/coupons');
+      const d = await res.json();
+      const list = document.getElementById('couponsList');
+      if (!d.coupons || !d.coupons.length) { list.innerHTML = '<div class="empty-state">No coupons</div>'; return; }
+      list.innerHTML = d.coupons.map(c => `
+        <div class="key-item">
+          <div class="key-status ${c.active ? 'activated' : 'pending'}"></div>
+          <div class="key-info">
+            <div class="key-id">${c.code} · ${c.type === 'percentage' ? c.value + '% off (max -$' + c.maxDiscount + ')' : '-$' + c.value} · min $${c.minPurchase}</div>
+            <div class="key-meta">Used: ${c.usedCount||0}/${c.maxUses||'∞'} ${c.expiresAt ? '· Expires: '+c.expiresAt : ''} ${!c.active ? '· Inactive' : ''}</div>
+          </div>
+          <div class="key-actions">
+            <button class="action-btn btn-unlock" onclick="deleteCoupon('${c.code}')">Del</button>
+          </div>
+        </div>`).join('');
+    } catch(e) {}
+  }
+  async function deleteCoupon(code) {
+    if (!confirm('Delete coupon ' + code + '?')) return;
+    try {
+      await fetch(API + '/admin/delete-coupon', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPassword, code }) });
+      loadCoupons();
+    } catch(e) {}
+  }
+  loadCoupons();
 </script>
 </body>
 </html>

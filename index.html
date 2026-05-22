@@ -1526,6 +1526,11 @@
           <label style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;display:block;" data-en="Your Price (USD)" data-zh="你的价格 (美元)">Your Price (USD)</label>
           <input type="number" class="order-input" id="orderCustomPrice" placeholder="Enter your price (min $1)" min="1" step="1" oninput="updateShippingCost();renderPayPal();">
         </div>
+        <div class="order-field" style="display:flex;gap:8px;">
+          <input type="text" class="order-input" id="orderCoupon" placeholder="Coupon code (optional)" data-placeholder-en="Coupon code (optional)" data-placeholder-zh="优惠码（选填）" style="flex:1;" oninput="document.getElementById('couponFeedback').style.display='none';updateShippingCost()">
+          <button type="button" class="order-btn" onclick="applyCoupon()" style="width:80px;padding:12px;background:var(--gold);color:#fff;border:none;border-radius:10px;font-size:12px;cursor:pointer;">Apply</button>
+        </div>
+        <div id="couponFeedback" style="display:none;font-size:11px;margin-bottom:8px;"></div>
         <div class="order-field">
           <label style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;display:block;" data-en="Shipping Region" data-zh="配送区域">Shipping Region</label>
           <select class="order-input" id="orderRegion" onchange="updateShippingCost();renderPayPal();">
@@ -2065,6 +2070,9 @@
     function openModal(productKey) {
       currentProduct = products.find(p => p.key === productKey);
       if (!currentProduct) return;
+      _couponData = null;
+      document.getElementById('orderCoupon').value = '';
+      document.getElementById('couponFeedback').style.display = 'none';
       // Update URL hash for sharing
       window.location.hash = 'product=' + productKey;
 
@@ -2117,6 +2125,33 @@
       return { shipping: finalShipping, price };
     }
 
+    var _couponData = null;
+    async function applyCoupon() {
+      const code = document.getElementById('orderCoupon').value.trim();
+      const fb = document.getElementById('couponFeedback');
+      if (!code) { fb.style.display = 'none'; _couponData = null; updateShippingCost(); renderPayPal(); return; }
+      fb.style.display = 'block';
+      fb.style.color = 'var(--text-light)';
+      fb.textContent = 'Checking...';
+      try {
+        const r = await fetch(API + '/api/apply-coupon', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code, total: getOrderBasePrice() }) });
+        const d = await r.json();
+        if (d.success) {
+          _couponData = d;
+          fb.style.color = '#4a9e5c';
+          fb.textContent = '✓ ' + (d.type === 'percentage' ? d.value + '% off' : '-$' + d.value) + ' → $' + d.finalTotal;
+          updateShippingCost(); renderPayPal();
+        } else {
+          _couponData = null; fb.style.color = '#C0665A';
+          fb.textContent = d.error === 'invalid_code' ? 'Invalid code' : d.error === 'expired_or_inactive' ? 'Expired' : d.error === 'minimum_purchase' ? 'Min purchase: $' + d.minRequired : d.error;
+        }
+      } catch(e) { _couponData = null; fb.style.color = '#C0665A'; fb.textContent = 'Error'; }
+    }
+    function getOrderBasePrice() {
+      const { shipping, price } = updateShippingCost();
+      return price + shipping;
+    }
+
     async function completeOrder(paypalOrderId) {
       const name = document.getElementById('orderName').value.trim();
       const email = document.getElementById('orderEmail').value.trim();
@@ -2128,6 +2163,8 @@
         document.getElementById('orderName').focus(); return;
       }
 
+      var finalPrice = _couponData ? _couponData.finalTotal : (price + shipping);
+
       document.getElementById('paypal-button-container').innerHTML = '<div style="text-align:center;padding:12px;font-family:DM Mono,monospace;font-size:12px;color:var(--amber);">Generating your activation code...</div>';
 
       try {
@@ -2137,7 +2174,8 @@
           body: JSON.stringify({
             productId: currentProduct.id,
             productName: currentProduct.bundleNames || currentProduct.name,
-            price: price + shipping,
+            price: finalPrice,
+            finalPrice, couponCode: _couponData ? _couponData.code : '', couponDiscount: _couponData ? _couponData.discount : 0,
             customerName: name, customerEmail: email,
             customerPhone: phone, customerAddress: address,
             shippingRegion: region, shippingCost: shipping,
@@ -2160,16 +2198,19 @@
     }
 
     function getOrderPrice() {
+      var base;
       if (currentProduct.customPrice) {
         const cp = parseInt(document.getElementById('orderCustomPrice').value) || 0;
         if (cp < 1) return 0;
         const region = document.getElementById('orderRegion').value;
         const shipping = shippingRates[region] || 0;
         const freeAt = shippingRates.freeThreshold || 50;
-        return cp + (cp >= freeAt ? 0 : shipping);
+        base = cp + (cp >= freeAt ? 0 : shipping);
+      } else {
+        const { shipping, price } = updateShippingCost();
+        base = price + shipping;
       }
-      const { shipping, price } = updateShippingCost();
-      return price + shipping;
+      return _couponData ? _couponData.finalTotal : base;
     }
 
     function renderPayPal() {
@@ -2224,6 +2265,7 @@
       if (!name || !email || !email.includes('@') || !phone || !address || !region) {
         document.getElementById('orderName').focus(); return;
       }
+      var finalPrice = _couponData ? _couponData.finalTotal : (price + shipping);
       document.getElementById('testOrderBtn').disabled = true;
       document.getElementById('testOrderBtn').innerHTML = '<span>Processing...</span>';
       try {
@@ -2232,7 +2274,8 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             productId: currentProduct.id, productName: currentProduct.bundleNames || currentProduct.name,
-            price: price + shipping,
+            price: finalPrice,
+            finalPrice, couponCode: _couponData ? _couponData.code : '', couponDiscount: _couponData ? _couponData.discount : 0,
             customerName: name, customerEmail: email, customerPhone: phone, customerAddress: address,
             shippingRegion: region, shippingCost: shipping,
             isBundle: !!currentProduct.bundleIds,
